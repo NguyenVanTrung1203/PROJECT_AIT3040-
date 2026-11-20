@@ -1,0 +1,28 @@
+{
+  "notebooks": [
+    {
+      "path": "notebooks/01_dataset_overview.ipynb",
+      "status": "PASS",
+      "cells": 12,
+      "code_cells": 5,
+      "execution_errors": 0,
+      "bytes": 301847
+    },
+    {
+      "path": "notebooks/02_feature_tensor_analysis.ipynb",
+      "status": "PASS",
+      "cells": 12,
+      "code_cells": 5,
+      "execution_errors": 0,
+      "bytes": 137248
+    }
+  ],
+  "executed_at_utc": "2026-11-20T10:03:03.527564+00:00",
+  "python": "3.12.3",
+  "dependencies": {
+    "jupyterlab": "4.6.6",
+    "ipykernel": "7.4.0",
+    "nbformat": "5.11.1",
+    "nbclient": "0.11.0"
+  }
+}

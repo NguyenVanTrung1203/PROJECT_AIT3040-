@@ -1,0 +1,17 @@
+/DATASET_FINAL/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+
+.pytest_cache/
+node_modules/
+/frontend/dist/
+/artifacts/checkpoints/*
+!/artifacts/checkpoints/.gitkeep
+/artifacts/scalers/*
+!/artifacts/scalers/.gitkeep
+*.log
+
+.ipynb_checkpoints/
