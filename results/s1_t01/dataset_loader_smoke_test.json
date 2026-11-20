@@ -1,0 +1,188 @@
+{
+  "dataset_version": "final_dataset_1.0",
+  "dataset_lock_status": "READY_AND_LOCKED",
+  "splits": {
+    "train": {
+      "encounters": 1440,
+      "vessels": 2880,
+      "records": 72000,
+      "tensors": {
+        "X": {
+          "shape": [
+            2880,
+            10,
+            4
+          ],
+          "dtype": "float32"
+        },
+        "displacement": {
+          "shape": [
+            2880,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "common": {
+          "shape": [
+            1440,
+            2,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "anchors": {
+          "shape": [
+            1440,
+            2,
+            2
+          ],
+          "dtype": "float64"
+        },
+        "labels": {
+          "shape": [
+            1440
+          ],
+          "dtype": "int8"
+        }
+      }
+    },
+    "validation": {
+      "encounters": 835,
+      "vessels": 1670,
+      "records": 41750,
+      "tensors": {
+        "X": {
+          "shape": [
+            1670,
+            10,
+            4
+          ],
+          "dtype": "float32"
+        },
+        "displacement": {
+          "shape": [
+            1670,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "common": {
+          "shape": [
+            835,
+            2,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "anchors": {
+          "shape": [
+            835,
+            2,
+            2
+          ],
+          "dtype": "float64"
+        },
+        "labels": {
+          "shape": [
+            835
+          ],
+          "dtype": "int8"
+        }
+      }
+    },
+    "test": {
+      "encounters": 1320,
+      "vessels": 2640,
+      "records": 66000,
+      "tensors": {
+        "X": {
+          "shape": [
+            2640,
+            10,
+            4
+          ],
+          "dtype": "float32"
+        },
+        "displacement": {
+          "shape": [
+            2640,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "common": {
+          "shape": [
+            1320,
+            2,
+            15,
+            2
+          ],
+          "dtype": "float32"
+        },
+        "anchors": {
+          "shape": [
+            1320,
+            2,
+            2
+          ],
+          "dtype": "float64"
+        },
+        "labels": {
+          "shape": [
+            1320
+          ],
+          "dtype": "int8"
+        }
+      }
+    }
+  },
+  "dataset_root": "DATASET_FINAL",
+  "index_mapping": {
+    "train": {
+      "status": "PASS",
+      "vessel_dataset_length": 2880,
+      "encounter_dataset_length": 1440,
+      "samples_checked": 3
+    },
+    "validation": {
+      "status": "PASS",
+      "vessel_dataset_length": 1670,
+      "encounter_dataset_length": 835,
+      "samples_checked": 3
+    }
+  },
+  "dataloader": {
+    "first_batch_shapes": {
+      "X": [
+        256,
+        10,
+        4
+      ],
+      "Y": [
+        256,
+        15,
+        2
+      ]
+    },
+    "final_batch_size": 64,
+    "total_vessels": 2880
+  },
+  "unit_tests": {
+    "total": 16,
+    "passed": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "smoke_test_status": "PASS",
+  "known_limitations": [
+    "Test inspected for tensor structure and index metadata only; no inference or evaluation.",
+    "Deep reconstruction and leakage audits deferred to step 5.",
+    "Dataset checksums verified separately."
+  ]
+}

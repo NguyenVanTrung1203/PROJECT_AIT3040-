@@ -1,0 +1,15 @@
+dataset_version: final_dataset_1.0
+dataset_root: ./DATASET_FINAL
+lock_manifest: DATASET_LOCK_MANIFEST.json
+history_length: 10
+input_features: 4
+forecast_horizon: 15
+output_dimensions: 2
+position_unit: nautical_mile
+velocity_unit: knot
+coordinate_convention: common East/North origin at vessel A first history position; input position relative to each vessel anchor
+feature_order: [own_relative_east_nm, own_relative_north_nm, east_velocity_kn, north_velocity_kn]
+splits:
+  train: {encounters: 1440, vessels: 2880, records: 72000, data: train_1440.parquet}
+  validation: {encounters: 835, vessels: 1670, records: 41750, data: validation_835.parquet}
+  test: {encounters: 1320, vessels: 2640, records: 66000, data: test_1320.parquet}
