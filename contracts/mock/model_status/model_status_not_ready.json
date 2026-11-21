@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "m5a_artifact_available": false,
+  "m5a_ready": false,
+  "m5a_version": null,
+  "cv_available": true,
+  "cv_version": "mock-cv-v1",
+  "m5a_calibration_status": "NOT_CALIBRATED",
+  "cv_calibration_status": "NOT_CALIBRATED",
+  "m5a_threshold": null,
+  "cv_threshold": null,
+  "status_reason": "mock: chưa có checkpoint"
+}

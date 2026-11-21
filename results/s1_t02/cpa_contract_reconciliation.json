@@ -1,0 +1,54 @@
+{
+  "decision": "C",
+  "source_v4": "MODEL_FINAL_VERIFICATION_V4/MODEL_CANDIDATE_PACKAGE/inference/risk_pipeline.py",
+  "source_sha256": "8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e",
+  "near_zero_condition": "dot(v_rel,v_rel) <= 1e-9 kn^2",
+  "internal_cpa_convention": {
+    "raw_tcpa_min": 0,
+    "clipped_tcpa_min": 0,
+    "dcpa": "current_distance",
+    "current_score": "V4_finite_for_valid_input"
+  },
+  "api_cpa_convention": {
+    "current_tcpa_minutes": null,
+    "current_tcpa_clipped_minutes": null,
+    "current_cpa_status": "UNDEFINED_LOW_RELATIVE_VELOCITY",
+    "dcpa_and_current_score": "finite",
+    "risk_score": "available_when_components_valid"
+  },
+  "schema_changes": "near-zero distinct from unavailable; invalid data has null risk; normal CPA keeps raw and clipped values",
+  "semantic_tests": "valid near-zero with and without calibration, invalid input, unavailable CPA and no automatic fallback",
+  "numerical_parity": {
+    "status": "PASS",
+    "fixtures": 14,
+    "rtol": 1e-12,
+    "atol": 1e-12,
+    "scope": "direct V4 cpa/score/calculate on synthetic arrays; not production inference"
+  },
+  "openapi_validation": "PASS_test_openapi_document_and_local_references",
+  "regression_tests": {
+    "total": 94,
+    "passed": 94,
+    "previous_tests_retained_and_passed": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "calibration_protocol": "UNCHANGED",
+  "calibration_status": "not_calibrated",
+  "cc_dri_weights": {
+    "predicted_cpa": 0.68,
+    "current_cpa": 0.12,
+    "rule": 0.2
+  },
+  "dataset_checksum": {
+    "status": "PASS",
+    "files_verified": 93,
+    "manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441"
+  },
+  "production_runtime_parity": "NOT_TESTED",
+  "limitations": [
+    "No production risk pipeline, FastAPI, frontend or full inference was run",
+    "Reference fixtures use direct V4 functions on synthetic float64 arrays; no checkpoint or Test dataset inference"
+  ]
+}

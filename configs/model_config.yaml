@@ -1,0 +1,97 @@
+model:
+  name: Residual-GRU M5a
+  architecture: GRU_then_Linear_ReLU_Linear
+  input_size: 4
+  history_length: 10
+  hidden_size: 48
+  num_layers: 1
+  batch_first: true
+  dropout: 0.0
+  bias: true
+  bidirectional: false
+  hidden_selection: last_layer_final_hidden_state
+  initialization: pytorch_default_after_seed
+  dtype: float32
+  fc_hidden_size: 96
+  output_size: 30
+  forecast_horizon: 15
+  output_dimensions: 2
+  expected_parameter_count: 15390
+  learnable_components: [gru, linear_hidden, linear_output]
+features:
+  order: [own_relative_east_nm, own_relative_north_nm, east_velocity_kn, north_velocity_kn]
+  position_unit: nautical_mile
+  velocity_unit: knot
+  time_zone: UTC
+  history_minutes: [-9, 0]
+  forecast_minutes: [1, 15]
+  anchor: each_vessel_last_history_position
+baseline:
+  method: constant_velocity
+  timestep_minutes: 1
+  formula: velocity_at_anchor_kn * forecast_minute / 60
+residual:
+  target_definition: target_displacement_nm_minus_constant_velocity_displacement_nm
+  target_is_consecutive_difference: false
+  prediction_order: [scale_input, predict_scaled_residual, inverse_scale_residual, add_cv_displacement, add_own_anchor, project_common_EN]
+scaling:
+  input_scaler: StandardScaler
+  residual_scaler: StandardScaler
+  fit_split: train
+  input_fit_shape: [-1, 4]
+  residual_fit_shape: [-1, 2]
+  axes: shared_over_vessels_and_time_per_channel
+  scale_epsilon_after_fit: 0.000001
+  transform: (value - mean) / adjusted_scale
+  inverse_transform: scaled_value * adjusted_scale + mean
+  transformed_dtype: float32
+training:
+  optimizer: AdamW
+  learning_rate: 0.0025
+  weight_decay: 0.0001
+  batch_size: 256
+  min_epochs: 25
+  max_epochs: 45
+  early_stopping_patience: 8
+  improvement_min_delta_nm: 0.0000001
+  seeds: [20261110, 20261111, 20261112]
+  loss:
+    reduction: mean
+    encoded_residual_mse: 1.0
+    physical_position_mse: 0.15
+    velocity_mse_divisor_kn: 10
+    velocity_mse_weight: 0.02
+    acceleration_mse_divisor_kn_per_min: 3
+    acceleration_mse_weight: 0.002
+    kinematic_penalty_weight: 0.001
+    kinematic_speed_limit_kn: 50
+    kinematic_scalar_speed_change_kn_per_min: 3
+    decoded_physical_space: true
+  gradient_clipping: none
+  learning_rate_scheduler: none
+  shuffle_train: true
+  drop_last: false
+  num_workers: 0
+  seed_sources: [python_random, numpy, torch, dataloader_generator]
+  deterministic_algorithms: true
+  reference_device: cpu
+  device: auto
+  allowed_devices: [auto, cpu, cuda]
+  validation_frequency_epochs: 1
+  log_validation_metrics: [loss, ADE, FDE, real_ADE, severe_vessel_count]
+checkpoint_selection:
+  split: validation
+  require_projected_qc_pass: true
+  criteria: lowest_real_ais_ADE_nm
+  improvement_min_delta_nm: 0.0000001
+  save_when_improved: true
+  best_epoch: null
+  selected_seed: null
+  selected_checkpoint: null
+seed_selection:
+  split: validation
+  criteria_order: [close_recall_desc, F1_desc, recall_desc, real_FPR_asc, synthetic_recall_desc, AUC_desc, closest_MAE_asc, real_ADE_asc, real_FDE_asc]
+  protocol: v4_locked_selection
+  historical_seed: 20261110
+  historical_best_epoch: 1
+  historical_values_are_official: false

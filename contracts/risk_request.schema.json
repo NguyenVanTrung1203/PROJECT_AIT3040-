@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "risk_request.schema.json",
+  "title": "risk_request",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "encounter": {
+      "$ref": "encounter.schema.json"
+    },
+    "replay_session_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "requested_model": {
+      "$ref": "common.schema.json#/$defs/model"
+    }
+  },
+  "required": [
+    "schema_version",
+    "request_id",
+    "encounter",
+    "replay_session_id",
+    "requested_model"
+  ],
+  "additionalProperties": false
+}

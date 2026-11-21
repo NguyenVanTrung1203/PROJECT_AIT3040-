@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "error.schema.json",
+  "title": "error",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "error_code": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "message": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "request_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "details": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": true
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "error_code",
+    "message",
+    "request_id",
+    "details"
+  ],
+  "additionalProperties": false
+}

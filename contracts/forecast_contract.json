@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0-draft",
+  "status": "proposed_pending_team_review",
+  "identification": ["pair_id", "encounter_id_optional_offline", "anchor_timestamp_UTC", "vessel_ids", "vessel_roles_A_B"],
+  "forecast": {"forecast_horizon_minutes": 15, "forecast_timestamps": [15], "forecast_displacement_en_nm": [2,15,2], "forecast_common_en_nm": [2,15,2], "forecast_lat_lon": [2,15,2], "forecast_lat_lon_order": ["latitude", "longitude"], "coordinate_origin": ["reference_latitude_deg", "reference_longitude_deg", "origin_kind", "geographic_mapping_status"], "anchor_positions_en_nm": [2,2]},
+  "forecast_lat_lon_availability": "null_with_explicit_unavailable_status_when_no_verified_geographic_mapping_or_inverse_unstable",
+  "simulation_coordinates": "do_not_present_as_real_AIS_location; geographic_mapping_status_must_mark_simulated",
+  "model_status": ["requested_model", "active_model", "model_version", "fallback_used", "fallback_reason", "projection_status", "data_status"],
+  "unavailable_forecast": "null_with_status_not_zero_trajectory",
+  "json_numbers": "finite_only_no_NaN_or_Inf",
+  "invalid_data": {"missing_history_or_stale": "INSUFFICIENT_DATA", "nan_or_inf": "INSUFFICIENT_DATA", "bad_shape_or_timestamp": "CONTRACT_VALIDATION_ERROR", "duplicate_vessels": "INVALID_ENCOUNTER", "outside_scope": "OUT_OF_SCOPE", "primary_technical_failure_with_valid_inputs": "consider_CV_fallback", "both_models_fail": "FORECAST_UNAVAILABLE", "uncalibrated_threshold": "no_official_alert", "status_names": "proposed_for_team_review"},
+  "fallback": "technical_failures_only_with_valid_data_not_for_missing_or_invalid_history",
+  "scope": "forecast_only_risk_response_and_API_deferred"
+}

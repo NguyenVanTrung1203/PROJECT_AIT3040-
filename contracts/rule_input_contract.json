@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0-draft",
+  "status": "proposed_pending_team_review",
+  "history_shape": [2, 10, 2],
+  "batch_shape": ["N", 2, 10, 2],
+  "channels": ["SOG", "COG"],
+  "units": ["knot", "degree_clockwise_from_north"],
+  "source_dtype": "float64",
+  "vessel_order": ["A", "B"],
+  "source": "train_or_validation/data/*.parquet_history_rows",
+  "required_columns": ["encounter_id", "vessel", "vessel_id", "timestamp_utc", "anchor_timestamp", "relative_minute", "is_history", "is_future", "SOG", "COG"],
+  "additional_inference_inputs": ["X_unscaled_history_EN_position_and_velocity", "anchor_positions_common_EN_nm"],
+  "cog_change": "circular_wrap_to_minus180_inclusive_plus180_exclusive",
+  "sog_cog_ranges": {"SOG_kn": "finite_and_0_to_50_inclusive_for_real_AIS_reference", "COG_deg": "finite_and_0_inclusive_to_360_exclusive"},
+  "adapter_proposal": {"input": ["split", "encounter_id"], "output": ["sog_cog_history", "vessel_ids", "anchor_timestamp", "history_timestamps", "data_status"], "steps": ["lookup_official_encounter_and_vessel_indices", "filter_is_history_and_not_future", "align_A_B_by_official_index", "sort_nominal_timestamp_within_vessel", "verify_10_offsets_and_common_anchor", "validate_finite_SOG_COG", "return_history_only"], "production_implementation": false},
+  "excluded": ["future", "labels", "scenario_ground_truth", "rule_violation_true", "synthetic_generation_metadata"],
+  "invalid": "INSUFFICIENT_DATA_no_inference_no_CV_fallback",
+  "zero_speed": "retain_observed_COG_do_not_infer_from_zero_velocity"
+}

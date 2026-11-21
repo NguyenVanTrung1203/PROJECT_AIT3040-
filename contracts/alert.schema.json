@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alert.schema.json",
+  "title": "alert",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "alert_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "replay_session_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pair_id": {
+      "$ref": "common.schema.json#/$defs/pair_id"
+    },
+    "opened_encounter_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "latest_encounter_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "vessel_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "opened_at": {
+      "$ref": "common.schema.json#/$defs/utc_timestamp"
+    },
+    "updated_at": {
+      "$ref": "common.schema.json#/$defs/utc_timestamp"
+    },
+    "closed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/utc_timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "latest_evaluation_timestamp": {
+      "$ref": "common.schema.json#/$defs/utc_timestamp"
+    },
+    "risk_score": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "threshold": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "predicted_min_distance_nm": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "predicted_closest_time_minutes": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 15
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_dcpa_nm": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_tcpa_minutes": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "active_model": {
+      "$ref": "common.schema.json#/$defs/nullable_model"
+    },
+    "alert_status": {
+      "enum": [
+        "ACTIVE",
+        "DATA_UNAVAILABLE",
+        "RESOLVED"
+      ]
+    },
+    "status_reason": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "values_as_of": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/utc_timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "values_are_last_valid": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "alert_id",
+    "replay_session_id",
+    "pair_id",
+    "opened_encounter_id",
+    "latest_encounter_id",
+    "vessel_ids",
+    "opened_at",
+    "updated_at",
+    "closed_at",
+    "latest_evaluation_timestamp",
+    "risk_score",
+    "threshold",
+    "predicted_min_distance_nm",
+    "predicted_closest_time_minutes",
+    "current_dcpa_nm",
+    "current_tcpa_minutes",
+    "active_model",
+    "alert_status",
+    "status_reason",
+    "values_as_of",
+    "values_are_last_valid"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "alert_status": {
+            "const": "RESOLVED"
+          }
+        },
+        "required": [
+          "alert_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "closed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "closed_at": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "alert_status": {
+            "const": "DATA_UNAVAILABLE"
+          }
+        },
+        "required": [
+          "alert_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "values_are_last_valid": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}

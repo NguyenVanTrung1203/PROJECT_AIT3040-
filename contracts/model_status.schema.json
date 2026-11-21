@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "model_status.schema.json",
+  "title": "model_status",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "requested_model": {
+      "$ref": "common.schema.json#/$defs/model"
+    },
+    "active_model": {
+      "$ref": "common.schema.json#/$defs/nullable_model"
+    },
+    "model_version": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifact_version": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "inference_status": {
+      "enum": [
+        "SUCCESS",
+        "NOT_RUN",
+        "TECHNICAL_ERROR",
+        "FORECAST_UNAVAILABLE"
+      ]
+    },
+    "data_status": {
+      "$ref": "common.schema.json#/$defs/data_status"
+    },
+    "fallback_used": {
+      "type": "boolean"
+    },
+    "fallback_reason": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "calibration_status": {
+      "$ref": "common.schema.json#/$defs/calibration_status"
+    }
+  },
+  "required": [
+    "schema_version",
+    "requested_model",
+    "active_model",
+    "model_version",
+    "artifact_version",
+    "inference_status",
+    "data_status",
+    "fallback_used",
+    "fallback_reason",
+    "calibration_status"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "fallback_used": {
+            "const": true
+          }
+        },
+        "required": [
+          "fallback_used"
+        ]
+      },
+      "then": {
+        "properties": {
+          "requested_model": {
+            "const": "M5A"
+          },
+          "active_model": {
+            "const": "CV"
+          },
+          "data_status": {
+            "const": "VALID"
+          },
+          "inference_status": {
+            "const": "SUCCESS"
+          },
+          "fallback_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "inference_status": {
+            "const": "SUCCESS"
+          }
+        },
+        "required": [
+          "inference_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "active_model": {
+            "enum": [
+              "M5A",
+              "CV"
+            ]
+          },
+          "data_status": {
+            "const": "VALID"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fallback_used": {
+            "const": false
+          }
+        },
+        "required": [
+          "fallback_used"
+        ]
+      },
+      "then": {
+        "properties": {
+          "fallback_reason": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "global_status": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "m5a_artifact_available": {
+          "type": "boolean"
+        },
+        "m5a_ready": {
+          "type": "boolean"
+        },
+        "m5a_version": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cv_available": {
+          "type": "boolean"
+        },
+        "cv_version": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "m5a_calibration_status": {
+          "$ref": "common.schema.json#/$defs/calibration_status"
+        },
+        "cv_calibration_status": {
+          "$ref": "common.schema.json#/$defs/calibration_status"
+        },
+        "m5a_threshold": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/score"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cv_threshold": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/score"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status_reason": {
+          "$ref": "common.schema.json#/$defs/id"
+        }
+      },
+      "required": [
+        "schema_version",
+        "m5a_artifact_available",
+        "m5a_ready",
+        "m5a_version",
+        "cv_available",
+        "cv_version",
+        "m5a_calibration_status",
+        "cv_calibration_status",
+        "m5a_threshold",
+        "cv_threshold",
+        "status_reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "m5a_artifact_available": {
+                "const": false
+              }
+            },
+            "required": [
+              "m5a_artifact_available"
+            ]
+          },
+          "then": {
+            "properties": {
+              "m5a_ready": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "m5a_calibration_status": {
+                "const": "NOT_CALIBRATED"
+              }
+            },
+            "required": [
+              "m5a_calibration_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "m5a_threshold": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "cv_calibration_status": {
+                "const": "NOT_CALIBRATED"
+              }
+            },
+            "required": [
+              "cv_calibration_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cv_threshold": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

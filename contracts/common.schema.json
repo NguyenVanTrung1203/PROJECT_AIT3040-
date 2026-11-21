@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "common",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "utc_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(Z|\\+00:00)$"
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "sog_kn": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 50
+    },
+    "cog_deg": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 360
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "model": {
+      "enum": [
+        "M5A",
+        "CV"
+      ]
+    },
+    "nullable_model": {
+      "enum": [
+        "M5A",
+        "CV",
+        null
+      ]
+    },
+    "data_status": {
+      "enum": [
+        "VALID",
+        "INSUFFICIENT_DATA",
+        "STALE",
+        "INVALID_DATA",
+        "OUT_OF_SCOPE"
+      ]
+    },
+    "calibration_status": {
+      "enum": [
+        "NOT_CALIBRATED",
+        "CALIBRATED"
+      ]
+    },
+    "forecast_status": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "NOT_RUN"
+      ]
+    },
+    "projection_status": {
+      "enum": [
+        "APPLIED",
+        "NOT_APPLIED_CV",
+        "FAILED",
+        "NOT_RUN"
+      ]
+    },
+    "pair_id": {
+      "type": "string",
+      "pattern": "^pair:v1:[0-9a-f]{64}$"
+    },
+    "lat_lon": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/latitude"
+        },
+        {
+          "$ref": "#/$defs/longitude"
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "en_point": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coordinate_origin": {
+      "type": "object",
+      "properties": {
+        "origin_latitude": {
+          "$ref": "#/$defs/latitude"
+        },
+        "origin_longitude": {
+          "$ref": "#/$defs/longitude"
+        },
+        "origin_timestamp": {
+          "$ref": "#/$defs/utc_timestamp"
+        },
+        "origin_vessel_id": {
+          "$ref": "#/$defs/id"
+        },
+        "coordinate_method": {
+          "const": "LOCAL_DEGREES_COS_LAT0"
+        },
+        "coordinate_unit": {
+          "const": "nautical_mile"
+        },
+        "coordinate_dtype": {
+          "const": "float64"
+        },
+        "geographic_mapping_status": {
+          "enum": [
+            "VERIFIED_REAL",
+            "VERIFIED_SIMULATED",
+            "UNAVAILABLE"
+          ]
+        }
+      },
+      "required": [
+        "origin_latitude",
+        "origin_longitude",
+        "origin_timestamp",
+        "origin_vessel_id",
+        "coordinate_method",
+        "coordinate_unit",
+        "coordinate_dtype",
+        "geographic_mapping_status"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
