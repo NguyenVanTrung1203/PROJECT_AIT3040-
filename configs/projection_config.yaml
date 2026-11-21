@@ -1,0 +1,29 @@
+projection:
+  timestep_minutes: 1
+  velocity_unit: knot
+  position_unit: nautical_mile
+  input: inverse_scaled_residual_plus_cv_forecast_in_common_EN
+  initial_velocity: observed_anchor_velocity_EN_kn
+  initial_position: own_anchor_common_EN_nm
+  max_speed_kn: 49.999
+  max_vector_velocity_change_kn_per_min: 2.999
+  max_turn_degrees_per_min: 29.9
+  turn_applies_when_both_speeds_at_least_kn: 3.0
+  numerical_denominator_floor: 1.0e-12
+  order: [desired_velocity_from_raw_point_and_previous_projected_position, cap_desired_speed, cap_vector_velocity_change, limit_turn_if_moving, integrate_velocity, update_previous_state]
+  integration: previous_projected_position_plus_velocity_kn_divided_by_60
+  near_zero_speed: skip_turn_limit_unless_both_speeds_at_least_minimum
+  invalid_input: wrapper_reject_nonfinite_as_insufficient_data
+  invalid_output: technical_fallback_if_nonfinite_or_severe_qc
+  reference_projection_function_validates_finiteness: false
+  limitations: projection_constraints_are_not_maritime_safety_certification
+kinematic_qc:
+  max_speed_kn: 50.0
+  max_scalar_speed_change_kn_per_min: 3.0
+  max_turn_degrees_per_min: 30.0
+  turn_applies_when_both_speeds_at_least_kn: 3.0
+  comparison_tolerance: 1.0e-9
+  severity: any_speed_or_scalar_speed_change_or_turn_flag
+  scalar_speed_change: absolute_difference_of_adjacent_speed_magnitudes
+  vector_velocity_change: norm_of_adjacent_velocity_vector_difference_reported_separately
+  initial_anchor_to_first_step_speed_change: diagnostic_only_not_in_severe_flag

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "alert_id": "mock-alert-01",
+  "replay_session_id": "mock-session-01",
+  "pair_id": "pair:v1:5edcd44d2d37a0ada2de37283483f76bbddc8bb9c5bb22b8992b7f7297cf5c18",
+  "opened_encounter_id": "mock-encounter-01",
+  "latest_encounter_id": "mock-encounter-01",
+  "vessel_ids": [
+    "physical_mmsi:000000001",
+    "physical_mmsi:000000002"
+  ],
+  "opened_at": "2026-01-01T12:00:00Z",
+  "updated_at": "2026-01-01T12:00:00Z",
+  "closed_at": null,
+  "latest_evaluation_timestamp": "2026-01-01T12:00:00Z",
+  "risk_score": 0.9387185626130623,
+  "threshold": 0.5,
+  "predicted_min_distance_nm": 2.1538326677728037e-14,
+  "predicted_closest_time_minutes": 4,
+  "current_dcpa_nm": 0.0,
+  "current_tcpa_minutes": 4.000000000000108,
+  "active_model": "M5A",
+  "alert_status": "ACTIVE",
+  "status_reason": "mock: vượt ngưỡng",
+  "values_as_of": "2026-01-01T12:00:00Z",
+  "values_are_last_valid": false
+}

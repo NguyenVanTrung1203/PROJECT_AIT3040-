@@ -1,0 +1,93 @@
+forecast_horizon_minutes: 15
+position_unit: nautical_mile
+velocity_unit: knot
+score_range: [0.0, 1.0]
+score_is_collision_probability: false
+current_cpa:
+  relative_position: vessel_B_anchor_minus_vessel_A_anchor
+  relative_velocity: vessel_B_anchor_velocity_minus_vessel_A_anchor_velocity
+  relative_velocity_squared_floor: 1.0e-9
+  relative_velocity_squared_unit: knot_squared
+  near_zero_condition: squared_norm_less_than_or_equal_to_1e-9
+  near_zero_relative_velocity_raw_tcpa_minutes: 0.0
+  near_zero_relative_velocity_clipped_tcpa_minutes: 0.0
+  near_zero_dcpa: current_distance_nm
+  near_zero_current_cpa_score: computed_using_internal_clipped_tcpa_zero
+  near_zero_api_presentation: tcpa_raw_and_clipped_null_dcpa_and_current_score_available
+  raw_tcpa_minutes: -dot(relative_position, relative_velocity) / squared_norm(relative_velocity) * 60
+  clipped_tcpa_minutes: clip_raw_to_0_15
+  dcpa_nm: norm(relative_position + relative_velocity * clipped_tcpa_minutes / 60)
+  score_distance_midpoint_nm: 0.65
+  score_distance_scale_nm: 0.16
+predicted_cpa:
+  trajectory_frame: common_EN_nm
+  sample_minutes: [1, 15]
+  include_anchor: false
+  minimum: minimum_separation_between_vessels_at_future_samples
+  time_of_minimum: first_minimum_index_plus_one_minute
+  score_distance_midpoint_nm: 0.65
+  score_distance_scale_nm: 0.14
+score_formula: sigmoid((0.65 - distance_nm) / scale_nm) * (1 - 0.25 * min(time_minutes, 15) / 15)
+score_exponential_argument_clamp: [-100, 100]
+cc_dri:
+  weights: {predicted_cpa: 0.68, current_cpa: 0.12, rule: 0.20}
+rule:
+  inference_source: first_three_history_positions_and_velocities_for_roles_full_history_sog_cog_for_maneuver
+  additional_input: observed_history_SOG_kn_and_COG_deg_shape_N_2_10_2
+  loader_integration_status: requires_history_SOG_COG_adapter_not_in_current_EncounterDataset
+  head_on: heading_difference_within_25_of_180_and_both_relative_bearings_within_20_of_0
+  overtaking: heading_difference_at_most_30_and_bearing_in_open_112_5_to_247_5_with_faster_overtaker
+  crossing_starboard: heading_difference_30_to_150_and_A_relative_bearing_15_to_165
+  crossing_port: heading_difference_30_to_150_and_A_relative_bearing_195_to_345
+  priority: [head_on, overtaking_B, overtaking_A, crossing_starboard, crossing_port, unknown]
+  maneuver_delta_cog: circular_difference_last_minus_first_degrees
+  maneuver_delta_sog: last_minus_first_knots
+  violation_indicator: not(delta_cog >= 10 or (delta_cog >= 5 and delta_sog <= -0.6)) or delta_cog <= -4
+  selected_role_rule_score: indicator_for_A_or_B_mean_for_both
+  unknown_role_score: 0.5
+  legal_colregs_determination: false
+threshold:
+  calibration_status: not_calibrated
+  reference_m5a: 0.420
+  reference_cv: 0.435
+  calibrated_m5a: null
+  calibrated_cv: null
+  allow_reference_for_official_alerts: false
+  alert_decision: score_greater_than_or_equal_to_calibrated_threshold_only
+calibration:
+  split: validation
+  grid_start: 0.0
+  grid_stop: 1.0
+  grid_step: 0.005
+  recall_minimum: 0.90
+  objective: maximize_F1
+  tie_break: [lower_real_ais_FPR, higher_recall, lower_threshold]
+  separate_threshold_per_scoring_model: true
+  use_test_for_selection_or_calibration: false
+selection_gates:
+  zero_severe_qc: true
+  min_auc: 0.945
+  min_f1: 0.903
+  min_recall: 0.90
+  min_synthetic_recall: 0.93
+  max_real_fpr: 0.132
+  max_close_recall_drop_vs_cv: 0.02
+  close_positive_group: synthetic_AIS_with_minimum_future_haversine_distance_below_0_1_nm
+  max_real_ade_ratio_vs_v1: 0.90
+  v1_comparator_for_new_run_status: not_yet_provided
+  v1_comparator_policy: require_fresh_comparable_baseline_or_explicit_protocol_decision_before_final_selection
+  max_real_ade_ratio_vs_cv: 1.10
+  max_real_fde_ratio_vs_cv: 1.10
+  max_dmin_mae_ratio_vs_cv: 1.10
+fallback:
+  model: constant_velocity
+  trigger: technical_model_load_inference_nonfinite_or_projection_qc_failure
+  fallback_uses_reference_threshold_for_official_alerts: false
+  threshold_requires_separate_validation_calibration: true
+missing_or_invalid_data: insufficient_data_no_safe_or_official_alert_decision
+evaluation:
+  forecast_metrics: [ADE, FDE, Dmin_MAE, kinematic_QC]
+  risk_metrics: [precision, recall, F1, ROC_AUC, FPR, confusion_matrix, real_AIS_FPR, synthetic_AIS_recall, dmin_bands, hard_negative]
+  baselines: [Current_CPA, CV_P_CPA, M5a_P_CPA, M5a_plus_CC_DRI]
+  report_by_source: true
+  test_is_reused_development_benchmark: true

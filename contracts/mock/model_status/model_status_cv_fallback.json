@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "requested_model": "M5A",
+  "active_model": "CV",
+  "model_version": "mock-model-v1",
+  "artifact_version": null,
+  "inference_status": "SUCCESS",
+  "data_status": "VALID",
+  "fallback_used": true,
+  "fallback_reason": "mock technical failure",
+  "calibration_status": "NOT_CALIBRATED"
+}

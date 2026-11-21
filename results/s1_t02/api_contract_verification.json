@@ -1,0 +1,71 @@
+{
+  "contract_version": "1.0.0",
+  "team_design_agreement": "VERIFIED_USER_PROVIDED",
+  "schema_review": "PENDING_REVIEW",
+  "existing_contracts_consistency": "VERIFIED shape/units/threshold/mapping by test; CPA near-zero difference PENDING_REVIEW",
+  "schemas": {
+    "track_snapshot": "VERIFIED_meta_schema_and_fixture",
+    "encounter": "VERIFIED_meta_schema_and_fixture",
+    "risk_request": "VERIFIED_meta_schema_and_fixture",
+    "risk_response": "VERIFIED_meta_schema_and_fixture",
+    "alert": "VERIFIED_meta_schema_and_fixture",
+    "model_status": "VERIFIED_meta_schema_and_fixture",
+    "forecast": "VERIFIED_meta_schema_and_fixture",
+    "common": "VERIFIED_meta_schema_and_fixture",
+    "error": "VERIFIED_meta_schema_and_fixture"
+  },
+  "json_schema_draft": "2020-12",
+  "schema_reference_resolution": "VERIFIED_by_tests",
+  "openapi": "VERIFIED_openapi_3_1_validator_and_endpoint_tests",
+  "semantic_validation_coverage": "VERIFIED_only_fixture_checks_for_mapping_anchor_freshness_origin_score_and_decision; runtime NOT_TESTED",
+  "endpoints": [
+    "GET /api/v1/model/status",
+    "POST /api/v1/risk/evaluate",
+    "GET /api/v1/risk/encounters",
+    "GET /api/v1/risk/encounters/{id}",
+    "GET /api/v1/alerts",
+    "GET /api/v1/alerts/{id}"
+  ],
+  "integration_dependencies": [
+    "Replay session and clock",
+    "TrackSnapshot with timestamps and history",
+    "Candidate encounter",
+    "Map UI"
+  ],
+  "replay_session_isolation": "SPECIFIED_NOT_IMPLEMENTED",
+  "alert_lifecycle": "SPECIFIED_NOT_IMPLEMENTED",
+  "fallback": "SPECIFIED_NOT_IMPLEMENTED",
+  "calibration": "SPECIFIED_NOT_IMPLEMENTED",
+  "unit_tests": {
+    "total": 78,
+    "passed": 78,
+    "old_tests": 60,
+    "new_api_tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "dataset_checksum": {
+    "status": "PASS",
+    "files_verified": 93,
+    "manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441"
+  },
+  "remaining_implementation": [
+    "runtime schema and semantic validators",
+    "track and encounter integration",
+    "risk/model/forecast runtime",
+    "alert lifecycle and idempotent persistence",
+    "HTTP endpoints",
+    "frontend"
+  ],
+  "unverified_items": [
+    "Final schema acceptance by both members",
+    "runtime duplicate/concurrency and replay isolation",
+    "production inference, calibration, fallback and end-to-end behavior",
+    "resolution of historical near-zero CPA behavior versus new undefined-null contract",
+    "fresh comparable V1 baseline or agreed selection protocol before final model selection"
+  ],
+  "blockers_for_step_04": [],
+  "readiness_for_step_04": true,
+  "note": "No production API, alert manager, mock suite, model training, calibration or Test benchmark was executed."
+}

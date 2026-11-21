@@ -1,0 +1,281 @@
+{
+  "contract_version": "1.0.0",
+  "fixtures_total": 46,
+  "valid_fixtures": 30,
+  "invalid_fixtures": 16,
+  "validation_layers": {
+    "VALID": 30,
+    "SCHEMA_VALIDATION_ERROR": 10,
+    "SEMANTIC_VALIDATION_ERROR": 4,
+    "JSON_PARSE_ERROR": 2
+  },
+  "scenarios": [
+    {
+      "fixture_id": "TRACK_VALID",
+      "scenario": "TRACK-01: lịch sử AIS đầy đủ",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "TRACK_INSUFFICIENT_HISTORY",
+      "scenario": "TRACK-02: thiếu history",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "TRACK_STALE",
+      "scenario": "TRACK-03: bản tin cũ quá 60 giây",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "TRACK_SIMULATED",
+      "scenario": "TRACK-04: tàu mô phỏng không có MMSI",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ENCOUNTER_VALID",
+      "scenario": "ENC-01: cặp tàu hợp lệ",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ENCOUNTER_INSUFFICIENT",
+      "scenario": "ENC-02: cặp thiếu history",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ENCOUNTER_NEAR_ZERO",
+      "scenario": "ENC: cặp tàu cùng vận tốc",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ENCOUNTER_FAR",
+      "scenario": "ENC: cặp tàu cách xa tại anchor kế tiếp",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_REQUEST_VALID",
+      "scenario": "Request đầy đủ, không gửi nhãn",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_REQUEST_INSUFFICIENT",
+      "scenario": "Request thiếu history",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_REQUEST_NEAR_ZERO",
+      "scenario": "Request cặp tàu cùng vận tốc",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_REQUEST_FAR",
+      "scenario": "Request evaluation tiếp theo của cặp tàu",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_ALERT",
+      "scenario": "RISK-01: cảnh báo trên ngưỡng giả lập",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_NO_ALERT",
+      "scenario": "RISK-02: dưới ngưỡng giả lập",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_NOT_CALIBRATED",
+      "scenario": "RISK-03: chưa hiệu chỉnh",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_FALLBACK",
+      "scenario": "RISK-05: CV thay thế do lỗi kỹ thuật",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_NO_GEOGRAPHIC",
+      "scenario": "RISK-06: forecast chỉ có EN",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_NEAR_ZERO",
+      "scenario": "RISK-07: CPA gần bằng 0",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_INSUFFICIENT",
+      "scenario": "RISK-04: thiếu dữ liệu",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_OUT_OF_SCOPE",
+      "scenario": "RISK-08: ngoài phạm vi, không đặt ngưỡng mới",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "RISK_RESPONSE_CPA_UNAVAILABLE",
+      "scenario": "RISK-09: CPA không khả dụng do lỗi dự báo",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ALERT_ACTIVE",
+      "scenario": "ALERT-01: cảnh báo đang hoạt động",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ALERT_DATA_UNAVAILABLE",
+      "scenario": "ALERT-02: gián đoạn dữ liệu, giữ giá trị cũ",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ALERT_RESOLVED",
+      "scenario": "ALERT-03: đánh giá hợp lệ dưới ngưỡng giả lập",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ALERT_REPEATED_EVALUATION",
+      "scenario": "ALERT-04: evaluation lặp không tạo alert mới",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "ALERT_AFTER_REPLAY_RESET",
+      "scenario": "ALERT-05: phiên mới tách trạng thái",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "MODEL_STATUS_NOT_READY",
+      "scenario": "MODEL-01: chưa có checkpoint",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "MODEL_STATUS_M5A_ACTIVE",
+      "scenario": "MODEL-02: trạng thái M5a giả lập",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "MODEL_STATUS_CV_FALLBACK",
+      "scenario": "MODEL-03: CV thay thế kỹ thuật",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "MODEL_STATUS_NOT_CALIBRATED",
+      "scenario": "MODEL-04: chưa hiệu chỉnh",
+      "expected_layer": "VALID"
+    },
+    {
+      "fixture_id": "MISSING_REQUIRED",
+      "scenario": "Thiếu vessel_id",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_LATITUDE",
+      "scenario": "Giá trị ngoài miền",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_LONGITUDE",
+      "scenario": "Giá trị ngoài miền",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_COG",
+      "scenario": "Giá trị ngoài miền",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_MMSI",
+      "scenario": "MMSI sai định dạng",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_ENUM",
+      "scenario": "Enum không hợp lệ",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "FORECAST_WRONG_SHAPE",
+      "scenario": "Forecast thiếu một mốc",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "INVALID_TIMESTAMP",
+      "scenario": "Timestamp sai định dạng",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "REQUEST_GROUND_TRUTH",
+      "scenario": "Request chứa nhãn ground truth",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "REQUEST_THRESHOLD_OVERRIDE",
+      "scenario": "Request chứa threshold override",
+      "expected_layer": "SCHEMA_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "DUPLICATE_VESSEL",
+      "scenario": "Hai ID tàu trùng nhau",
+      "expected_layer": "SEMANTIC_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "MISALIGNED_ANCHOR",
+      "scenario": "Anchor tàu không đồng bộ",
+      "expected_layer": "SEMANTIC_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "RISK_SCORE_MISMATCH",
+      "scenario": "Risk score không khớp component",
+      "expected_layer": "SEMANTIC_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "DECISION_MISMATCH",
+      "scenario": "Alert decision không khớp ngưỡng",
+      "expected_layer": "SEMANTIC_VALIDATION_ERROR"
+    },
+    {
+      "fixture_id": "NONFINITE_JSON",
+      "scenario": "JSON không cho phép NaN",
+      "expected_layer": "JSON_PARSE_ERROR"
+    },
+    {
+      "fixture_id": "MALFORMED_JSON",
+      "scenario": "JSON thiếu dấu kết thúc",
+      "expected_layer": "JSON_PARSE_ERROR"
+    }
+  ],
+  "json_parsing": "VERIFIED_valid_files_and_expected_parse_errors",
+  "json_schema": "VERIFIED_fixture_suite",
+  "openapi": "VERIFIED_spec_and_fixture_schema_references",
+  "openapi_changes": "Vietnamese descriptions only; structural content compared to previous contract",
+  "semantic_consistency": "VERIFIED_static_fixtures",
+  "cpa_near_zero": "VERIFIED_synthetic_fixture",
+  "forecast_consistency": "VERIFIED_static_geometry_and_timestamps",
+  "risk_score_consistency": "VERIFIED_independent_formula",
+  "alert_lifecycle": "VERIFIED_static_fixture_relations_only",
+  "replay_isolation": "VERIFIED_static_fixture_relations_only",
+  "unit_tests": {
+    "tests": 94,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 94
+  },
+  "integration_tests": {
+    "tests": 49,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 49
+  },
+  "dataset_checksum": {
+    "status": "PASS",
+    "files_verified": 93,
+    "manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441"
+  },
+  "documentation_review": "Vietnamese README and OpenAPI descriptions; formulas retained, historical provenance retained separately",
+  "production_behavior": "NOT_TESTED",
+  "unverified_items": [
+    "Production model inference, API, replay, alert state transitions, concurrency, idempotency and map display",
+    "Actual calibration and V1 comparator decision remain pending"
+  ],
+  "blockers": [],
+  "readiness_for_T02_B5": true
+}

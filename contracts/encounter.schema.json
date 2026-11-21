@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "encounter.schema.json",
+  "title": "encounter",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "encounter_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "pair_id": {
+      "$ref": "common.schema.json#/$defs/pair_id"
+    },
+    "replay_session_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "anchor_timestamp": {
+      "$ref": "common.schema.json#/$defs/utc_timestamp"
+    },
+    "vessel_a": {
+      "$ref": "track_snapshot.schema.json"
+    },
+    "vessel_b": {
+      "$ref": "track_snapshot.schema.json"
+    },
+    "current_distance_nm": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "coordinate_origin": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/coordinate_origin"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "encounter_status": {
+      "enum": [
+        "READY",
+        "INSUFFICIENT_DATA",
+        "INVALID_DATA",
+        "OUT_OF_SCOPE"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "encounter_id",
+    "pair_id",
+    "replay_session_id",
+    "anchor_timestamp",
+    "vessel_a",
+    "vessel_b",
+    "current_distance_nm",
+    "coordinate_origin",
+    "encounter_status"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "encounter_status": {
+            "const": "READY"
+          }
+        },
+        "required": [
+          "encounter_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "coordinate_origin": {
+            "type": "object"
+          },
+          "current_distance_nm": {
+            "type": "number",
+            "minimum": 0
+          },
+          "vessel_a": {
+            "properties": {
+              "data_status": {
+                "const": "VALID"
+              }
+            }
+          },
+          "vessel_b": {
+            "properties": {
+              "data_status": {
+                "const": "VALID"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

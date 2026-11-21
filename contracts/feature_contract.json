@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0-draft",
+  "status": "proposed_pending_team_review",
+  "feature_order": ["own_relative_east_nm", "own_relative_north_nm", "east_velocity_kn", "north_velocity_kn"],
+  "units": ["nautical_mile", "nautical_mile", "knot", "knot"],
+  "shapes": {"vessel": [10, 4], "encounter": [2, 10, 4], "batch_vessel": ["B", 10, 4], "batch_encounter": ["N", 2, 10, 4]},
+  "model_input_dtype": "float32",
+  "coordinate_intermediate_dtype": "float64",
+  "cog_convention": "degrees_clockwise_from_north_range_0_inclusive_360_exclusive",
+  "velocity": {"east": "SOG * sin(COG * pi / 180)", "north": "SOG * cos(COG * pi / 180)", "sog_unit": "knot", "cog_unit": "degree"},
+  "position": "common_EN_minus_own_anchor_EN",
+  "history_anchor_relative_tolerance_nm": 0.000001,
+  "representations": {"X_unscaled": "physical_units", "X_scaled": "train_fitted_scaler_output", "residual_target": "true_displacement_minus_CV", "residual_prediction": "model_output_inverse_scaled_before_adding_CV", "forecast_displacement": "future_common_EN_minus_own_anchor", "forecast_common_EN": "displacement_plus_own_anchor"},
+  "constant_velocity_uses": "unscaled_anchor_velocity_kn",
+  "offline_mapping": "use_encounter_tensor_index_and_vessel_tensor_index_without_resorting",
+  "replay_mapping_proposal": {"identity": "namespaced_physical_or_simulated_vessel_id", "A_B_order": "lexicographic_order_of_canonical_namespaced_ids_for_replay_only", "pair_id": "pair:v1: plus SHA256 of UTF-8 compact JSON array of two sorted distinct namespaced vessel IDs", "encounter_id": "separate_optional_offline_or_anchor_specific_identifier", "status": "proposed_not_yet_agreed_by_Toan"},
+  "simulated_mmsi": "nullable_do_not_fabricate_real_MMSI"
+}

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "forecast.schema.json",
+  "title": "forecast",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "forecast_timestamps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/utc_timestamp"
+      },
+      "minItems": 15,
+      "maxItems": 15
+    },
+    "forecast_displacement_en_nm": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "common.schema.json#/$defs/en_point"
+        },
+        "minItems": 15,
+        "maxItems": 15
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "forecast_common_en_nm": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "common.schema.json#/$defs/en_point"
+        },
+        "minItems": 15,
+        "maxItems": 15
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "forecast_lat_lon": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/lat_lon"
+            },
+            "minItems": 15,
+            "maxItems": 15
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "geographic_availability": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "SIMULATED"
+      ]
+    },
+    "coordinate_origin": {
+      "$ref": "common.schema.json#/$defs/coordinate_origin"
+    },
+    "anchor_positions_en_nm": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/en_point"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  },
+  "required": [
+    "schema_version",
+    "forecast_timestamps",
+    "forecast_displacement_en_nm",
+    "forecast_common_en_nm",
+    "forecast_lat_lon",
+    "geographic_availability",
+    "coordinate_origin",
+    "anchor_positions_en_nm"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "geographic_availability": {
+            "const": "UNAVAILABLE"
+          }
+        },
+        "required": [
+          "geographic_availability"
+        ]
+      },
+      "then": {
+        "properties": {
+          "forecast_lat_lon": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "geographic_availability": {
+            "enum": [
+              "AVAILABLE",
+              "SIMULATED"
+            ]
+          }
+        },
+        "required": [
+          "geographic_availability"
+        ]
+      },
+      "then": {
+        "properties": {
+          "forecast_lat_lon": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  ]
+}

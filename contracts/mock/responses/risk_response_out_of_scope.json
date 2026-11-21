@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "request_id": "mock-request-mock-encounter-01",
+  "encounter_id": "mock-encounter-01",
+  "pair_id": "pair:v1:5edcd44d2d37a0ada2de37283483f76bbddc8bb9c5bb22b8992b7f7297cf5c18",
+  "replay_session_id": "mock-session-01",
+  "vessel_ids": [
+    "physical_mmsi:000000001",
+    "physical_mmsi:000000002"
+  ],
+  "vessel_roles": [
+    "A",
+    "B"
+  ],
+  "anchor_timestamp": "2026-01-01T12:00:00Z",
+  "evaluated_at": null,
+  "current_dcpa_nm": null,
+  "current_tcpa_minutes": null,
+  "current_tcpa_clipped_minutes": null,
+  "current_cpa_status": "UNAVAILABLE",
+  "predicted_min_distance_nm": null,
+  "predicted_closest_time_minutes": null,
+  "predicted_closest_timestamp": null,
+  "predicted_cpa_status": "UNAVAILABLE",
+  "predicted_cpa_score": null,
+  "current_cpa_score": null,
+  "rule_score": null,
+  "risk_score": null,
+  "threshold": null,
+  "threshold_version": null,
+  "calibration_status": "NOT_CALIBRATED",
+  "threshold_model": null,
+  "alert_triggered": null,
+  "decision_status": "OUT_OF_SCOPE",
+  "decision_reason": "mock: không thể đánh giá",
+  "forecast": null,
+  "forecast_status": "NOT_RUN",
+  "projection_status": "NOT_RUN",
+  "model_status": {
+    "schema_version": "1.0.0",
+    "requested_model": "M5A",
+    "active_model": null,
+    "model_version": null,
+    "artifact_version": null,
+    "inference_status": "NOT_RUN",
+    "data_status": "OUT_OF_SCOPE",
+    "fallback_used": false,
+    "fallback_reason": null,
+    "calibration_status": "NOT_CALIBRATED"
+  }
+}

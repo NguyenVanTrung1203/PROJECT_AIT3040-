@@ -1,0 +1,138 @@
+{
+  "dataset_version": "final_dataset_1.0",
+  "dataset_checksum": {
+    "status": "PASS",
+    "files_verified": 93,
+    "manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441"
+  },
+  "splits": {
+    "train": {
+      "encounters_checked": 1440,
+      "encounters_complete": 1440,
+      "encounters_missing_or_bad_mapping": 0,
+      "vessels_checked": 2880,
+      "history_rows": 28800,
+      "rule_shape_per_encounter": [
+        2,
+        10,
+        2
+      ],
+      "history_alignment": "PASS",
+      "future_exclusion": "PASS",
+      "velocity_max_abs_error_kn": 9.528130107128163e-07,
+      "anchor_max_abs_error_nm": 0.0,
+      "relative_position_max_abs_error_nm": 1.1913764641491298e-07,
+      "geographic_roundtrip_max_abs_error_degrees": 0.0,
+      "common_en_roundtrip_max_abs_error_nm": 4.440892098500626e-16,
+      "distance_max_abs_error_nm": 1.7763568394002505e-15,
+      "target_reconstruction_max_abs_error_nm": 2.3760727341226584e-07,
+      "source_timestamp_observations": {
+        "yang_lei": {
+          "history_rows": 28800,
+          "asof": "not_applicable_simulated_nominal_time"
+        }
+      }
+    },
+    "validation": {
+      "encounters_checked": 835,
+      "encounters_complete": 835,
+      "encounters_missing_or_bad_mapping": 0,
+      "vessels_checked": 1670,
+      "history_rows": 16700,
+      "rule_shape_per_encounter": [
+        2,
+        10,
+        2
+      ],
+      "history_alignment": "PASS",
+      "future_exclusion": "PASS",
+      "velocity_max_abs_error_kn": 9.522002244466421e-07,
+      "anchor_max_abs_error_nm": 0.0,
+      "relative_position_max_abs_error_nm": 1.1898215745986818e-07,
+      "geographic_roundtrip_max_abs_error_degrees": 0.0,
+      "common_en_roundtrip_max_abs_error_nm": 4.440892098500626e-16,
+      "distance_max_abs_error_nm": 8.881784197001252e-16,
+      "target_reconstruction_max_abs_error_nm": 2.3515755742664624e-07,
+      "source_timestamp_observations": {
+        "augmented_real_ais_kattegat_v3": {
+          "history_rows": 6000,
+          "source_timestamp_field": "simulated_source_timestamp_utc",
+          "age_min_seconds": 0.0,
+          "age_max_seconds": 52.0,
+          "invalid_age_count": 0,
+          "consecutive_reuses": 0,
+          "original_provenance_age_min_seconds": -900.0,
+          "original_provenance_age_max_seconds": 917.0,
+          "original_provenance_outside_0_60": 330
+        },
+        "real_ais_kattegat_v3": {
+          "history_rows": 5900,
+          "source_timestamp_field": "original_source_timestamp_utc",
+          "age_min_seconds": 0.0,
+          "age_max_seconds": 60.0,
+          "invalid_age_count": 0,
+          "consecutive_reuses": 1
+        },
+        "yanglei": {
+          "history_rows": 4800,
+          "asof": "not_applicable_simulated_nominal_time"
+        }
+      }
+    }
+  },
+  "coordinate_method": "E=(lon-lon0)*60*cos(lat0); N=(lat-lat0)*60; lat0 in radians within cosine",
+  "coordinate_origin": "vessel A first history position t0-9",
+  "coordinate_source": "DATASET_FINAL/scripts/verify_dataset_final.py and schemas/coordinate_conventions.md",
+  "roundtrip_tolerance_degrees": 1e-10,
+  "velocity_tolerance_kn": 1e-05,
+  "asof_convention": "latest source <= grid and 0 <= age <= 60 seconds inclusive",
+  "rule_input_source": "locked Train/Validation Parquet history SOG and COG",
+  "rule_input_shape": [
+    2,
+    10,
+    2
+  ],
+  "status_scope": "verification of contracts and offline feasibility only; no production pipeline",
+  "team_review_required": [
+    "replay clock and freshness",
+    "pair ID and A/B order",
+    "coordinate origin and geographic availability",
+    "rule input adapter",
+    "forecast status and fallback semantics"
+  ],
+  "unverified_items": [
+    "Replay Track Management integration and pair identity agreement with Toan",
+    "Geographic inverse accuracy beyond the checked local approximation/domain",
+    "Production adapter, forecast, fallback and alert implementation"
+  ],
+  "blockers": [],
+  "ready_for_step_03": true,
+  "feature_contract_status": "verified_content_and_offline_history_not_production",
+  "feature_order": [
+    "own_relative_east_nm",
+    "own_relative_north_nm",
+    "east_velocity_kn",
+    "north_velocity_kn"
+  ],
+  "feature_units": [
+    "nautical_mile",
+    "nautical_mile",
+    "knot",
+    "knot"
+  ],
+  "temporal_contract_status": "verified_offline_nominal_alignment_and_AIS_history_source_age",
+  "asof_source_provenance": "AIS_REAL_VALIDATION/scripts/build_validation.py and AIS_REAL_VALIDATION_V2/scripts/extract_validate.py",
+  "duplicate_message_policy": "exclude_all_records_for_MMSI_and_timestamp; stable_first_record",
+  "vessel_mapping_status": "verified_offline_against_official_indices; replay_pair_proposal_pending_review",
+  "rule_history_alignment_status": "PASS_train_validation",
+  "forecast_contract_status": "specified_and_contract_content_tested_not_implemented",
+  "invalid_data_handling_status": "specified_and_contract_content_tested_not_implemented",
+  "unit_test_results": {
+    "total": 60,
+    "passed": 60,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "known_prior_selection_issue": "V1-comparator decision remains open before final model selection; not resolved here"
+}

@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+  title: AIT3040 Risk API contract
+  version: 1.0.0
+  description: Đặc tả giao diện đang chờ review; các endpoint chưa được triển khai.
+paths:
+  /api/v1/model/status:
+    get:
+      operationId: getModelStatus
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                $ref: ./model_status.schema.json#/$defs/global_status
+        '400': &id001
+          description: Yêu cầu không thể xử lý.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+        '422': &id002
+          description: Schema hoặc ngữ nghĩa không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+        '500': &id003
+          description: Lỗi hệ thống ngoài dự kiến.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+        '503': &id004
+          description: Dịch vụ không khả dụng.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+  /api/v1/risk/evaluate:
+    post:
+      operationId: evaluateEncounter
+      description: Đánh giá có tính lặp lại an toàn theo session. Khi bình phương
+        vận tốc tương đối không vượt 1e-9 kn², TCPA nội bộ bằng 0 để tính DCPA và
+        điểm; hai trường TCPA trên API là null. Client không tự tính lại CC-DRI. Chưa
+        hiệu chỉnh thì quyết định cảnh báo là null.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./risk_request.schema.json
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                $ref: ./risk_response.schema.json
+        '400': *id001
+        '422': *id002
+        '500': *id003
+        '503': *id004
+        '409':
+          description: Xung đột định danh yêu cầu hoặc encounter.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+  /api/v1/risk/encounters:
+    get:
+      operationId: listRiskEncounters
+      description: Sắp xếp ổn định theo anchor_timestamp giảm dần, sau đó encounter_id
+        tăng dần.
+      parameters:
+      - name: replay_session_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: pair_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 20
+          maximum: 100
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ./risk_response.schema.json
+                  total:
+                    type: integer
+                    minimum: 0
+                  limit:
+                    type: integer
+                    minimum: 1
+                    maximum: 100
+                  offset:
+                    type: integer
+                    minimum: 0
+                required:
+                - items
+                - total
+                - limit
+                - offset
+                additionalProperties: false
+        '400': *id001
+        '422': *id002
+        '500': *id003
+        '503': *id004
+  /api/v1/risk/encounters/{id}:
+    get:
+      operationId: getRiskEncounter
+      parameters:
+      - &id005
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                $ref: ./risk_response.schema.json
+        '400': *id001
+        '422': *id002
+        '500': *id003
+        '503': *id004
+        '404':
+          description: Không tìm thấy tài nguyên.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json
+  /api/v1/alerts:
+    get:
+      operationId: listAlerts
+      description: Sắp xếp ổn định theo updated_at giảm dần, sau đó alert_id tăng
+        dần.
+      parameters:
+      - name: replay_session_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: pair_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: alert_status
+        in: query
+        required: false
+        schema:
+          enum:
+          - ACTIVE
+          - DATA_UNAVAILABLE
+          - RESOLVED
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 20
+          maximum: 100
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: ./alert.schema.json
+                  total:
+                    type: integer
+                    minimum: 0
+                  limit:
+                    type: integer
+                    minimum: 1
+                    maximum: 100
+                  offset:
+                    type: integer
+                    minimum: 0
+                required:
+                - items
+                - total
+                - limit
+                - offset
+                additionalProperties: false
+        '400': *id001
+        '422': *id002
+        '500': *id003
+        '503': *id004
+  /api/v1/alerts/{id}:
+    get:
+      operationId: getAlert
+      parameters:
+      - *id005
+      responses:
+        '200':
+          description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
+          content:
+            application/json:
+              schema:
+                $ref: ./alert.schema.json
+        '400': *id001
+        '422': *id002
+        '500': *id003
+        '503': *id004
+        '404':
+          description: Không tìm thấy tài nguyên.
+          content:
+            application/json:
+              schema:
+                $ref: ./error.schema.json

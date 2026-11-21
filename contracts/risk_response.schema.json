@@ -1,0 +1,560 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "risk_response.schema.json",
+  "title": "risk_response",
+  "description": "Version 1.0.0; design agreed, schema implementation pending team review.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "encounter_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "pair_id": {
+      "$ref": "common.schema.json#/$defs/pair_id"
+    },
+    "replay_session_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "vessel_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "vessel_roles": {
+      "const": [
+        "A",
+        "B"
+      ]
+    },
+    "anchor_timestamp": {
+      "$ref": "common.schema.json#/$defs/utc_timestamp"
+    },
+    "evaluated_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/utc_timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_dcpa_nm": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_tcpa_minutes": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Raw TCPA in minutes; null only for near-zero or unavailable. Near-zero uses internal V4 TCPA zero to calculate DCPA and score."
+    },
+    "current_tcpa_clipped_minutes": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 15
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "TCPA clipped to [0,15] for score; displayed null for near-zero while the internal V4 value remains zero."
+    },
+    "current_cpa_status": {
+      "enum": [
+        "AVAILABLE",
+        "UNDEFINED_LOW_RELATIVE_VELOCITY",
+        "UNAVAILABLE"
+      ],
+      "description": "Near-zero denotes undefined displayed TCPA, not invalid data or a technical failure."
+    },
+    "predicted_min_distance_nm": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "predicted_closest_time_minutes": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 15
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "predicted_closest_timestamp": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/utc_timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "predicted_cpa_status": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE"
+      ]
+    },
+    "predicted_cpa_score": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "current_cpa_score": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rule_score": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "risk_score": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "threshold": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/score"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "threshold_version": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "calibration_status": {
+      "$ref": "common.schema.json#/$defs/calibration_status"
+    },
+    "threshold_model": {
+      "$ref": "common.schema.json#/$defs/nullable_model"
+    },
+    "alert_triggered": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "decision_status": {
+      "enum": [
+        "DECIDED",
+        "NOT_CALIBRATED",
+        "INSUFFICIENT_DATA",
+        "OUT_OF_SCOPE",
+        "UNAVAILABLE"
+      ]
+    },
+    "decision_reason": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "forecast": {
+      "anyOf": [
+        {
+          "$ref": "forecast.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "forecast_status": {
+      "$ref": "common.schema.json#/$defs/forecast_status"
+    },
+    "projection_status": {
+      "$ref": "common.schema.json#/$defs/projection_status"
+    },
+    "model_status": {
+      "$ref": "model_status.schema.json"
+    }
+  },
+  "required": [
+    "schema_version",
+    "request_id",
+    "encounter_id",
+    "pair_id",
+    "replay_session_id",
+    "vessel_ids",
+    "vessel_roles",
+    "anchor_timestamp",
+    "evaluated_at",
+    "current_dcpa_nm",
+    "current_tcpa_minutes",
+    "current_tcpa_clipped_minutes",
+    "current_cpa_status",
+    "predicted_min_distance_nm",
+    "predicted_closest_time_minutes",
+    "predicted_closest_timestamp",
+    "predicted_cpa_status",
+    "predicted_cpa_score",
+    "current_cpa_score",
+    "rule_score",
+    "risk_score",
+    "threshold",
+    "threshold_version",
+    "calibration_status",
+    "threshold_model",
+    "alert_triggered",
+    "decision_status",
+    "decision_reason",
+    "forecast",
+    "forecast_status",
+    "projection_status",
+    "model_status"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "calibration_status": {
+            "const": "NOT_CALIBRATED"
+          }
+        },
+        "required": [
+          "calibration_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "threshold": {
+            "type": "null"
+          },
+          "threshold_version": {
+            "type": "null"
+          },
+          "threshold_model": {
+            "type": "null"
+          },
+          "alert_triggered": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision_status": {
+            "const": "DECIDED"
+          }
+        },
+        "required": [
+          "decision_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "alert_triggered": {
+            "type": "boolean"
+          },
+          "risk_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "threshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "calibration_status": {
+            "const": "CALIBRATED"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision_status": {
+            "not": {
+              "const": "DECIDED"
+            }
+          }
+        },
+        "required": [
+          "decision_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "alert_triggered": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "forecast_status": {
+            "const": "AVAILABLE"
+          }
+        },
+        "required": [
+          "forecast_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "forecast": {
+            "type": "object"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "forecast": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "current_cpa_status": {
+            "const": "UNDEFINED_LOW_RELATIVE_VELOCITY"
+          }
+        },
+        "required": [
+          "current_cpa_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "current_tcpa_minutes": {
+            "type": "null"
+          },
+          "current_tcpa_clipped_minutes": {
+            "type": "null"
+          },
+          "current_dcpa_nm": {
+            "type": "number",
+            "minimum": 0
+          },
+          "current_cpa_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "model_status": {
+            "properties": {
+              "data_status": {
+                "const": "VALID"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "current_cpa_status": {
+            "const": "UNAVAILABLE"
+          }
+        },
+        "required": [
+          "current_cpa_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "current_dcpa_nm": {
+            "type": "null"
+          },
+          "current_tcpa_minutes": {
+            "type": "null"
+          },
+          "current_tcpa_clipped_minutes": {
+            "type": "null"
+          },
+          "current_cpa_score": {
+            "type": "null"
+          },
+          "risk_score": {
+            "type": "null"
+          },
+          "alert_triggered": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "current_cpa_status": {
+            "const": "AVAILABLE"
+          }
+        },
+        "required": [
+          "current_cpa_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "current_tcpa_minutes": {
+            "type": "number"
+          },
+          "current_tcpa_clipped_minutes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 15
+          },
+          "current_dcpa_nm": {
+            "type": "number",
+            "minimum": 0
+          },
+          "current_cpa_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "model_status": {
+            "properties": {
+              "data_status": {
+                "enum": [
+                  "INVALID_DATA",
+                  "INSUFFICIENT_DATA",
+                  "STALE",
+                  "OUT_OF_SCOPE"
+                ]
+              }
+            },
+            "required": [
+              "data_status"
+            ]
+          }
+        },
+        "required": [
+          "model_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "risk_score": {
+            "type": "null"
+          },
+          "alert_triggered": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "predicted_cpa_status": {
+            "const": "UNAVAILABLE"
+          }
+        },
+        "required": [
+          "predicted_cpa_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "predicted_min_distance_nm": {
+            "type": "null"
+          },
+          "predicted_closest_time_minutes": {
+            "type": "null"
+          },
+          "predicted_closest_timestamp": {
+            "type": "null"
+          },
+          "predicted_cpa_score": {
+            "type": "null"
+          },
+          "risk_score": {
+            "type": "null"
+          },
+          "alert_triggered": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

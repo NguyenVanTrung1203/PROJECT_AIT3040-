@@ -1,0 +1,59 @@
+{
+  "dataset_version": "final_dataset_1.0",
+  "dataset_lock_status": "READY_AND_LOCKED",
+  "reference_configuration_verification": {
+    "status": "PASS",
+    "locked_source_hashes": {
+      "v3/configs/locked_kinematic_training_protocol.json": true,
+      "v3/scripts/train_candidate.py": true,
+      "v3/scripts/projection.py": true,
+      "v3/scripts/kinematic_qc.py": true,
+      "v3/scripts/evaluate_candidates.py": true,
+      "v3/inference/risk_pipeline.py": true,
+      "v4_package/inference/residual_gru_inference.py": true,
+      "v4_package/inference/projection.py": true,
+      "v4_package/inference/kinematic_qc.py": true,
+      "v4_package/inference/risk_pipeline.py": true,
+      "v4_package/configs/model_config.json": true,
+      "v4_selection_protocol": true,
+      "v3_parent_manifest": true,
+      "dataset_lock": true
+    },
+    "scope": "locked files and verified configuration; refer to provenance for individual formulas"
+  },
+  "model_architecture_configuration": {
+    "status": "PASS",
+    "parameter_count": 15390,
+    "input_size": 4,
+    "hidden_size": 48,
+    "output_size": 30
+  },
+  "training_configuration_status": "PASS",
+  "scaling_configuration_status": "PASS",
+  "projection_configuration_status": "PASS",
+  "risk_configuration_status": "PASS",
+  "calibration_status": "not_calibrated",
+  "configuration_differences_from_reference": [
+    "max epochs 45, not 25; 25 was minimum and historical run length",
+    "V4 seed ranking selected over earlier V3 candidate ranking",
+    "device auto/cpu/cuda is new; historical V3 training used CPU",
+    "scalers must be fit anew on Train; historical artifacts are not reused",
+    "historical thresholds and selected seed/epoch are not official for this run"
+  ],
+  "unverified_parameters": [
+    "No fitted scaler statistics, selected checkpoint, selected seed or calibrated thresholds exist for the new run",
+    "A comparable fresh V1 baseline or explicit protocol decision is required before the V4 V1-relative gate can be applied",
+    "Rule history SOG/COG requires a future adapter; current EncounterDataset does not expose it",
+    "CUDA determinism and reproducibility have not been tested for future training"
+  ],
+  "unit_test_results": {
+    "total": 38,
+    "passed": 38,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "blockers_for_step_02": [],
+  "readiness_for_step_02": true,
+  "limitations": "No model, training, calibration, risk pipeline or Test benchmark was executed. Final model selection and deployment require the unresolved prerequisites above."
+}

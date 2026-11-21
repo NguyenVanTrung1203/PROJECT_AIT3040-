@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0-draft",
+  "status": "proposed_pending_team_review",
+  "time_zone": "UTC",
+  "history_offsets_minutes": [-9,-8,-7,-6,-5,-4,-3,-2,-1,0],
+  "forecast_offsets_minutes": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+  "timestep_minutes": 1,
+  "anchor": "common_evaluation_time_for_A_and_B",
+  "replay_clock": "simulation_time_not_system_wall_clock",
+  "nominal_grid_timestamp": "anchor_plus_offset_not_the_original_message_timestamp",
+  "forecast_timestamp": "anchor_plus_positive_offset",
+  "asof": {"direction": "latest_source_not_after_grid", "minimum_age_seconds": 0, "maximum_age_seconds": 60, "both_boundaries_inclusive": true, "allow_reuse_at_multiple_grid_points": true, "source": "AIS_REAL_VALIDATION/scripts/build_validation.py and AIS_REAL_VALIDATION_V2/scripts/extract_validate.py", "conflicting_duplicate_key": "exclude_all_records_for_MMSI_and_timestamp", "identical_duplicate_key": "stable_first_record"},
+  "source_timestamp": {"real_AIS": "original_source_timestamp_utc", "synthetic_AIS": "simulated_source_timestamp_utc_for_shifted_grid; original_source_timestamp_utc_is_provenance_and_may_be_after_grid", "Yang_Lei": "simulated_nominal_time_not_real_AIS; source_timestamp_may_be_null"},
+  "invalid_or_missing_history": "INSUFFICIENT_DATA_no_interpolation_or_future_message",
+  "unknown_timezone_or_wrong_order": "contract_validation_error",
+  "proposal_not_production_replay_implementation": true
+}

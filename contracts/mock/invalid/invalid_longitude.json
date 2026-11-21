@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0.0",
+  "vessel_id": "physical_mmsi:000000001",
+  "mmsi": "000000001",
+  "source_type": "REAL_AIS",
+  "is_simulated": false,
+  "anchor_timestamp": "2026-01-01T12:00:00Z",
+  "current_state": {
+    "nominal_timestamp": "2026-01-01T12:00:00Z",
+    "source_timestamp": "2026-01-01T12:00:00Z",
+    "original_source_timestamp": "2026-01-01T12:00:00Z",
+    "latitude": 57.0,
+    "longitude": 11.02754117688165,
+    "sog_kn": 6.0,
+    "cog_deg": 90.0,
+    "source_age_seconds": 0
+  },
+  "history": [
+    {
+      "nominal_timestamp": "2026-01-01T11:51:00Z",
+      "source_timestamp": "2026-01-01T11:51:00Z",
+      "original_source_timestamp": "2026-01-01T11:51:00Z",
+      "latitude": 57.0,
+      "longitude": 181,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:52:00Z",
+      "source_timestamp": "2026-01-01T11:52:00Z",
+      "original_source_timestamp": "2026-01-01T11:52:00Z",
+      "latitude": 57.0,
+      "longitude": 11.003060130764627,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:53:00Z",
+      "source_timestamp": "2026-01-01T11:53:00Z",
+      "original_source_timestamp": "2026-01-01T11:53:00Z",
+      "latitude": 57.0,
+      "longitude": 11.006120261529256,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:54:00Z",
+      "source_timestamp": "2026-01-01T11:54:00Z",
+      "original_source_timestamp": "2026-01-01T11:54:00Z",
+      "latitude": 57.0,
+      "longitude": 11.009180392293883,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:55:00Z",
+      "source_timestamp": "2026-01-01T11:55:00Z",
+      "original_source_timestamp": "2026-01-01T11:55:00Z",
+      "latitude": 57.0,
+      "longitude": 11.01224052305851,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:56:00Z",
+      "source_timestamp": "2026-01-01T11:56:00Z",
+      "original_source_timestamp": "2026-01-01T11:56:00Z",
+      "latitude": 57.0,
+      "longitude": 11.01530065382314,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:57:00Z",
+      "source_timestamp": "2026-01-01T11:57:00Z",
+      "original_source_timestamp": "2026-01-01T11:57:00Z",
+      "latitude": 57.0,
+      "longitude": 11.018360784587767,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:58:00Z",
+      "source_timestamp": "2026-01-01T11:58:00Z",
+      "original_source_timestamp": "2026-01-01T11:58:00Z",
+      "latitude": 57.0,
+      "longitude": 11.021420915352394,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T11:59:00Z",
+      "source_timestamp": "2026-01-01T11:59:00Z",
+      "original_source_timestamp": "2026-01-01T11:59:00Z",
+      "latitude": 57.0,
+      "longitude": 11.024481046117023,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    },
+    {
+      "nominal_timestamp": "2026-01-01T12:00:00Z",
+      "source_timestamp": "2026-01-01T12:00:00Z",
+      "original_source_timestamp": "2026-01-01T12:00:00Z",
+      "latitude": 57.0,
+      "longitude": 11.02754117688165,
+      "sog_kn": 6.0,
+      "cog_deg": 90.0,
+      "source_age_seconds": 0
+    }
+  ],
+  "data_status": "VALID"
+}
