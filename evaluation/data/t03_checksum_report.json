@@ -1,0 +1,16 @@
+{
+  "audit": "T03_DATASET_FINAL_v1.0",
+  "checked_at_local": "2026-11-22",
+  "dataset_root": "DATASET_FINAL/",
+  "dataset_version": "final_dataset_1.0",
+  "lock_status": "READY_AND_LOCKED",
+  "checksum_status": "PASS",
+  "checksum_manifest": "manifests/checksums_sha256.txt",
+  "files_verified": 93,
+  "files_passed": 93,
+  "files_failed": 0,
+  "manifest_sha256_expected": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441",
+  "manifest_sha256_actual": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441",
+  "verification_method": "src.data.tensor_verification.verify checksum_dataset()",
+  "source_files_modified": false
+}

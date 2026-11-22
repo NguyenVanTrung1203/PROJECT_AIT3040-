@@ -1,0 +1,48 @@
+{
+  "task": "T03",
+  "date": "2026-11-22",
+  "repository": ".",
+  "branch": "Trinh_Toan",
+  "git_status_before_report_update": "ahead 4 vs origin/Trinh_Toan; only prior T03 evaluation deliverables untracked",
+  "dataset_ready": "YES",
+  "lock_status": "READY_AND_LOCKED",
+  "checksum_status": "PASS",
+  "checksums": {"verified": 93, "passed": 93, "failed": 0},
+  "count_status": "PASS",
+  "counts": {
+    "train": {"encounters": 1440, "yang_lei": 1440, "rows": 72000},
+    "validation": {"encounters": 835, "yang_lei": 240, "real_ais": 295, "synthetic_ais": 300, "rows": 41750, "metadata_source_alias_for_synthetic": "augmented_real_ais_kattegat_v3"},
+    "test": {"encounters": 1320, "yang_lei": 720, "real_ais": 300, "synthetic_ais": 300, "rows": 66000},
+    "total_encounters": 3595,
+    "total_rows": 179750
+  },
+  "index_status": "PASS",
+  "schema_tensor_timestamp": "PASS",
+  "parent_mapping": "PASS_WITH_DOCUMENTED_WITHIN_SPLIT_DEPENDENCIES",
+  "label_counts": {"0": 1744, "1": 1851},
+  "replay_source_ready": "YES",
+  "replay_source": {
+    "root": "external AIS source (local path omitted)",
+    "raw_files": 30,
+    "raw_format": "Zstandard-compressed CSV (extension .tgz)",
+    "cleaned_records": 237960745,
+    "cleaned_validation_days_passed": 30,
+    "houston_observed_points": 19659725,
+    "houston_unique_mmsi": 2843,
+    "houston_trajectory_segments": 217203,
+    "utc_range": ["2024-11-01T00:00:00Z", "2024-11-30T23:59:59Z"]
+  },
+  "missing_files": [],
+  "files_changed": [
+    "evaluation/data/T03_DATASET_AUDIT.md",
+    "evaluation/data/T03_REPLAY_SOURCE_INVENTORY.md",
+    "evaluation/data/t03_checksum_report.json",
+    "evaluation/data/t03_verification_summary.json",
+    "evaluation/data/t03_dataset_verification.json"
+  ],
+  "tests": "Dataset integrity verifier PASS; unit/integration tests not run.",
+  "t03_status": "PASS",
+  "ready_for_t04": "YES",
+  "source_data_modified": false,
+  "t08_t09_replay_engine_built": false
+}

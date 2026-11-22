@@ -8,7 +8,7 @@ Bộ dữ liệu `final_dataset_1.0` được lưu cục bộ tại `DATASET_FIN
 
 - `configs/`, `contracts/`: cấu hình, hợp đồng dữ liệu và API.
 - `src/`: mã dữ liệu và các thư mục dành cho mô hình, huấn luyện, đánh giá và risk.
-- `backend/`, `frontend/`: cấu trúc nền cho ứng dụng.
+- `backend/`, `frontend/`: Mock Track API và React/Leaflet map cho S1_T04; chưa có replay engine, inference hoặc Risk API.
 - `artifacts/`, `scripts/`, `tests/`, `results/`: artifact, script, kiểm thử và kết quả kiểm chứng.
 - Trung phụ trách mô hình, risk, alert và tích hợp; Toàn phụ trách dữ liệu, replay và bản đồ. Các giao diện chung được phối hợp giữa hai thành viên.
 
@@ -54,7 +54,7 @@ Kiểm tra bằng `scripts/smoke_test_dataset.py` và `scripts/verify_tensor_con
 - `configs/model_config.yaml`, `projection_config.yaml`, `risk_config.yaml`: cấu hình mô hình, ràng buộc động học và risk.
 - `contracts/model_design.md` giải thích phương pháp; `model_config_provenance.md` lưu nguồn gốc cấu hình.
 - Các contract feature, temporal, coordinate, Rule input và forecast mô tả đơn vị, thời gian và tọa độ. `scripts/verify_feature_contract.py` kiểm chứng khả năng đọc dữ liệu Train/Validation.
-- Các file `*.schema.json`, `api_contract.yaml` và `integration_contract.md` mô tả giao diện dự kiến. Các schema cụ thể đang chờ review; backend chưa hoạt động.
+- Các file `*.schema.json`, `api_contract.yaml` và `integration_contract.md` mô tả giao diện dự kiến. Backend hiện có các endpoint mock riêng; route/envelope Track API đang chờ nhóm review để bổ sung vào API contract dùng chung. Xem `evaluation/s1_t04/T04_MOCK_DATA_API_AND_MAP.md`.
 - `contracts/mock/` chứa ví dụ giả lập cho Risk/Alert và Replay/Map; xem README trong thư mục đó để sử dụng.
 
 Chạy kiểm thử từ repository root:
