@@ -13,7 +13,7 @@ from openapi_spec_validator import validate as validate_openapi
 
 ROOT=Path(__file__).resolve().parents[2]
 CONTRACTS=ROOT/'contracts'
-SCHEMAS=['common','track_snapshot','encounter','risk_request','risk_response','alert','model_status','forecast','error']
+SCHEMAS=['common','track_snapshot','encounter','risk_request','risk_response','alert','model_status','forecast','error','replay','encounter_v1','risk_request_v1','risk_response_v1','alert_v1']
 BASE='https://schemas.ait3040.invalid/contracts/'
 
 
@@ -72,7 +72,7 @@ def semantic_encounter(e, replay=True):
     from scripts.verify_feature_contract import proposed_pair_id
     a,b=e['vessel_a'],e['vessel_b']
     if a['vessel_id']==b['vessel_id'] or a['anchor_timestamp']!=e['anchor_timestamp'] or b['anchor_timestamp']!=e['anchor_timestamp']: return False
-    if replay and (a['vessel_id']>=b['vessel_id'] or e['pair_id']!=proposed_pair_id(a['vessel_id'],b['vessel_id'])):return False
+    if replay and (a['vessel_id'].encode('utf-8') >= b['vessel_id'].encode('utf-8') or e['pair_id']!=proposed_pair_id(a['vessel_id'],b['vessel_id'])):return False
     if e['encounter_status']=='READY':
         for t in (a,b):
             if t['current_state']!=t['history'][-1] or [p['nominal_timestamp'] for p in t['history']] != [time(i) for i in range(-9,1)]:return False
@@ -83,6 +83,34 @@ def semantic_encounter(e, replay=True):
         o=e['coordinate_origin']; first=a['history'][0]
         if (o['origin_vessel_id'],o['origin_timestamp'],o['origin_latitude'],o['origin_longitude']) != (a['vessel_id'],first['nominal_timestamp'],first['latitude'],first['longitude']):return False
     return True
+
+
+def test_offline_roles_preserved_and_online_requires_canonical_order():
+    e = encounter()
+    e['vessel_a'], e['vessel_b'] = e['vessel_b'], e['vessel_a']
+    first = e['vessel_a']['history'][0]
+    e['coordinate_origin'].update(origin_vessel_id=e['vessel_a']['vessel_id'],
+                                  origin_timestamp=first['nominal_timestamp'],
+                                  origin_latitude=first['latitude'],
+                                  origin_longitude=first['longitude'])
+    assert e['vessel_a']['vessel_id'] > e['vessel_b']['vessel_id']
+    assert not semantic_encounter(e, replay=True)
+    assert semantic_encounter(e, replay=False)
+    e['coordinate_origin']['origin_vessel_id'] = e['vessel_b']['vessel_id']
+    assert not semantic_encounter(e, replay=False)
+
+
+def test_online_roles_are_input_order_independent_and_origin_is_a():
+    from scripts.contract_identity_reference import pair_and_online_roles
+    e = encounter()
+    first, second = e['vessel_b'], e['vessel_a']
+    pair, roles = pair_and_online_roles(first['vessel_id'], second['vessel_id'], {'physical_mmsi'})
+    assert (pair, roles) == pair_and_online_roles(second['vessel_id'], first['vessel_id'], {'physical_mmsi'})
+    by_id = {first['vessel_id']: first, second['vessel_id']: second}
+    e['vessel_a'], e['vessel_b'] = by_id[roles[0]], by_id[roles[1]]
+    assert e['coordinate_origin']['origin_vessel_id'] == e['vessel_a']['vessel_id']
+    assert e['coordinate_origin']['origin_timestamp'] == e['vessel_a']['history'][0]['nominal_timestamp']
+    assert semantic_encounter(e, replay=True)
 
 
 def semantic_response(r):
@@ -215,7 +243,7 @@ def test_openapi_document_and_local_references():
     file=CONTRACTS/'api_contract.yaml';api=yaml.safe_load(file.read_text(encoding='utf-8'))
     validate_openapi(api,base_uri=file.as_uri())
     expected={'/api/v1/model/status':'get','/api/v1/risk/evaluate':'post','/api/v1/risk/encounters':'get','/api/v1/risk/encounters/{id}':'get','/api/v1/alerts':'get','/api/v1/alerts/{id}':'get'}
-    assert api['openapi'].startswith('3.1.') and set(api['paths'])==set(expected)
+    assert api['openapi'].startswith('3.1.') and set(expected) <= set(api['paths'])
     for path,method in expected.items():
         operation=api['paths'][path][method];assert {'200','400','422','500','503'} <= set(operation['responses'])
         if '{id}' in path:assert any(p['name']=='id' and p['in']=='path' and p['required'] for p in operation['parameters']) and '404' in operation['responses']

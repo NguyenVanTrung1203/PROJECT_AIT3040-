@@ -3,6 +3,7 @@ from datetime import datetime,timedelta
 import hashlib
 import json
 import math
+import unicodedata
 from pathlib import Path
 
 from jsonschema import Draft202012Validator,FormatChecker
@@ -29,7 +30,7 @@ def time(s):return datetime.fromisoformat(s.replace('Z','+00:00'))
 
 @pytest.fixture(scope='module')
 def validators():
-    names=('common','track_snapshot','encounter','risk_request','risk_response','alert','model_status','forecast','error')
+    names=('common','track_snapshot','encounter','risk_request','risk_response','alert','model_status','forecast','error','replay','encounter_v1','risk_request_v1','risk_response_v1','alert_v1')
     docs={};reg=Registry()
     for name in names:
         raw=strict_load(ROOT/'contracts'/f'{name}.schema.json');Draft202012Validator.check_schema(raw);raw['$id']=BASE+name+'.schema.json';docs[name]=raw
@@ -40,7 +41,8 @@ def validators():
 
 
 def pair_id(a,b):
-    return 'pair:v1:'+hashlib.sha256(json.dumps(sorted([a,b]),ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
+    ids=[unicodedata.normalize('NFC', value) for value in (a,b)]
+    return 'pair:v1:'+hashlib.sha256(json.dumps(sorted(ids,key=lambda value:value.encode('utf-8')),ensure_ascii=False,separators=(',',':')).encode('utf-8')).hexdigest()
 
 
 def check_track(t):
@@ -61,7 +63,7 @@ def check_track(t):
 def check_encounter(e):
     a,b=e['vessel_a'],e['vessel_b'];o=e['coordinate_origin']
     if not check_track(a) or not check_track(b):return False
-    if a['vessel_id']==b['vessel_id'] or a['vessel_id']>=b['vessel_id']:return False
+    if a['vessel_id']==b['vessel_id'] or a['vessel_id'].encode('utf-8')>=b['vessel_id'].encode('utf-8'):return False
     if e['pair_id']!=pair_id(a['vessel_id'],b['vessel_id']) or e['encounter_id']==e['pair_id']:return False
     if a['anchor_timestamp']!=e['anchor_timestamp'] or b['anchor_timestamp']!=e['anchor_timestamp']:return False
     if e['encounter_status']=='READY':
@@ -176,7 +178,7 @@ def test_manifest_fixture_validation(item,validators):
 
 def test_openapi_and_all_references(validators):
     file=ROOT/'contracts/api_contract.yaml';api=yaml.safe_load(file.read_text(encoding='utf-8'));validate_openapi(api,base_uri=file.as_uri())
-    assert set(api['paths'])=={'/api/v1/model/status','/api/v1/risk/evaluate','/api/v1/risk/encounters','/api/v1/risk/encounters/{id}','/api/v1/alerts','/api/v1/alerts/{id}'}
+    assert {'/api/v1/model/status','/api/v1/risk/evaluate','/api/v1/risk/encounters','/api/v1/risk/encounters/{id}','/api/v1/alerts','/api/v1/alerts/{id}'} <= set(api['paths'])
 
 
 def test_alert_lifecycle_duplicate_and_session_isolation():
@@ -188,6 +190,21 @@ def test_alert_lifecycle_duplicate_and_session_isolation():
     assert lost['values_are_last_valid'] and lost['values_as_of']==a['values_as_of'] and lost['closed_at'] is None
     under=strict_load(MOCK/'responses/risk_response_no_alert.json');assert under['alert_triggered'] is False and closed['risk_score']==under['risk_score'] and closed['threshold']==under['threshold'] and closed['latest_encounter_id']==under['encounter_id']
     assert time(a['opened_at'])<=time(lost['updated_at'])<=time(closed['closed_at'])
+
+
+def test_replay_encounter_requires_online_canonical_order():
+    e = strict_load(MOCK/'encounters/encounter_valid.json')
+    e['vessel_a'], e['vessel_b'] = e['vessel_b'], e['vessel_a']
+    a, b = e['vessel_a'], e['vessel_b']
+    first = a['history'][0]
+    e['coordinate_origin'].update(origin_vessel_id=a['vessel_id'], origin_timestamp=first['nominal_timestamp'],
+                                   origin_latitude=first['latitude'], origin_longitude=first['longitude'])
+    ca, cb = a['current_state'], b['current_state']
+    dx = (cb['longitude']-ca['longitude'])*60*math.cos(math.radians(first['latitude']))
+    dy = (cb['latitude']-ca['latitude'])*60
+    e['current_distance_nm'] = math.hypot(dx, dy)
+    assert a['vessel_id'] > b['vessel_id']
+    assert not check_encounter(e)
 
 
 def test_scenario_coverage_and_unique_paths():

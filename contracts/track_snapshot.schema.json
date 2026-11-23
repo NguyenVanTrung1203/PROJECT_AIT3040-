@@ -30,7 +30,8 @@
       ]
     },
     "is_simulated": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Trajectory provenance: true for simulated/synthetic trajectory; does not imply that vessel identity is simulated. Physical MMSI may be retained on synthetic trajectories."
     },
     "anchor_timestamp": {
       "$ref": "common.schema.json#/$defs/utc_timestamp"
