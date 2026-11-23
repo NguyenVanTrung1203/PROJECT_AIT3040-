@@ -1,0 +1,1693 @@
+{
+  "vector_version": "1.0.0",
+  "cases": [
+    {
+      "case_id": "synthetic_physical_match",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "mmsi": "123456789",
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": true,
+      "semantic_expected": true,
+      "combined_expected": true,
+      "pydantic_expected": true,
+      "explanation": "Synthetic trajectory preserves matching physical identity."
+    },
+    {
+      "case_id": "physical_mismatch",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "mmsi": "987654321",
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": true,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "Structural schema cannot compare these two fields."
+    },
+    {
+      "case_id": "physical_null",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "Physical identity requires an MMSI."
+    },
+    {
+      "case_id": "physical_missing_mmsi",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "Required MMSI key is absent."
+    },
+    {
+      "case_id": "physical_bad_mmsi",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "mmsi": "123",
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "MMSI has invalid format."
+    },
+    {
+      "case_id": "simulated_null",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "simulated:demo:vessel-1",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": true,
+      "semantic_expected": true,
+      "combined_expected": true,
+      "pydantic_expected": true,
+      "explanation": "Simulated identity needs no physical MMSI."
+    },
+    {
+      "case_id": "simulated_with_mmsi",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "simulated:demo:vessel-1",
+        "mmsi": "123456789",
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "No approved provenance binding for simulated ID and physical MMSI."
+    },
+    {
+      "case_id": "legacy_mock",
+      "profile": "LEGACY_MOCK",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "mock-vessel-001",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": true,
+      "semantic_expected": true,
+      "combined_expected": true,
+      "pydantic_expected": true,
+      "explanation": "Legacy mock identity remains valid only in its own profile."
+    },
+    {
+      "case_id": "mock_as_production",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "mock-vessel-001",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": true,
+      "explanation": "Pydantic mock consumer uses legacy profile; production cannot accept mock ID."
+    },
+    {
+      "case_id": "real_physical",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "physical_mmsi:123456789",
+        "mmsi": "123456789",
+        "source_type": "REAL_AIS",
+        "is_simulated": false,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": true,
+      "semantic_expected": true,
+      "combined_expected": true,
+      "pydantic_expected": true,
+      "explanation": "Real AIS physical vessel with matching MMSI."
+    },
+    {
+      "case_id": "real_simulated_identity",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "simulated:demo:vessel-1",
+        "mmsi": "123456789",
+        "source_type": "REAL_AIS",
+        "is_simulated": false,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "Real AIS requires physical identity."
+    },
+    {
+      "case_id": "invalid_namespace",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "schema_version": "1.0.0",
+        "vessel_id": "unknown:demo:1",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": false,
+      "combined_expected": false,
+      "pydantic_expected": true,
+      "explanation": "Legacy mock model intentionally does not impose production namespace."
+    },
+    {
+      "case_id": "missing_schema_version",
+      "profile": "PRODUCTION_V1",
+      "payload": {
+        "vessel_id": "simulated:demo:vessel-1",
+        "mmsi": null,
+        "source_type": "SYNTHETIC_AIS",
+        "is_simulated": true,
+        "anchor_timestamp": "2025-10-01T12:00:00Z",
+        "current_state": {
+          "nominal_timestamp": "2025-10-01T12:00:00Z",
+          "source_timestamp": "2025-10-01T12:00:00Z",
+          "original_source_timestamp": null,
+          "latitude": 55.68,
+          "longitude": 12.56,
+          "sog_kn": 12.0,
+          "cog_deg": 48.0,
+          "source_age_seconds": 0.0
+        },
+        "history": [
+          {
+            "nominal_timestamp": "2025-10-01T11:51:00Z",
+            "source_timestamp": "2025-10-01T11:51:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.65992608180923,
+            "longitude": 12.520458005929274,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:52:00Z",
+            "source_timestamp": "2025-10-01T11:52:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.662156517163766,
+            "longitude": 12.524851560826022,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:53:00Z",
+            "source_timestamp": "2025-10-01T11:53:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66438695251829,
+            "longitude": 12.52924511572277,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:54:00Z",
+            "source_timestamp": "2025-10-01T11:54:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.666617387872826,
+            "longitude": 12.533638670619517,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:55:00Z",
+            "source_timestamp": "2025-10-01T11:55:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.66884782322735,
+            "longitude": 12.538032225516265,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:56:00Z",
+            "source_timestamp": "2025-10-01T11:56:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67107825858188,
+            "longitude": 12.542425780413012,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:57:00Z",
+            "source_timestamp": "2025-10-01T11:57:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67330869393641,
+            "longitude": 12.546819335309758,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:58:00Z",
+            "source_timestamp": "2025-10-01T11:58:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67553912929094,
+            "longitude": 12.551212890206505,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T11:59:00Z",
+            "source_timestamp": "2025-10-01T11:59:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.67776956464547,
+            "longitude": 12.555606445103253,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          },
+          {
+            "nominal_timestamp": "2025-10-01T12:00:00Z",
+            "source_timestamp": "2025-10-01T12:00:00Z",
+            "original_source_timestamp": null,
+            "latitude": 55.68,
+            "longitude": 12.56,
+            "sog_kn": 12.0,
+            "cog_deg": 48.0,
+            "source_age_seconds": 0.0
+          }
+        ],
+        "data_status": "VALID"
+      },
+      "structural_expected": false,
+      "semantic_expected": true,
+      "combined_expected": false,
+      "pydantic_expected": false,
+      "explanation": "Semantic identity valid but structural required key missing."
+    }
+  ]
+}
