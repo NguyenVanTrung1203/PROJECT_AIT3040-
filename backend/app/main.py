@@ -14,24 +14,32 @@ from backend.app.mock_tracks import (
     get_track,
     list_tracks,
 )
+from backend.app.replay_api import build_default_replay_api, router as replay_router
 
 
 app = FastAPI(
-    title="AIT3040 Mock Track API",
-    version="0.1.0",
-    description="Deterministic simulated TrackSnapshot data for map development; no inference or risk results.",
+    title="AIT3040 Track Data API",
+    version="0.2.0",
+    description="T04 mock tracks and Contract V1 Replay fixture endpoints; replay state is process-local and not production durable.",
 )
+app.state.replay_api = build_default_replay_api()
+app.include_router(replay_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=False,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 
 @app.exception_handler(StarletteHTTPException)
 async def http_error_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+    if isinstance(exc.detail, dict) and "error_code" in exc.detail and "message" in exc.detail:
+        body = ErrorResponse(error_code=exc.detail["error_code"],
+                             message=exc.detail["message"],
+                             details=exc.detail.get("details"))
+        return JSONResponse(status_code=exc.status_code, content=body.model_dump(mode="json"))
     code = "VESSEL_NOT_FOUND" if exc.status_code == 404 else "HTTP_ERROR"
     details = {"path": request.url.path} if exc.status_code == 404 else None
     body = ErrorResponse(error_code=code, message=str(exc.detail), details=details)
@@ -42,8 +50,11 @@ async def http_error_handler(request: Request, exc: StarletteHTTPException) -> J
 async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     body = ErrorResponse(
         error_code="INVALID_REQUEST",
-        message="The request does not match the mock track API parameters.",
-        details={"errors": exc.errors()},
+        message="The request does not match the API contract.",
+        details={"errors": [
+            {key: error.get(key) for key in ("type", "loc", "msg")}
+            for error in exc.errors()
+        ]},
     )
     return JSONResponse(status_code=422, content=body.model_dump(mode="json"))
 

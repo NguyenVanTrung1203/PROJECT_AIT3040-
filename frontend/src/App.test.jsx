@@ -140,3 +140,45 @@ describe('mock track map', () => {
     expect(fetch).toHaveBeenCalledTimes(3)
   })
 })
+
+describe('Replay V1 fixture map', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn())
+  })
+
+  afterEach(() => {
+    cleanup()
+    vi.unstubAllGlobals()
+  })
+
+  it('starts a fixture session, renders runtime tracks, and resets into a new session', async () => {
+    const track = makeTrack('simulated:t12-demo:kattegat-001')
+    const session = { session_id: '123e4567-e89b-42d3-a456-426614174000', status: 'READY', version: 0 }
+    const resetSession = { session_id: '123e4567-e89b-42d3-a456-426614174001', status: 'READY', version: 0 }
+    fetch.mockResolvedValueOnce(apiResponse([]))
+      .mockResolvedValueOnce({ ok: true, json: async () => session })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ items: [track], total: 1, snapshot_id: '123e4567-e89b-42d3-a456-426614174010', simulation_time: anchor }) })
+      .mockResolvedValueOnce(detailResponse(track))
+      .mockResolvedValueOnce({ ok: true, json: async () => resetSession })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ items: [track], total: 1, snapshot_id: '123e4567-e89b-42d3-a456-426614174011', simulation_time: anchor }) })
+
+    render(<App />)
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1))
+    fireEvent.click(screen.getByRole('button', { name: 'Replay fixture' }))
+    fireEvent.click(document.querySelector('.replay-start-button'))
+
+    const marker = await screen.findByTestId('marker')
+    expect(JSON.parse(marker.dataset.position)).toEqual([track.current_state.latitude, track.current_state.longitude])
+    fireEvent.click(marker)
+    await waitFor(() => expect(document.querySelectorAll('.history-list li')).toHaveLength(10))
+    expect(screen.getByText(/SYNTHETIC_AIS.*simulated trajectory/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset replay' }))
+    expect(await screen.findByText(/123e4567-e89b-42d3-a456-426614174001/)).toBeInTheDocument()
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(6))
+    expect(fetch.mock.calls[1][1].method).toBe('POST')
+    expect(JSON.parse(fetch.mock.calls[1][1].body)).toMatchObject({ source_id: 'fixture-denmark-10m-v1' })
+    expect(fetch.mock.calls[4][1].headers['Idempotency-Key']).toBeTruthy()
+    expect(JSON.parse(fetch.mock.calls[4][1].body)).toMatchObject({ action: 'RESET', expected_version: 0 })
+  })
+})
