@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "replay.schema.json",
+  "title": "Replay V1 production contract",
+  "description": "PRODUCTION_V1 requires structural schema AND shared track semantic validation; runtime also enforces source identity verification, temporal rules, conditional headers, clock, pagination and idempotency.",
+  "x-control-transition-matrix": {
+    "READY": {"PLAY":"PLAYING", "PAUSE":409, "RESUME":409, "RESET":"NEW_READY", "SEEK":"NEW_PAUSED"},
+    "PLAYING": {"PLAY":409, "PAUSE":"PAUSED", "RESUME":409, "RESET":"NEW_READY", "SEEK":"NEW_PAUSED"},
+    "PAUSED": {"PLAY":"PLAYING", "PAUSE":409, "RESUME":"PLAYING", "RESET":"NEW_READY", "SEEK":"NEW_PAUSED"},
+    "ENDED": {"PLAY":409, "PAUSE":409, "RESUME":409, "RESET":409, "SEEK":409},
+    "EXPIRED": {"PLAY":410, "PAUSE":410, "RESUME":410, "RESET":410, "SEEK":410}
+  },
+  "$defs": {
+    "session_id": {"type": "string", "format": "uuid", "minLength": 36, "maxLength": 36, "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "utc_time": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "session_state": {"enum": ["READY", "PLAYING", "PAUSED", "ENDED", "EXPIRED"]},
+    "control_action": {"enum": ["PLAY", "PAUSE", "RESUME", "RESET", "SEEK"]},
+    "production_vessel_id": {"type": "string", "pattern": "^(physical_mmsi:[0-9]{9}|simulated:[^:]+:[\\s\\S]+)(?![\\s\\S])"},
+    "create_request": {
+      "type": "object",
+      "properties": {"source_id": {"type": "string", "minLength": 1}, "start_time": {"$ref": "#/$defs/utc_time"}},
+      "required": ["source_id"], "additionalProperties": false
+    },
+    "session_response": {
+      "type": "object",
+      "properties": {
+        "session_id": {"$ref": "#/$defs/session_id"}, "source_id": {"type": "string", "minLength": 1},
+        "simulation_time": {"$ref": "#/$defs/utc_time"}, "status": {"$ref": "#/$defs/session_state"},
+        "version": {"type": "integer", "minimum": 0}
+      },
+      "required": ["session_id", "source_id", "simulation_time", "status", "version"], "additionalProperties": false
+    },
+    "production_track": {
+      "description": "Structural schema only: consumers MUST also run the G11 shared semantic validator and all other runtime invariants. Standard Draft 2020-12 cannot compare vessel_id and mmsi directly; syntax consistency is not real-world source verification.",
+      "allOf": [
+        {"$ref": "track_snapshot.schema.json"},
+        {"type": "object", "properties": {"vessel_id": {"$ref": "#/$defs/production_vessel_id"}}},
+        {"if": {"properties": {"vessel_id": {"pattern": "^physical_mmsi:"}}, "required": ["vessel_id"]},
+         "then": {"properties": {"mmsi": {"type": "string", "pattern": "^[0-9]{9}$"}}}},
+        {"if": {"properties": {"source_type": {"const": "REAL_AIS"}}, "required": ["source_type"]},
+         "then": {"properties": {"vessel_id": {"type": "string", "pattern": "^physical_mmsi:[0-9]{9}$"}}}},
+        {"if": {"properties": {"vessel_id": {"pattern": "^simulated:"}}, "required": ["vessel_id"]},
+         "then": {"properties": {"mmsi": {"type": "null"}}}}
+      ]
+    },
+    "control_request": {
+      "type": "object",
+      "properties": {
+        "action": {"$ref": "#/$defs/control_action"},
+        "expected_version": {"type": "integer", "minimum": 0},
+        "target_time": {"$ref": "#/$defs/utc_time"}
+      },
+      "required": ["action", "expected_version"], "additionalProperties": false,
+      "allOf": [{"if": {"properties": {"action": {"const": "SEEK"}}, "required": ["action"]}, "then": {"required": ["target_time"]}, "else": {"not": {"required": ["target_time"]}}}]
+    },
+    "track_list": {
+      "type": "object",
+      "properties": {
+        "items": {"type": "array", "items": {"$ref": "#/$defs/production_track"}},
+        "total": {"type": "integer", "minimum": 0},
+        "limit": {"type": "integer", "minimum": 1, "maximum": 100},
+        "offset": {"type": "integer", "minimum": 0},
+        "snapshot_id": {"$ref": "#/$defs/session_id"},
+        "simulation_time": {"$ref": "#/$defs/utc_time"}
+      },
+      "required": ["items", "total", "limit", "offset", "snapshot_id", "simulation_time"], "additionalProperties": false
+    }
+  }
+}

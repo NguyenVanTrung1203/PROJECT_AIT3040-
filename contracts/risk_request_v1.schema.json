@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "risk_request_v1.schema.json",
+  "description": "Production V1: strict replay profile when replay_session_id is present; legacy/live null session keeps T02 schema. Runtime enforces session equality and deterministic hashes.",
+  "allOf": [
+    {"$ref": "risk_request.schema.json"},
+    {"if": {"properties": {"replay_session_id": {"type": "string"}}, "required": ["replay_session_id"]},
+     "then": {"properties": {"replay_session_id": {"$ref": "replay.schema.json#/$defs/session_id"}, "encounter": {"$ref": "encounter_v1.schema.json"}}},
+     "else": {"properties": {"encounter": {"properties": {"replay_session_id": {"type": "null"}}, "required": ["replay_session_id"]}}}}
+  ]
+}

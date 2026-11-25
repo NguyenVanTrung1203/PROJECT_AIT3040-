@@ -2,6 +2,7 @@
 import hashlib
 import json
 import sys
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -46,9 +47,12 @@ def asof_valid(grid, source):
 
 
 def proposed_pair_id(first, second):
-    if not isinstance(first,str) or not isinstance(second,str) or not first or not second or first==second:
+    if not isinstance(first,str) or not isinstance(second,str) or not first or not second:
         raise ValueError('Two distinct namespaced IDs are required')
-    payload=json.dumps(sorted([first,second]), ensure_ascii=False, separators=(',',':')).encode('utf-8')
+    first,second=(unicodedata.normalize('NFC', value) for value in (first,second))
+    if first == second:
+        raise ValueError('Two distinct IDs are required after NFC')
+    payload=json.dumps(sorted([first,second],key=lambda value:value.encode('utf-8')), ensure_ascii=False, separators=(',',':')).encode('utf-8')
     return 'pair:v1:'+hashlib.sha256(payload).hexdigest()
 
 

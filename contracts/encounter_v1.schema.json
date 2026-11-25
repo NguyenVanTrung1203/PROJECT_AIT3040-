@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "encounter_v1.schema.json",
+  "title": "Production replay Encounter V1",
+  "description": "Strict replay profile. Runtime additionally verifies deterministic encounter and pair hashes, NFC, UTF-8 A/B ordering, anchor precision and source identity stability. The legacy schema and fixtures remain unchanged.",
+  "allOf": [
+    {"$ref": "encounter.schema.json"},
+    {
+      "type": "object",
+      "properties": {
+        "encounter_id": {"type": "string", "minLength": 71, "maxLength": 71, "pattern": "^enc:v1:[0-9a-f]{64}$"},
+        "replay_session_id": {"$ref": "replay.schema.json#/$defs/session_id"},
+        "anchor_timestamp": {"type": "string", "format": "date-time", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "vessel_a": {"$ref": "replay.schema.json#/$defs/production_track"},
+        "vessel_b": {"$ref": "replay.schema.json#/$defs/production_track"}
+      },
+      "required": ["encounter_id", "replay_session_id", "anchor_timestamp", "vessel_a", "vessel_b"]
+    }
+  ]
+}

@@ -13,6 +13,6 @@
   "representations": {"X_unscaled": "physical_units", "X_scaled": "train_fitted_scaler_output", "residual_target": "true_displacement_minus_CV", "residual_prediction": "model_output_inverse_scaled_before_adding_CV", "forecast_displacement": "future_common_EN_minus_own_anchor", "forecast_common_EN": "displacement_plus_own_anchor"},
   "constant_velocity_uses": "unscaled_anchor_velocity_kn",
   "offline_mapping": "use_encounter_tensor_index_and_vessel_tensor_index_without_resorting",
-  "replay_mapping_proposal": {"identity": "namespaced_physical_or_simulated_vessel_id", "A_B_order": "lexicographic_order_of_canonical_namespaced_ids_for_replay_only", "pair_id": "pair:v1: plus SHA256 of UTF-8 compact JSON array of two sorted distinct namespaced vessel IDs", "encounter_id": "separate_optional_offline_or_anchor_specific_identifier", "status": "proposed_not_yet_agreed_by_Toan"},
+  "replay_mapping_proposal": {"identity": "namespaced_physical_or_simulated_vessel_id_NFC", "A_B_order": "online_A_is_smaller_canonical_id_by_UTF8_bytes_B_is_other; offline_preserves_tensor_mapping", "pair_id": "pair:v1: plus SHA256 of UTF-8 compact JSON array sorted_by_UTF8_bytes", "encounter_id": "enc:v1: plus SHA256 of compact JSON array session_id_pair_id_anchor_UTC_seconds_Z", "status": "design_approved_by_Trung_implementation_and_team_review_pending"},
   "simulated_mmsi": "nullable_do_not_fabricate_real_MMSI"
 }

@@ -50,14 +50,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ./risk_request.schema.json
+              $ref: ./risk_request_v1.schema.json
       responses:
         '200':
           description: Yêu cầu hợp lệ; kết quả nghiệp vụ trong response.
           content:
             application/json:
               schema:
-                $ref: ./risk_response.schema.json
+                $ref: ./risk_response_v1.schema.json
         '400': *id001
         '422': *id002
         '500': *id003
@@ -78,7 +78,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: './replay.schema.json#/$defs/session_id'
       - name: pair_id
         in: query
         required: false
@@ -110,7 +110,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: ./risk_response.schema.json
+                      $ref: ./risk_response_v1.schema.json
                   total:
                     type: integer
                     minimum: 0
@@ -148,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./risk_response.schema.json
+                $ref: ./risk_response_v1.schema.json
         '400': *id001
         '422': *id002
         '500': *id003
@@ -169,7 +169,7 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          $ref: './replay.schema.json#/$defs/session_id'
       - name: pair_id
         in: query
         required: false
@@ -209,7 +209,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: ./alert.schema.json
+                      $ref: ./alert_v1.schema.json
                   total:
                     type: integer
                     minimum: 0
@@ -241,7 +241,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./alert.schema.json
+                $ref: ./alert_v1.schema.json
         '400': *id001
         '422': *id002
         '500': *id003
@@ -252,3 +252,159 @@ paths:
             application/json:
               schema:
                 $ref: ./error.schema.json
+  /api/v1/replay/sessions:
+    post:
+      operationId: createReplaySession
+      description: 'Tạo READY version 0; start_time mặc định là thời điểm bắt đầu hợp lệ của source, không dùng wall-clock.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './replay.schema.json#/$defs/create_request'}
+            example: {source_id: demo, start_time: '2025-10-01T12:00:00Z'}
+      responses:
+        '201':
+          description: Session mới READY, version 0.
+          content:
+            application/json:
+              schema: {$ref: './replay.schema.json#/$defs/session_response'}
+              example:
+                session_id: 123e4567-e89b-12d3-a456-426614174000
+                source_id: demo
+                simulation_time: '2025-10-01T12:00:00Z'
+                status: READY
+                version: 0
+        '422': *id002
+        '503': *id004
+  /api/v1/replay/sessions/{session_id}:
+    parameters: &replaySessionParam
+    - name: session_id
+      in: path
+      required: true
+      schema: {$ref: './replay.schema.json#/$defs/session_id'}
+    get:
+      operationId: getReplaySession
+      description: 'Đọc session; hết hạn trả 410.'
+      responses:
+        '200':
+          description: Session hiện tại.
+          content:
+            application/json:
+              schema: {$ref: './replay.schema.json#/$defs/session_response'}
+        '404': &replay404
+          description: Không tìm thấy tài nguyên.
+          content:
+            application/json:
+              schema: {$ref: ./error.schema.json}
+        '410': &replay410
+          description: Session hoặc snapshot đã hết hạn.
+          content:
+            application/json:
+              schema: {$ref: ./error.schema.json}
+        '422': *id002
+        '503': *id004
+  /api/v1/replay/sessions/{session_id}/control:
+    parameters: *replaySessionParam
+    post:
+      operationId: controlReplaySession
+      description: 'Áp dụng đầy đủ x-control-transition-matrix trong replay.schema.json: ENDED từ chối 409, EXPIRED trả 410. Idempotency-Key bắt buộc RESET/SEEK, scope source session, lưu tối thiểu 24 giờ; tra cứu retry trước version. Version mismatch hoặc payload conflict 409. RESET tạo READY version 0; SEEK tạo PAUSED version 0; source chuyển ENDED, version tăng một lần và không resolve alert. Ghi source, new session và idempotency result atomically; SEEK ngoài miền source trả 422.'
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: false
+        description: Bắt buộc có điều kiện cho RESET và SEEK; từ 1 đến 128 ký tự.
+        schema: {type: string, minLength: 1, maxLength: 128}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: './replay.schema.json#/$defs/control_request'}
+            example:
+              action: SEEK
+              expected_version: 1
+              target_time: '2025-10-01T12:10:00Z'
+      responses:
+        '200':
+          description: Session đang có hiệu lực sau control.
+          content:
+            application/json:
+              schema: {$ref: './replay.schema.json#/$defs/session_response'}
+              example:
+                session_id: 123e4567-e89b-12d3-a456-426614174001
+                source_id: demo
+                simulation_time: '2025-10-01T12:10:00Z'
+                status: PAUSED
+                version: 0
+        '404': *replay404
+        '409': &replay409
+          description: Xung đột version, idempotency hoặc control.
+          content:
+            application/json:
+              schema: {$ref: ./error.schema.json}
+        '410': *replay410
+        '422': *id002
+        '503': *id004
+  /api/v1/replay/sessions/{session_id}/tracks:
+    parameters: *replaySessionParam
+    get:
+      operationId: listReplayTracks
+      description: 'Sắp xếp canonical ID theo UTF-8; pin snapshot bất biến cho mọi trang, TTL 5 phút. offset > 0 yêu cầu snapshot_id; hết hạn 410.'
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema: {type: integer, minimum: 1, maximum: 100, default: 50}
+      - name: offset
+        in: query
+        required: false
+        schema: {type: integer, minimum: 0, default: 0}
+      - name: snapshot_id
+        in: query
+        required: false
+        description: Bắt buộc cho trang tiếp theo; UUID của snapshot trang đầu.
+        schema: {$ref: './replay.schema.json#/$defs/session_id'}
+      responses:
+        '200':
+          description: Các track của một snapshot bất biến.
+          content:
+            application/json:
+              schema: {$ref: './replay.schema.json#/$defs/track_list'}
+              example:
+                items: []
+                total: 0
+                limit: 20
+                offset: 0
+                snapshot_id: 123e4567-e89b-12d3-a456-426614174002
+                simulation_time: '2025-10-01T12:10:00Z'
+        '404': *replay404
+        '410': *replay410
+        '422': *id002
+        '503': *id004
+  /api/v1/replay/sessions/{session_id}/tracks/{vessel_id}:
+    parameters:
+    - name: session_id
+      in: path
+      required: true
+      schema: {$ref: './replay.schema.json#/$defs/session_id'}
+    - name: vessel_id
+      in: path
+      required: true
+      schema: {type: string, minLength: 1}
+    get:
+      operationId: getReplayTrack
+      description: 'snapshot_id tùy chọn để đọc cùng snapshot với list.'
+      parameters:
+      - name: snapshot_id
+        in: query
+        required: false
+        schema: {$ref: './replay.schema.json#/$defs/session_id'}
+      responses:
+        '200':
+          description: TrackSnapshot tại snapshot được chọn.
+          content:
+            application/json:
+              schema: {$ref: './replay.schema.json#/$defs/production_track'}
+        '404': *replay404
+        '410': *replay410
+        '422': *id002
+        '503': *id004

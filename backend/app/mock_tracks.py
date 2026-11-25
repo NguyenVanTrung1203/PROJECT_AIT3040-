@@ -7,6 +7,7 @@ from math import cos, radians, sin
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from src.data.track_semantics import validate_track_semantics
 
 
 UTC = timezone.utc
@@ -49,9 +50,9 @@ class HistoryPoint(BaseModel):
 class TrackSnapshot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: Literal["1.0.0"] = "1.0.0"
+    schema_version: Literal["1.0.0"]
     vessel_id: str = Field(min_length=1)
-    mmsi: str | None = Field(default=None, pattern=r"^[0-9]{9}$")
+    mmsi: str | None = Field(pattern=r"^[0-9]{9}$")
     source_type: SourceType
     is_simulated: bool
     anchor_timestamp: datetime
@@ -68,10 +69,9 @@ class TrackSnapshot(BaseModel):
 
     @model_validator(mode="after")
     def enforce_snapshot_semantics(self) -> "TrackSnapshot":
-        if self.source_type == SourceType.REAL_AIS and (self.is_simulated or self.mmsi is None):
-            raise ValueError("REAL_AIS requires a real MMSI and is_simulated=false")
-        if self.source_type != SourceType.REAL_AIS and not self.is_simulated:
-            raise ValueError("simulated source types require is_simulated=true")
+        validate_track_semantics({'vessel_id': self.vessel_id, 'mmsi': self.mmsi,
+                                  'source_type': self.source_type.value,
+                                  'is_simulated': self.is_simulated}, profile='LEGACY_MOCK')
         nominal_times = [point.nominal_timestamp for point in self.history]
         if nominal_times != sorted(nominal_times) or len(set(nominal_times)) != len(nominal_times):
             raise ValueError("history nominal timestamps must be strictly increasing")
@@ -169,6 +169,7 @@ def _make_track(
 ) -> TrackSnapshot:
     history = _history(latitude, longitude, sog_kn, cog_deg, stale_seconds=stale_seconds)
     return TrackSnapshot(
+        schema_version="1.0.0",
         vessel_id=vessel_id,
         mmsi=None,
         source_type=SourceType.SYNTHETIC_AIS,
