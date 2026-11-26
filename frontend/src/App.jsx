@@ -157,6 +157,7 @@ export default function App() {
   const [refreshKey, setRefreshKey] = useState(0)
   const [seekOffset, setSeekOffset] = useState(540)
   const [forecastEnabled, setForecastEnabled] = useState(false)
+  const seekEditingRef = useRef(false)
   const generationRef = useRef(0)
   const sessionRef = useRef(session)
   const snapshotRef = useRef(snapshotId)
@@ -225,7 +226,7 @@ export default function App() {
         setTracks(payload.items)
         setSnapshotId(payload.snapshot_id)
         setSelected((current) => current ? payload.items.find((item) => item.vessel_id === current.vessel_id) || null : null)
-        setSeekOffset(secondsFromStart(nextSession.simulation_time))
+        if (!seekEditingRef.current) setSeekOffset(secondsFromStart(nextSession.simulation_time))
         setError('')
       } catch (cause) {
         if (cancelled || cause?.name === 'AbortError' || generation !== generationRef.current) return
@@ -241,6 +242,7 @@ export default function App() {
 
   const switchMode = useCallback((nextMode) => {
     generationRef.current += 1
+    seekEditingRef.current = false
     setMode(nextMode)
     setTracks([])
     setSelected(null)
@@ -269,6 +271,7 @@ export default function App() {
       setTracks([])
       setSelected(null)
       setSnapshotId(null)
+      seekEditingRef.current = false
       setSession(next)
       setSeekOffset(secondsFromStart(next.simulation_time))
     } catch (cause) {
@@ -302,6 +305,10 @@ export default function App() {
       if (sessionRef.current?.session_id !== operation.sessionId) return
       setPendingControl(null)
       setControlError('')
+      if (operation.action === 'SEEK' || operation.action === 'RESET') {
+        seekEditingRef.current = false
+        setSeekOffset(secondsFromStart(next.simulation_time))
+      }
       if (next.session_id !== operation.sessionId) {
         generationRef.current += 1
         setTracks([])
@@ -434,7 +441,7 @@ export default function App() {
               </div>
               {['READY', 'PLAYING', 'PAUSED'].includes(session.status) && <div className="seek-control">
                 <label htmlFor="replay-seek">SEEK UTC · <time>{seekPreview}</time></label>
-                <input id="replay-seek" aria-label="Seek UTC time" type="range" min="0" max={SEEK_MAX_SECONDS} step="1" value={seekOffset} onChange={(event) => setSeekOffset(Number(event.target.value))} disabled={!replayCanControl} />
+                <input id="replay-seek" aria-label="Seek UTC time" type="range" min="0" max={SEEK_MAX_SECONDS} step="1" value={seekOffset} onChange={(event) => { seekEditingRef.current = true; setSeekOffset(Number(event.target.value)) }} disabled={!replayCanControl} />
                 <button onClick={() => requestControl('SEEK', seekPreview)} disabled={!replayCanControl}>SEEK tới mốc này</button>
               </div>}
               {pendingControl && controlError && <button className="retry-control" onClick={retryControl} disabled={controlBusy}>Thử lại {pendingControl.action} với cùng Idempotency-Key</button>}

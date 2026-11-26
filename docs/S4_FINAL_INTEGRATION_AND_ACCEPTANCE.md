@@ -3,10 +3,10 @@
 ## Trạng thái tổng thể
 
 - AUTOMATED_ACCEPTANCE=PASS_WITH_APPROVED_SCOPE_LIMITATION: full regression 674 passed/6 skipped; năm original V4 parity tests đã PASS bổ sung; real AIS replay chuyển Sprint 5.
-- BROWSER_UI_SMOKE=PASS theo quan sát trực tiếp của Trung; BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE_WITH_KNOWN_ISSUES. Severity các lỗi browser: NOT_VERIFIED.
+- BROWSER_UI_SMOKE=PASS; core fixture được xác minh bằng browser/API/automated; matrix 43 PASS, 2 NOT_VERIFIED (Console/Network trực tiếp); BUG-01 đã sửa.
 - S4_CLOSURE_DECISION=APPROVED_WITH_LIMITATIONS; S4_TECHNICAL_READY=COMPLETED_WITH_LIMITATIONS.
 - S4_DEMO_READY=SMOKE_ONLY_WITH_LIMITATIONS.
-- MERGE_TO_MAIN_READINESS=MERGE_PENDING_USER_REVIEW: browser issue severity NOT_VERIFIED; không đủ bằng chứng xác định an toàn merge.
+- MERGE_TO_MAIN_READINESS=APPROVED_SUBJECT_TO_GIT_PREFLIGHT; Console/Network trực tiếp NOT_VERIFIED, giới hạn evidence được Trung chấp nhận theo S4-D03.
 - Không tạo commit cuối, không push, không merge vào main.
 
 ## A. Tóm tắt
@@ -61,7 +61,7 @@ Regression cases ở tests/unit/test_track_buffer.py. Dataset và Contract V1 kh
 
 ## E. T17 browser acceptance
 
-Trung trực tiếp xác nhận frontend tải, backend/frontend giao tiếp trong fixture, tạo Replay Session, xuất hiện early marker, hiển thị Simulation UTC và trạng thái PLAYING: BROWSER_UI_SMOKE=PASS. Một số chức năng còn lỗi chưa có danh sách hoặc bằng chứng B01–B12 đầy đủ: BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE_WITH_KNOWN_ISSUES; severity=NOT_VERIFIED. Không suy đoán chức năng cụ thể hay đánh dấu checklist PASS.
+Bằng chứng ban đầu (lịch sử): Trung trực tiếp xác nhận frontend tải, backend/frontend giao tiếp trong fixture, tạo Replay Session, xuất hiện early marker, hiển thị Simulation UTC và trạng thái PLAYING: BROWSER_UI_SMOKE=PASS. Một số chức năng còn lỗi chưa có danh sách hoặc bằng chứng B01–B12 đầy đủ: BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE_WITH_KNOWN_ISSUES; severity=NOT_VERIFIED. Không suy đoán chức năng cụ thể hay đánh dấu checklist PASS.
 
 ### Khởi chạy cục bộ
 
@@ -141,7 +141,7 @@ Bảy module không import được đều đi qua src.risk.adapter; adapter d�
 
 - Frontend tests: 20 passed trên 2 files (kết quả đã có; không chạy lại).
 - Production build: PASS (kết quả đã có; không chạy lại).
-- Browser UI smoke: PASS theo Trung; functional acceptance: INCOMPLETE_WITH_KNOWN_ISSUES, severity NOT_VERIFIED.
+- Browser UI smoke: PASS theo Trung; BUG-01 đã sửa; kết quả closure mới nhất tại mục Q.
 
 ## G. Bảo toàn Model Lock và bằng chứng lịch sử
 
@@ -167,9 +167,9 @@ Blocker CRLF đã được xử lý; import src.risk.adapter và adapter.verify_
 | Replay retention/provenance targeted fixes | PASS |
 | Targeted Python + frontend automated checks | PASS |
 | Full Python regression | PASS WITH SKIPS — 674 passed, 6 skipped, Q1 guard hoạt động |
-| S4 fixture/demo browser | UI smoke PASS; functional acceptance INCOMPLETE_WITH_KNOWN_ISSUES, severity NOT_VERIFIED |
+| S4 fixture/demo | Core PASS trong synthetic fixture qua browser/API/automated; Console/Network trực tiếp NOT_VERIFIED |
 | S4 technical completion | COMPLETED_WITH_LIMITATIONS theo quyết định của Trung; quy trình đóng chờ main merge |
-| Merge vào main | MERGE_PENDING_USER_REVIEW — chưa đủ bằng chứng xác định severity và an toàn |
+| Merge vào main | APPROVED_SUBJECT_TO_GIT_PREFLIGHT — Console/Network trực tiếp NOT_VERIFIED, S4-D03 approved |
 | T18/T19 integration readiness | NO |
 | Production readiness | NO |
 
@@ -220,7 +220,7 @@ Với Python 3.12.3 hiện có, PYTHONDONTWRITEBYTECODE=1 và -B:
 - Full regression với Q1 guard ngoài sandbox: 680 collected (theo số test chạy), 674 passed, 0 failed, 0 errors, 6 skipped, 0 deselected, 1 StarletteDeprecationWarning, 118.94s. Q1 counters hash_opens=42, blocked_deserialization=0, blocked_other_opens=0. Log: s4_targeted_full_regression.log ở thư mục task Codex.
 - Trong lượt full regression, năm test original V4 parity skip vì V4_REFERENCE_RISK_PATH chưa đặt; năm test này đã PASS bổ sung tại mục M. Một skip là controlled real AIS slice vì AIS_REPLAY_ROOT/default cleaned source không tồn tại.
 - Synthetic fixture: targeted tests và full suite đạt trong phạm vi đã chạy. Real AIS replay: NOT_VERIFIED và DEFERRED_TO_SPRINT_5 theo S4-D01 APPROVED. Browser UI smoke PASS theo Trung; functional acceptance INCOMPLETE_WITH_KNOWN_ISSUES, severity NOT_VERIFIED.
-## M. S4-D01 và original V4 parity bổ sung
+## M. S4-D01 và original V4 parity bổ sung (lịch sử)
 
 - S4-D01: APPROVED; S4 replay scope SYNTHETIC_FIXTURE_ONLY. Real AIS replay NOT_VERIFIED; integration test SKIPPED vì không có cleaned source; verification DEFERRED_TO_SPRINT_5. Không thay đổi dataset nghiên cứu Train/Validation/Test.
 - S4-D02: original reference tại C:\Users\MSI\Desktop\Môn học Dự án\MODEL_FINAL_VERIFICATION_V4\MODEL_CANDIDATE_PACKAGE\inference\risk_pipeline.py. Báo cáo T14 xác định nguồn này và FINAL_MODEL_LOCK_MANIFEST.json của package pin inference/risk_pipeline.py. Original và packaged là hai file riêng; mỗi file có SHA-256 8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e.
@@ -228,7 +228,7 @@ Với Python 3.12.3 hiện có, PYTHONDONTWRITEBYTECODE=1 và -B:
 - Historical full regression: 674 passed, 6 skipped, 0 failed, 0 errors; 118.94s. Supplemental parity là lượt riêng 5 passed. Combined coverage: 679/680 nodes PASS qua hai lượt; node còn lại là real AIS test đã được phê duyệt giới hạn scope. Không trình bày combined coverage như kết quả một lượt full regression.
 - Artifact T10 đã được sao chép vào ignored directory để chạy test; không đưa vào Git. Executable source không thay đổi sau full regression; Model Lock và Risk Engine giữ nguyên.
 - AUTOMATED_ACCEPTANCE=PASS_WITH_APPROVED_SCOPE_LIMITATION; BROWSER_UI_SMOKE=PASS; BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE_WITH_KNOWN_ISSUES; S4_CLOSURE_DECISION=APPROVED_WITH_LIMITATIONS; MERGE_TO_MAIN_READINESS=MERGE_PENDING_USER_REVIEW. Quy trình đóng S4 chờ merge main.
-## N. Quyết định đóng và bàn giao Sprint 5
+## N. Quyết định đóng và bàn giao Sprint 5 (lịch sử)
 
 Trung phê duyệt S4_CLOSURE_DECISION=APPROVED_WITH_LIMITATIONS. AUTOMATED_ACCEPTANCE=PASS_WITH_APPROVED_SCOPE_LIMITATION. BROWSER_UI_SMOKE=PASS; BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE_WITH_KNOWN_ISSUES. Chưa có danh sách lỗi và bằng chứng đủ để đánh giá severity; BROWSER_ISSUE_SEVERITY=NOT_VERIFIED. REAL_AIS_REPLAY=NOT_VERIFIED. S5_INTEGRATION_READY=NO; PRODUCTION_READY=NO. Quy trình đóng S4 vẫn S4_CLOSURE_PENDING_MAIN_MERGE; không tự kết luận main merge an toàn.
 
@@ -249,3 +249,32 @@ Trung phê duyệt S4_CLOSURE_DECISION=APPROVED_WITH_LIMITATIONS. AUTOMATED_ACCE
 ## Files
 
 Năm tệp S4 đang sửa được giữ nguyên: README.md, backend/app/replay_api.py, backend/tests/test_replay_api.py, src/data/track_buffer.py, tests/unit/test_track_buffer.py. .gitattributes là tệp mới với rule LF duyệt ở mục K. src/risk/reference_v4/risk_pipeline.py có bytes đúng bằng Git blob và không có Git content diff; status có thể hiện M do checkout line ending. Báo cáo này là tệp mới. Không stage/commit, push hoặc merge vào main.
+
+
+## O. BUG-01 fix và browser retest (lịch sử)
+
+BUG-01 root cause: polling ghi đè seekOffset bằng clock. Frontend giữ draft seek trong khi chỉnh, giải phóng khi SEEK/RESET thành công hoặc đổi session/mode; lỗi request giữ draft. Regression test tái hiện FAIL trước sửa, frontend suite 22 passed sau sửa, build PASS. Chrome xác nhận giữ mốc 00:09 qua 4 giây và 00:02 qua 3,5 giây rồi seek đúng; reset khi chỉnh về 00:00, pause/resume và history 1/10 đã quan sát.
+
+Browser matrix cập nhật: 29 PASS, 0 FAIL, 16 NOT_VERIFIED; baseline 23/3/19 được giữ trong browser report. Temporal payload, future leakage, session isolation, stale responses và Contract V1 end-to-end chưa xác minh đầy đủ. BUG01_FIXED=YES; BROWSER_FUNCTIONAL_ACCEPTANCE=INCOMPLETE; MERGE_TO_MAIN_READINESS=NOT_READY. Không chạy lại Python full regression; backend/Python source không đổi. Chi tiết và screenshots trong S4_BROWSER_FUNCTIONAL_TEST_REPORT.md.
+## P. Kiểm chứng fixture và stale responses (lịch sử)
+
+API fixture 00:00, 00:02, 00:09 và reset: anchor/session clock, 1/3/10 history, timestamps, source age, original và positions khớp fixture; G11 validator PASS, không quan sát future observation. Seek/reset tạo session/snapshot riêng; cross-session snapshot trả 404. Ba test frontend delayed track poll sau SEEK/RESET/mode PASS; không khẳng định test riêng session GET delay. Browser forecast bật/tắt, reset khi bật, hai vòng PLAY/PAUSE, reset và mode switching PASS. Frontend suite 25 passed; build PASS.
+
+C07/C08 browser geometry/playback, E07 console và E08 Network chưa xác minh. Chrome DevTools không hiển thị panel có thể kiểm tra qua công cụ; backend logs không thay thế Network inspection. BUG-01 FIXED; MERGE_TO_MAIN_READINESS=NOT_READY do P0 chưa hoàn chỉnh. Real AIS deferred S5 và Model Lock không thay đổi.
+## Q. S4 final targeted verification
+
+CORE_FUNCTIONAL_ACCEPTANCE=PASS_WITHIN_SYNTHETIC_FIXTURE_SCOPE. C07: API clock mô phỏng 00:00:59/00:01:00 và frontend marker test khớp source fixture, không xuất hiện observation tương lai. C08: API và frontend polyline tests khớp 10 điểm 00:09, 3 điểm sau seek lùi 00:02, đúng thứ tự; browser không xác minh từng điểm. E06: delayed session GET và delayed track response sau SEEK/RESET/mode được kiểm thử tự động; clock, session, status, seek target, marker và forecast không bị response cũ ghi đè. E05 pending loading/empty và existing error/retry tests PASS.
+
+Frontend suite 31 passed; build PASS. Browser Console/Network E07/E08 trực tiếp vẫn NOT_VERIFIED vì panel DevTools không hiển thị qua công cụ; log backend và test không được coi là browser PASS. Không phát hiện HIGH/CRITICAL mới. Model Lock unchanged; real AIS deferred S5. S4_TECHNICAL_READY=READY_WITH_APPROVED_LIMITATIONS; MERGE_TO_MAIN_READINESS=READY_PENDING_USER_APPROVAL. Trung đã phê duyệt giới hạn evidence và merge theo điều kiện Git preflight; trạng thái merge thực tế xác minh từ Git.
+## Phê duyệt S4 final signoff
+
+Trung phê duyệt S4-D01 synthetic fixture-only; S4-D02 original V4 parity; S4-D03 chấp nhận E07/E08 Console và Network trực tiếp còn NOT_VERIFIED do giới hạn công cụ; S4-D04 cho phép commit, push và merge khi Git preflight đạt.
+
+- AUTOMATED_ACCEPTANCE=PASS_WITH_APPROVED_SCOPE_LIMITATION.
+- CORE_FUNCTIONAL_ACCEPTANCE=PASS_WITHIN_SYNTHETIC_FIXTURE_SCOPE.
+- FUNCTIONAL_VERIFICATION=43_OF_45 qua browser, API và automated tests; không gọi 43/45 là browser PASS.
+- BROWSER_CONSOLE_DIRECT=NOT_VERIFIED; BROWSER_NETWORK_DIRECT=NOT_VERIFIED; E07_E08_SCOPE_LIMITATION=APPROVED.
+- BUG01_FIXED=YES; REAL_AIS_REPLAY=NOT_VERIFIED_DEFERRED_TO_S5.
+- S4_TECHNICAL_READY=READY_WITH_APPROVED_LIMITATIONS; S4_FINAL_SIGNOFF=APPROVED.
+- T15 BENCHMARK_FAIL giữ nguyên; PRODUCTION_READY=NO; S5_INTEGRATION_READY=NO.
+- Quy trình đóng S4 chỉ hoàn tất khi integration commit đã merge vào remote main và xác minh. Trạng thái Git thực tế cần kiểm tra trên remote.
