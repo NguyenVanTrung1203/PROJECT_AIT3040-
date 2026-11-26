@@ -148,6 +148,45 @@ def test_selected_source_time_controls_asof_original_timestamp_is_provenance_onl
     assert snap["history"][-1]["original_source_timestamp"] == "2024-11-01T00:15:00Z"
 
 
+def test_missing_synthetic_original_timestamp_stays_null():
+    sample = event_at(
+        ANCHOR,
+        vessel_id="simulated:fixture:missing-parent-time",
+        mmsi=None,
+        source_type="SYNTHETIC_AIS",
+        is_simulated=True,
+    )
+    sample.pop("original_source_timestamp", None)
+    buffer = TrackBuffer(SESSION)
+    buffer.ingest(sample, session_id=SESSION)
+
+    snapshot = buffer.snapshot(sample["vessel_id"], ANCHOR, simulation_clock=ANCHOR)
+
+    assert snapshot["data_status"] == "INSUFFICIENT_DATA"
+    assert snapshot["history"][0]["source_timestamp"] == ANCHOR
+    assert snapshot["history"][0]["original_source_timestamp"] is None
+    assert snapshot["current_state"] is None
+
+
+def test_invalid_original_source_timestamp_is_rejected():
+    sample = event_at(
+        ANCHOR,
+        vessel_id="simulated:fixture:invalid-parent-time",
+        mmsi=None,
+        source_type="SYNTHETIC_AIS",
+        is_simulated=True,
+        original_source_timestamp="not-a-utc-timestamp",
+    )
+    with pytest.raises(TrackBufferError, match="original_source_timestamp"):
+        TrackBuffer(SESSION).ingest(sample, session_id=SESSION)
+
+
+def test_real_ais_original_source_timestamp_must_match_selected_timestamp():
+    sample = event_at(ANCHOR, original_source_timestamp="2024-11-01T00:08:00Z")
+    with pytest.raises(TrackBufferError, match="REAL_AIS original and selected"):
+        new_buffer().ingest(sample, session_id=SESSION)
+
+
 def test_nanosecond_timestamps_are_preserved_and_future_anchor_rejected():
     stamp = "2024-11-01T00:09:00.123456789Z"
     assert utc_iso_ns(parse_utc_ns(stamp)) == stamp

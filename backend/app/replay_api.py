@@ -5,6 +5,7 @@ and verification, not a durable multi-worker production deployment.
 """
 from __future__ import annotations
 
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 from functools import lru_cache
 import json
@@ -28,6 +29,8 @@ UTC_REPLAY_START = "2024-11-01T00:00:00Z"
 UTC_REPLAY_END = "2024-11-01T00:10:00Z"
 DEMO_SOURCE_ID = "fixture-denmark-10m-v1"
 SNAPSHOT_TTL_SECONDS = 300
+# Nine one-minute history intervals plus the inclusive 60-second source-age bound.
+REPLAY_HISTORY_LOOKBACK_NS = 10 * 60 * 1_000_000_000
 
 
 class CreateSessionRequest(BaseModel):
@@ -89,6 +92,10 @@ def _require_wire_utc(value: str, field: str) -> int:
         raise ValueError(str(exc)) from exc
 
 
+def _event_timestamp_ns(event: Mapping[str, Any]) -> int:
+    return parse_utc_ns(event.get("timestamp_utc"), field="event timestamp")
+
+
 @lru_cache(maxsize=8)
 def _schema_validator(definition: str) -> Draft202012Validator:
     root = Path(__file__).resolve().parents[2] / "contracts"
@@ -118,6 +125,8 @@ class ReplayAPI:
         self._session_sources: dict[str, str] = {}
         self._session_vessels: dict[str, set[str]] = {}
         self._populated: set[str] = set()
+        self._source_events: dict[str, list[Mapping[str, Any]]] = {}
+        self._session_event_cursor: dict[str, int] = {}
         self._playback_clocks: dict[str, tuple[float, int]] = {}
         self._snapshots: dict[str, _PinnedSnapshot] = {}
         self._expired_snapshots: dict[str, float] = {}
@@ -132,15 +141,11 @@ class ReplayAPI:
         try:
             session = core.create(source.source_id, source.start_time, source.end_time,
                                   start_time=request.start_time)
-            self._populate(core, session.session_id, source, events)
+            self._populate(core, session.session_id, source, events, session.simulation_time)
         except SessionCoreError as exc:
             raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
         except (TrackBufferError, ReplayTimeError) as exc:
             raise APIProblem(503, "SOURCE_INVALID", str(exc)) from exc
-        with self._lock:
-            self._session_sources[session.session_id] = source.source_id
-            self._session_vessels[session.session_id] = {str(event["vessel_id"]) for event in events}
-            self._populated.add(session.session_id)
         self._validate_session(session)
         return session
 
@@ -183,15 +188,14 @@ class ReplayAPI:
             with self._lock:
                 populated = result.session_id in self._populated
             if not populated:
-                events = self._load_ordered_events(source)
+                with self._lock:
+                    events = self._source_events.get(source.source_id)
+                if events is None:
+                    events = self._load_ordered_events(source)
                 try:
-                    self._populate(core, result.session_id, source, events)
+                    self._populate(core, result.session_id, source, events, result.simulation_time)
                 except (TrackBufferError, ReplayTimeError) as exc:
                     raise APIProblem(503, "SOURCE_INVALID", str(exc)) from exc
-                with self._lock:
-                    self._session_sources[result.session_id] = source.source_id
-                    self._session_vessels[result.session_id] = {str(event["vessel_id"]) for event in events}
-                    self._populated.add(result.session_id)
         self._validate_session(result)
         return result
 
@@ -225,9 +229,13 @@ class ReplayAPI:
         if target_ns <= parse_utc_ns(view.simulation_time, field="simulation_time"):
             return view
         try:
-            updated = core.advance_clock(session_id, utc_iso_ns(target_ns))
+            with self._lock:
+                self._ingest_through(core, session_id, target_ns)
+                updated = core.advance_clock(session_id, utc_iso_ns(target_ns))
         except SessionCoreError as exc:
             raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
+        except TrackBufferError as exc:
+            raise APIProblem(503, "SOURCE_INVALID", str(exc)) from exc
         if updated.status != "PLAYING":
             with self._lock:
                 self._playback_clocks.pop(session_id, None)
@@ -296,11 +304,36 @@ class ReplayAPI:
         except (OSError, ValueError, TypeError, ReplayTimeError) as exc:
             raise APIProblem(503, "SOURCE_INVALID", f"Replay source validation failed: {exc}") from exc
 
-    @staticmethod
-    def _populate(core: ReplaySessionCore, session_id: str, source: ReplaySource,
-                  events: Iterable[Mapping[str, Any]]) -> None:
-        for event in events:
-            core.ingest(session_id, event)
+    def _populate(self, core: ReplaySessionCore, session_id: str, source: ReplaySource,
+                  events: list[Mapping[str, Any]], anchor: str) -> None:
+        """Seed only causal history for a new session; later events follow the clock."""
+        anchor_ns = parse_utc_ns(anchor, field="simulation_time")
+        first_needed_ns = anchor_ns - REPLAY_HISTORY_LOOKBACK_NS
+        first_index = bisect_left(events, first_needed_ns, key=_event_timestamp_ns)
+        with self._lock:
+            self._source_events[source.source_id] = events
+            self._session_sources[session_id] = source.source_id
+            self._session_vessels[session_id] = {
+                str(event["vessel_id"]) for event in events
+            }
+            self._session_event_cursor[session_id] = first_index
+        self._ingest_through(core, session_id, anchor_ns)
+        with self._lock:
+            self._populated.add(session_id)
+
+    def _ingest_through(self, core: ReplaySessionCore, session_id: str, target_ns: int) -> None:
+        """Ingest source events only through the authoritative replay clock."""
+        with self._lock:
+            source_id = self._session_sources.get(session_id)
+            events = self._source_events.get(source_id) if source_id is not None else None
+            cursor = self._session_event_cursor.get(session_id)
+            if events is None or cursor is None:
+                raise TrackBufferError("replay event stream is not registered for session")
+            end_index = bisect_right(events, target_ns, key=_event_timestamp_ns)
+            while cursor < end_index:
+                core.ingest(session_id, events[cursor])
+                cursor += 1
+                self._session_event_cursor[session_id] = cursor
 
     def _pin_current(self, session_id: str, simulation_time: str) -> _PinnedSnapshot:
         core = self._core_for_session(session_id)

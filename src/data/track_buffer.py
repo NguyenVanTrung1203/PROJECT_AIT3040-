@@ -158,8 +158,6 @@ class TrackBuffer:
                 continue
             event = selected.event
             original = event.get("original_source_timestamp")
-            if original is None:
-                original = event.get("timestamp_utc")
             history.append({
                 "nominal_timestamp": utc_iso_ns(nominal_ns),
                 "source_timestamp": event["timestamp_utc"],
@@ -206,10 +204,12 @@ class TrackBuffer:
             row["timestamp_utc"] = utc_iso_ns(timestamp_ns)
             original = row.get("original_source_timestamp")
             row["original_source_timestamp"] = (
-                utc_iso_ns(parse_utc_ns(original, field="original_source_timestamp")) if original is not None
-                else row["timestamp_utc"]
+                utc_iso_ns(parse_utc_ns(original, field="original_source_timestamp"))
+                if original is not None else None
             )
-            if row.get("source_type") == "REAL_AIS" and row["original_source_timestamp"] != row["timestamp_utc"]:
+            if (row.get("source_type") == "REAL_AIS"
+                    and row["original_source_timestamp"] is not None
+                    and row["original_source_timestamp"] != row["timestamp_utc"]):
                 raise TrackBufferError("REAL_AIS original and selected source timestamps must match")
             vessel_id = row.get("vessel_id")
             if not isinstance(vessel_id, str) or not vessel_id:

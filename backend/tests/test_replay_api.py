@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from backend.app.main import app
-from backend.app.replay_api import DEMO_SOURCE_ID, ReplayAPI, demo_source
+from backend.app.replay_api import DEMO_SOURCE_ID, ReplayAPI, ReplaySource, demo_source
 
 
 START = "2024-11-01T00:00:00Z"
@@ -26,6 +26,26 @@ def create(client, start_time=ANCHOR):
     })
     assert response.status_code == 201
     return response.json()
+
+
+def long_replay_source():
+    template = demo_source().event_loader()[0]
+    events = []
+    for minute in range(30):
+        event = dict(template)
+        event["timestamp_utc"] = f"2024-11-01T00:{minute:02d}:00Z"
+        event.pop("original_source_timestamp", None)
+        event["vessel_id"] = "simulated:long-replay:ship-001"
+        event["latitude"] = template["latitude"] + minute * 0.001
+        event["longitude"] = template["longitude"] + minute * 0.001
+        event["provenance"] = {"source_file": "long-replay-fixture", "source_row": minute + 1}
+        events.append(event)
+    return ReplaySource(
+        "fixture-long-30m-v1",
+        "2024-11-01T00:00:00Z",
+        "2024-11-01T00:30:00Z",
+        lambda: events,
+    )
 
 
 def test_create_without_optional_start_time_uses_fixture_source_start(api_runtime):
@@ -256,3 +276,69 @@ def test_replay_fixture_partial_history_at_requested_anchors(api_runtime, minute
     assert track["history"][-1]["nominal_timestamp"] == target_time
     assert all(point["source_timestamp"] <= point["nominal_timestamp"] <= target_time
                and 0 <= point["source_age_seconds"] <= 60 for point in track["history"])
+
+
+def test_long_replay_keeps_clock_window_and_seek_reset_history_asof(monkeypatch):
+    ticks = [0.0]
+    runtime = ReplayAPI([long_replay_source()], monotonic=lambda: ticks[0])
+    monkeypatch.setattr(app.state, "replay_api", runtime, raising=False)
+    client = TestClient(app)
+
+    created = client.post("/api/v1/replay/sessions", json={"source_id": "fixture-long-30m-v1"})
+    assert created.status_code == 201
+    session = created.json()
+    start_page = client.get(f"/api/v1/replay/sessions/{session['session_id']}/tracks").json()
+    start_track = start_page["items"][0]
+    assert len(start_track["history"]) == 1
+    assert start_track["history"][0]["source_timestamp"] == "2024-11-01T00:00:00Z"
+    assert start_track["history"][0]["original_source_timestamp"] is None
+    assert start_track["data_status"] == "INSUFFICIENT_DATA" and start_track["current_state"] is None
+
+    started = client.post(
+        f"/api/v1/replay/sessions/{session['session_id']}/control",
+        json={"action": "PLAY", "expected_version": 0},
+    )
+    assert started.status_code == 200
+    ticks[0] += 15 * 60
+    middle = client.get(f"/api/v1/replay/sessions/{session['session_id']}").json()
+    assert middle["simulation_time"] == "2024-11-01T00:15:00Z"
+    middle_page = client.get(f"/api/v1/replay/sessions/{session['session_id']}/tracks").json()
+    middle_track = middle_page["items"][0]
+    assert len(middle_track["history"]) == 10 and middle_track["data_status"] == "VALID"
+
+    forward = client.post(
+        f"/api/v1/replay/sessions/{session['session_id']}/control",
+        headers={"Idempotency-Key": "long-replay-seek-forward"},
+        json={"action": "SEEK", "expected_version": 1, "target_time": "2024-11-01T00:25:00Z"},
+    ).json()
+    forward_page = client.get(f"/api/v1/replay/sessions/{forward['session_id']}/tracks").json()
+    forward_track = forward_page["items"][0]
+    assert forward["simulation_time"] == "2024-11-01T00:25:00Z"
+    assert len(forward_track["history"]) == 10 and forward_track["data_status"] == "VALID"
+
+    backward = client.post(
+        f"/api/v1/replay/sessions/{forward['session_id']}/control",
+        headers={"Idempotency-Key": "long-replay-seek-backward"},
+        json={"action": "SEEK", "expected_version": 0, "target_time": "2024-11-01T00:03:00Z"},
+    ).json()
+    backward_page = client.get(f"/api/v1/replay/sessions/{backward['session_id']}/tracks").json()
+    backward_track = backward_page["items"][0]
+    assert len(backward_track["history"]) == 4
+    assert backward_track["data_status"] == "INSUFFICIENT_DATA"
+    assert backward_track["current_state"] is None
+
+    reset = client.post(
+        f"/api/v1/replay/sessions/{backward['session_id']}/control",
+        headers={"Idempotency-Key": "long-replay-reset"},
+        json={"action": "RESET", "expected_version": 0},
+    ).json()
+    reset_page = client.get(f"/api/v1/replay/sessions/{reset['session_id']}/tracks").json()
+    reset_track = reset_page["items"][0]
+    assert reset["simulation_time"] == "2024-11-01T00:00:00Z"
+    assert len(reset_track["history"]) == 1
+    assert reset_track["history"][0]["source_timestamp"] == "2024-11-01T00:00:00Z"
+
+    for page in (start_page, middle_page, forward_page, backward_page, reset_page):
+        for track in page["items"]:
+            assert all(point["source_timestamp"] <= point["nominal_timestamp"] <= page["simulation_time"]
+                       for point in track["history"])
