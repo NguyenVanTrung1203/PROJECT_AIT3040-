@@ -1,0 +1,403 @@
+protocol_metadata:
+  id: AIT3040_S4_T14
+  version: 1.2-Q1-Q4-offline
+  scope: offline_prototype
+  specification_approval: APPROVED_BY_TRUNG
+  precedence: s4_protocol_over_s3_diagnostic_for_t14_without_changing_contract_v1
+approval:
+  decisions:
+    D1: APPROVED_BY_TRUNG
+    D2: APPROVED_BY_TRUNG
+    D3: APPROVED_BY_TRUNG
+    D4: APPROVED_BY_TRUNG
+    D5: APPROVED_BY_TRUNG
+    D6: APPROVED_BY_TRUNG
+    D7: APPROVED_BY_TRUNG
+  final_package_approval: false
+  protocol_parameters_fully_approved: true
+  supplementary_decisions:
+    P1: APPROVED_BY_TRUNG
+    P2: APPROVED_BY_TRUNG
+    P3: APPROVED_BY_TRUNG
+    P4: APPROVED_BY_TRUNG
+    P5: APPROVED_BY_TRUNG
+    P6: APPROVED_BY_TRUNG
+    P7: APPROVED_BY_TRUNG
+  Q1_Q4:
+    Q1: APPROVED_BY_TRUNG
+    Q2: APPROVED_BY_TRUNG
+    Q3: APPROVED_BY_TRUNG
+    Q4: APPROVED_BY_TRUNG
+dataset:
+  version: final_dataset_1.0
+  checksums_manifest_sha256: 21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441
+  validation:
+    encounters: 835
+    vessels: 1670
+    positive: 425
+    negative: 410
+    yang_lei: 240
+    real_ais: 295
+    synthetic_ais: 300
+    groups: 260
+    largest_group: 556
+    excluding_largest_group: 279
+  test_metadata_only:
+    encounters: 1320
+    yang_lei: 720
+    real_ais: 300
+    synthetic_ais: 300
+  test_tensor_access_before_approved_lock: false
+model_candidate:
+  run_id: s3_t10_20261124_seed20261110_run01
+  epoch: 1
+  seed: 20261110
+  architecture: GRU_4_48_linear_96_relu_30
+  parameter_count: 15390
+  checkpoint_sha256: e01a19e913d14a068c6c82a1c2a52a8be2aadd2f44e3ad5d8770d7f69a1fc7bc
+  x_scaler_sha256: a538be921104ed1bb2fa495c0c3f527c0385fd6c737aa69afda81ba1962d452a
+  residual_scaler_sha256: 96b062fab9a5d4e27c9b1cc32a649e44e98d29648c7dcc3b7f482eba3d50358f
+  status: CANDIDATE
+risk_reference:
+  kind: V4_research_external_not_production
+  sha256: 8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e
+  weights:
+    predicted_cpa: 0.68
+    current_cpa: 0.12
+    rule: 0.2
+  collision_probability: false
+  comparison: score_greater_than_or_equal_to_threshold
+  horizon_minutes: 15
+  packaging: RISK_REFERENCE_PACKAGED_FIXTURE_PARITY_PASS
+  packaged_path: src/risk/reference_v4/risk_pipeline.py
+  distribution_permission: confirmed_by_Trung
+  clean_environment_verification: NOT_VERIFIED
+  clean_environment_required_before_integration: true
+calibration:
+  split: validation
+  classification: IN_SAMPLE_CALIBRATION
+  models:
+  - CV
+  - M5a
+  separate_thresholds: true
+  grid:
+    start_index: 0
+    end_index_inclusive: 200
+    denominator: 200
+    step: 0.005
+    points: 201
+  objective: maximize_F1
+  tie_break:
+  - lower_real_ais_fpr
+  - higher_overall_recall
+  - lower_threshold
+  tie_numeric_equality: exact_integer_count_fractions
+  no_feasible_threshold: NO_FEASIBLE_THRESHOLD
+  infeasible_report:
+  - violated_gates
+  - available_operating_points
+  - pareto_tradeoff
+  - valid_threshold_count
+  calibrated_m5a_threshold: null
+  calibrated_cv_threshold: null
+  diagnostic_thresholds:
+    CV: 0.435
+    M5a: 0.42
+    status: HISTORICAL_NOT_CALIBRATED
+  rational_gates:
+    overall_recall_min: 9/10
+    real_ais_fpr_max: 3/25
+    synthetic_ais_recall_min: 9/10
+    close_positive_recall_min: 19/20
+    recall_delta_min: -1/100
+    fpr_delta_max: 1/100
+    f1_delta_min: -1/100
+mandatory_gates:
+  overall_recall_min: 0.9
+  real_ais_fpr_max: 0.12
+  synthetic_ais_recall_min: 0.9
+  close_positive_recall_min: 0.95
+  severe_qc_count_max: 0
+  close_positive:
+    source: synthetic_ais
+    label: positive
+    distance: ground_truth_future_minimum_haversine_nm
+    maximum_exclusive_nm: 0.1
+    scoring_uses_future: false
+    subgroup_may_be_used_for_calibration_gate: true
+  undefined_metric: NA_AND_GATE_CANNOT_PASS
+  minimum_evaluation_support: P3
+comparative_gates:
+  delta_convention: M5a_minus_CV
+  recall_delta_min_absolute: -0.01
+  real_ais_fpr_delta_max_absolute: 0.01
+  f1_delta_min_absolute: -0.01
+  overall_ade_max_ratio: 1.1
+  real_ais_ade_max_ratio: 1.1
+  added_close_positive_false_negative_count_max: 0
+  compare_close_positive_by_encounter_id: true
+  severe_qc_count_max: 0
+  same_inputs_labels_risk_engine_projection_qc: true
+  cv_infeasible_status: D2_CONDITIONAL
+  allowed_status:
+  - D2_PASS
+  - D2_CONDITIONAL
+  - D2_FAIL
+  - D2_BLOCKED
+  statistical_noninferiority_claim: false
+  v1_unavailable_status: V1_BASELINE_UNAVAILABLE
+  v1_unavailable_blocks_cv_m5a_calibration: false
+validation_reuse:
+  main: IN_SAMPLE
+  cross_fit: EXPLORATORY_CROSS_FIT
+  independent: INDEPENDENT_EVALUATION_NOT_PERFORMED
+  biases:
+  - checkpoint_selection
+  - threshold_selection
+  - protocol_selection
+  - prior_validation_reuse
+grouped_cross_fitting:
+  enabled: true
+  group_source: locked_dependency_group_id
+  keep_group_intact: true
+  shared_folds_for_models: true
+  calibration_train_side_only: true
+  held_out_evaluation: true
+  model_or_scaler_training: false
+  choose_folds_by_model_metric: false
+  folds: null
+  fold_construction: adaptive_deterministic_largest_first_bounded_search
+  feasibility: source_label_close_positive_support_both_sides
+  infeasible_status: GROUPED_CV_INFEASIBLE
+  candidate_K:
+  - 5
+  - 4
+  - 3
+  - 2
+  preferred_K: 5
+  minimum_K: 2
+  seed: 20261124
+  heuristic_failure_is_not_proof: true
+  calibration_threshold_substitute_on_failure: false
+clustered_bootstrap:
+  unit: dependency_group
+  paired: true
+  preserve_multiplicity: true
+  repetitions: 5000
+  seed: 20261124
+  confidence_level: 0.95
+  interval: percentile
+  delta: M5a_minus_CV
+  undefined_metric: NA_REPORT_COUNT_AND_RATE
+  min_valid_repetitions: 4750
+  fixed_threshold_metrics:
+  - ROC_AUC
+  - average_precision
+  - F1
+  - recall
+  - real_ais_FPR
+  - ADE
+  - FDE
+  - close_positive_recall
+  allowed_status:
+  - D4_ANALYSIS_PASS
+  - D4_EVIDENCE_LIMITED
+  - D4_PARTIAL
+  - D4_BLOCKED
+  minimum_valid_ratio: 0.95
+  maximum_invalid_repetitions: 250
+  resample_to_replace_invalid: false
+  all_defined_ci: descriptive
+  support_qualified_ci: per_metric_at_least_4750
+  insufficient_status: CI_INSUFFICIENT_VALID_REPETITIONS
+  statuses:
+  - VALID_SUPPORT
+  - LOW_SUPPORT
+  - UNDEFINED
+  - NO_FEASIBLE_THRESHOLD
+  - EXECUTION_ERROR
+  percentiles:
+  - 2.5
+  - 97.5
+  runner: src/protocol/clustered_bootstrap.py
+  canonical_group_order: UTF8_bytes_ascending
+  rng: numpy_default_rng_PCG64
+  sample_group_draws_per_repetition: number_of_unique_groups
+  synthetic_repetition_override_only: true
+threshold_stability:
+  reselect_each_model_per_replicate: true
+  report:
+  - feasible_infeasible
+  - threshold_distribution
+  - D2_gate_stability
+  - no_solution_rate
+  out_of_sample_evaluation: false
+  feasible_rate_denominator: 5000
+  minimum_feasible_rate_gate: null
+sensitivity_analysis:
+  scenarios:
+    S1: all_835
+    S2: exclude_largest_279
+    S3: largest_only_556
+  fixed_reference_thresholds: true
+  select_alternative_threshold: false
+  report_source_label_subgroup_distribution: true
+device_parity:
+  position_max_abs_coordinate_nm: 5.0e-05
+  aggregate_ade_abs_nm: 1.0e-06
+  aggregate_fde_abs_nm: 1.0e-06
+  vessels_exceeding_position_tolerance_max: 0
+  risk_score_max_abs: 5.0e-05
+  decision_parity_fraction: 1.0
+  severe_qc_count_cpu_gpu_max: 0
+  risk_parity_threshold: T14_calibrated_threshold
+  decision_mismatch_status: RISK_DECISION_PARITY_REVIEW_REQUIRED
+  compare:
+  - shape
+  - AB_mapping
+  - forecast_timestamps
+  - validation_error_classification
+  - qc_classification
+  - near_threshold_cases
+  rounding_or_epsilon_to_force_pass: false
+  policy:
+    auto: prefer_available_working_cuda_else_cpu
+    cpu: cpu
+    cuda: require_cuda_no_silent_switch
+  missing_cuda_causes_cv_fallback: false
+  artifact_integrity_failure: fail_closed
+model_lock:
+  states:
+  - CANDIDATE
+  - CALIBRATED_CANDIDATE
+  - CONDITIONAL_TECHNICAL_LOCK
+  - LOCK_REJECTED
+  current: CANDIDATE
+  locked: false
+  automatic_transition: false
+  prerequisites:
+  - D1_PASS
+  - D2_PASS
+  - D3_completed_or_explained
+  - D4_analysis_and_limitations_accepted
+  - D5_PASS
+  - D7_approved
+  - dataset_artifact_integrity
+  - full_regression
+  - contract_v1_unchanged
+  - Trung_final_approval
+  - P6_integrity_fixture_parity
+  - P7_limitations_review
+  package:
+  - checkpoint
+  - architecture
+  - x_scaler
+  - residual_scaler
+  - input_output_schema
+  - projection_config
+  - risk_reference
+  - m5a_threshold
+  - cv_threshold_if_feasible
+  - qc_fallback_contract_v1
+  - device_tolerance
+  - dataset_provenance
+  - D1_D7_protocol
+  - git_source_provenance
+  - package_version
+  - sha256_manifest
+  - P1_P7_protocol
+test_benchmark:
+  authorized: false
+  classification: REUSED_DEVELOPMENT_BENCHMARK
+  open_after:
+  - T14_complete
+  - Trung_approved_conditional_lock
+  - package_version_and_manifest_verified
+  - T15_protocol_fixed
+  threshold_reselection: false
+  retrain_recalibrate_model_selection: false
+  D1_D2_fixed_threshold_gates: true
+  required_metrics:
+  - ADE
+  - FDE
+  - ROC_AUC
+  - average_precision
+  - precision
+  - recall
+  - F1
+  - FPR
+  - confusion_matrix
+  - close_positive
+  - severe_qc
+  - CPU_GPU_latency
+  - EASY_MEDIUM_HARD_if_available
+  missing_required_metric: INCONCLUSIVE
+  allowed_status:
+  - BENCHMARK_PASS
+  - BENCHMARK_CONDITIONAL
+  - BENCHMARK_FAIL
+  - BENCHMARK_BLOCKED
+  independent_evaluation:
+    required_before_production: true
+    new_dataset: true
+    disjoint_encounter_parent_dependency_groups: true
+    different_time_or_region: true
+    real_ais_positive_and_negative: true
+    reliable_labels: true
+    package_protocol_locked_before_access: true
+    modify_final_dataset: false
+production_restrictions:
+  approved: false
+  production_alert: false
+  runtime_requires_T18_T19: true
+  contract_v1_change: false
+  invalid_input_cv_fallback: false
+  cv_fallback_requires_valid_input_and_technical_failure: true
+evaluation_support:
+  overall_recall_positive: 30
+  overall_fpr_negative: 30
+  real_ais_fpr_negative: 30
+  synthetic_ais_recall_positive: 30
+  close_positive: 10
+  precision_predicted_positive: 20
+  f1_positive: 30
+  f1_negative: 30
+  auc_positive: 30
+  auc_negative: 30
+  average_precision_positive: 30
+  average_precision_negative: 30
+  overall_ade_fde_valid_encounters: 30
+  source_ade_fde_valid_encounters: 30
+  yang_lei_for_folds: 30
+  severe_qc: all_inference_samples
+  statuses:
+  - VALID_SUPPORT
+  - LOW_SUPPORT
+  - NA
+  - FOLD_SUPPORT_INSUFFICIENT
+  - INCONCLUSIVE
+dependency_integrity:
+  expected_encounters: 835
+  expected_groups: 260
+  expected_largest_group: 556
+  group_removal_count: 279
+  required_checks:
+  - coverage
+  - one_group_per_encounter
+  - duplicate_id
+  - valid_group_id
+  - identity_match
+  - group_intact
+  - parent_source_relationships
+  - MMSI_provenance
+  - reproducible_construction
+  - manifest_version_sha256
+  invalid_status: DEPENDENCY_METADATA_INVALID
+  singleton_repair: false
+  drop_encounters: false
+  offline_acceptance: CONDITIONAL
+  accepted_by_trung: true
+  lineage_status: PARTIAL
+  independent_provenance: PARTIAL
+  real_world_mmsi_ownership: NOT_VERIFIED
+  production_provenance_approved: false

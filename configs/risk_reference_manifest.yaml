@@ -1,0 +1,23 @@
+reference_id: v4_risk_pipeline_research
+original_source_identity: MODEL_CANDIDATE_PACKAGE/inference/risk_pipeline.py
+original_sha256: 8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e
+packaged_path: src/risk/reference_v4/risk_pipeline.py
+packaged_sha256: 8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e
+redistribution_permission: confirmed_by_Trung
+algorithm_modified: false
+import_adaptation: none
+adapter_version: 0.1-offline-candidate
+observed_environment:
+  python: 3.12.3
+  numpy: 2.4.4
+  pandas: 3.0.3
+  pytorch: 2.11.0+cu128
+  joblib: 1.5.3
+  scikit_learn: 1.8.0
+reference_top_level_imports: [pathlib, json, numpy, pandas, joblib, torch]
+score_dependencies: [numpy]
+offline_adapter_dependencies: [dataset_loader, trusted_offline_validator, T06_CV_projection_QC, T11_M5aInference]
+contract_compatibility: offline_adapter_only_runtime_semantics_not_certified
+intended_use: offline_T14_T15
+production_approved: false
+limitations: full_validation_packaging_parity_required_before_calibration
