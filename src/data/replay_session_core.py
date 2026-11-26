@@ -235,12 +235,16 @@ class ReplaySessionCore:
                 raise SessionCoreError(409, "simulation clock advances only while PLAYING", code="CLOCK_NOT_PLAYING")
             if target_ns < session.simulation_ns or target_ns > session.source_end_ns:
                 raise SessionCoreError(422, "simulation clock must advance within source range", code="CLOCK_OUT_OF_RANGE")
-            changed = target_ns != session.simulation_ns
-            if changed:
+            clock_changed = target_ns != session.simulation_ns
+            if clock_changed:
                 session.simulation_ns = target_ns
+            status_changed = target_ns == session.source_end_ns and session.status != "ENDED"
             if target_ns == session.source_end_ns:
                 session.status = "ENDED"
-            if changed:
+            # Version is the optimistic-control version. Ordinary clock ticks
+            # must not invalidate a control request between polling and POST;
+            # the PLAYING -> ENDED state transition still advances it once.
+            if status_changed:
                 session.version += 1
             return session.view()
 

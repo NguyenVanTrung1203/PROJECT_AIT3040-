@@ -20,7 +20,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
 from src.data.replay_session_core import ReplaySessionCore, SessionCoreError, SessionView
-from src.data.replay_time import ReplayTimeError, parse_utc_ns
+from src.data.replay_time import ReplayTimeError, parse_utc_ns, utc_iso_ns
 from src.data.track_buffer import SourceIdentityVerifier, TrackBufferError
 
 
@@ -118,6 +118,7 @@ class ReplayAPI:
         self._session_sources: dict[str, str] = {}
         self._session_vessels: dict[str, set[str]] = {}
         self._populated: set[str] = set()
+        self._playback_clocks: dict[str, tuple[float, int]] = {}
         self._snapshots: dict[str, _PinnedSnapshot] = {}
         self._expired_snapshots: dict[str, float] = {}
         self._lock = threading.RLock()
@@ -146,7 +147,7 @@ class ReplayAPI:
     def get_session(self, session_id: str) -> SessionView:
         core = self._core_for_session(session_id)
         try:
-            view = core.get(session_id)
+            view = self._sync_playback_clock(core, session_id)
         except SessionCoreError as exc:
             raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
         if view.status == "EXPIRED":
@@ -158,7 +159,8 @@ class ReplayAPI:
                 idempotency_key: str | None) -> SessionView:
         core = self._core_for_session(session_id)
         try:
-            source_id = core.get(session_id).source_id
+            before = self._sync_playback_clock(core, session_id)
+            source_id = before.source_id
         except SessionCoreError as exc:
             raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
         source = self.sources.get(source_id)
@@ -171,6 +173,12 @@ class ReplayAPI:
                                   idempotency_key=idempotency_key)
         except SessionCoreError as exc:
             raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
+        with self._lock:
+            if result.session_id != session_id or result.status != "PLAYING":
+                self._playback_clocks.pop(session_id, None)
+            elif before.status != "PLAYING":
+                self._playback_clocks[session_id] = (
+                    self.monotonic(), parse_utc_ns(result.simulation_time, field="simulation_time"))
         if result.session_id != session_id:
             with self._lock:
                 populated = result.session_id in self._populated
@@ -186,6 +194,44 @@ class ReplayAPI:
                     self._populated.add(result.session_id)
         self._validate_session(result)
         return result
+
+    def _sync_playback_clock(self, core: ReplaySessionCore, session_id: str) -> SessionView:
+        """Advance a PLAYING session from backend monotonic elapsed time on REST activity.
+
+        Polling is the scheduler for this in-memory fixture runtime: no browser wall clock
+        is used as AIS/simulation time, and no background thread is needed. A dormant
+        session catches up from its server-side baseline on the next read/control.
+        """
+        view = core.get(session_id)
+        if view.status != "PLAYING":
+            with self._lock:
+                self._playback_clocks.pop(session_id, None)
+            return view
+        now = self.monotonic()
+        with self._lock:
+            baseline = self._playback_clocks.get(session_id)
+            if baseline is None:
+                baseline = (now, parse_utc_ns(view.simulation_time, field="simulation_time"))
+                self._playback_clocks[session_id] = baseline
+        started_at, simulation_start_ns = baseline
+        elapsed_seconds = max(0, int(now - started_at))
+        if elapsed_seconds == 0:
+            return view
+        source = self.sources.get(view.source_id)
+        if source is None:
+            return view
+        source_end_ns = parse_utc_ns(source.end_time, field="source_end")
+        target_ns = min(simulation_start_ns + elapsed_seconds * 1_000_000_000, source_end_ns)
+        if target_ns <= parse_utc_ns(view.simulation_time, field="simulation_time"):
+            return view
+        try:
+            updated = core.advance_clock(session_id, utc_iso_ns(target_ns))
+        except SessionCoreError as exc:
+            raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
+        if updated.status != "PLAYING":
+            with self._lock:
+                self._playback_clocks.pop(session_id, None)
+        return updated
 
     def list_tracks(self, session_id: str, *, limit: int, offset: int,
                     snapshot_id: str | None) -> dict[str, Any]:

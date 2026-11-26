@@ -20,12 +20,31 @@ def api_runtime(monkeypatch):
     return runtime, ticks, TestClient(app)
 
 
-def create(client):
+def create(client, start_time=ANCHOR):
     response = client.post("/api/v1/replay/sessions", json={
-        "source_id": DEMO_SOURCE_ID, "start_time": ANCHOR,
+        "source_id": DEMO_SOURCE_ID, "start_time": start_time,
     })
     assert response.status_code == 201
     return response.json()
+
+
+def test_create_without_optional_start_time_uses_fixture_source_start(api_runtime):
+    _runtime, _ticks, client = api_runtime
+    response = client.post("/api/v1/replay/sessions", json={"source_id": DEMO_SOURCE_ID})
+    assert response.status_code == 201
+    session = response.json()
+    assert session["source_id"] == DEMO_SOURCE_ID
+    assert session["simulation_time"] == START
+    assert session["status"] == "READY" and session["version"] == 0
+
+    page_response = client.get(f"/api/v1/replay/sessions/{session['session_id']}/tracks")
+    assert page_response.status_code == 200
+    track = page_response.json()["items"][0]
+    assert track["anchor_timestamp"] == START
+    assert len(track["history"]) == 1
+    assert track["data_status"] == "INSUFFICIENT_DATA"
+    assert track["current_state"] is None
+    assert track["history"][0]["source_timestamp"] == START
 
 
 def test_replay_v1_five_routes_return_contract_data_and_leaflet_coordinates(api_runtime):
@@ -125,3 +144,115 @@ def test_mock_api_remains_separate_from_replay_endpoints(api_runtime):
     mock = client.get("/api/v1/mock/tracks")
     assert mock.status_code == 200 and mock.json()["total"] == 4
     assert client.get("/api/v1/replay/sessions").status_code == 405
+
+
+def test_backend_playback_clock_advances_from_monotonic_time_and_pauses(api_runtime):
+    _runtime, ticks, client = api_runtime
+    session = create(client)
+    session_id = session["session_id"]
+
+    playing = client.post(f"/api/v1/replay/sessions/{session_id}/control",
+                          json={"action": "PLAY", "expected_version": 0})
+    assert playing.status_code == 200
+    assert playing.json()["status"] == "PLAYING" and playing.json()["version"] == 1
+
+    ticks[0] += 2.4
+    advanced = client.get(f"/api/v1/replay/sessions/{session_id}").json()
+    assert advanced["simulation_time"] == "2024-11-01T00:09:02Z"
+    assert advanced["version"] == 1
+    assert client.get(f"/api/v1/replay/sessions/{session_id}").json()["version"] == 1
+
+    page_response = client.get(f"/api/v1/replay/sessions/{session_id}/tracks")
+    assert page_response.status_code == 200
+    page = page_response.json()
+    assert page["simulation_time"] == advanced["simulation_time"]
+    for track in page["items"]:
+        assert all(point["source_timestamp"] <= point["nominal_timestamp"] <= page["simulation_time"]
+                   for point in track["history"])
+
+    paused = client.post(f"/api/v1/replay/sessions/{session_id}/control",
+                         json={"action": "PAUSE", "expected_version": 1})
+    assert paused.status_code == 200
+    assert paused.json()["status"] == "PAUSED" and paused.json()["version"] == 2
+    ticks[0] += 8
+    frozen = client.get(f"/api/v1/replay/sessions/{session_id}").json()
+    assert frozen["simulation_time"] == advanced["simulation_time"]
+    assert frozen["version"] == 2
+
+    resumed = client.post(f"/api/v1/replay/sessions/{session_id}/control",
+                          json={"action": "RESUME", "expected_version": 2})
+    assert resumed.status_code == 200
+    ticks[0] += 1
+    next_clock = client.get(f"/api/v1/replay/sessions/{session_id}").json()
+    assert next_clock["simulation_time"] == "2024-11-01T00:09:03Z"
+    assert next_clock["version"] == 3
+
+    ticks[0] += 60
+    ended = client.get(f"/api/v1/replay/sessions/{session_id}").json()
+    assert ended["simulation_time"] == END
+    assert ended["status"] == "ENDED"
+    assert ended["version"] == 4
+    assert client.post(f"/api/v1/replay/sessions/{session_id}/control",
+                       json={"action": "PLAY", "expected_version": 4}).status_code == 409
+
+
+def test_seek_creates_a_paused_session_at_target_with_session_isolation(api_runtime):
+    runtime, _ticks, client = api_runtime
+    original = create(client)
+    original_id = original["session_id"]
+    seek = client.post(
+        f"/api/v1/replay/sessions/{original_id}/control",
+        headers={"Idempotency-Key": "seek-api-1"},
+        json={"action": "SEEK", "expected_version": 0, "target_time": "2024-11-01T00:04:00Z"},
+    )
+    assert seek.status_code == 200
+    target = seek.json()
+    assert target["session_id"] != original_id
+    assert target["status"] == "PAUSED" and target["version"] == 0
+    assert target["simulation_time"] == "2024-11-01T00:04:00Z"
+    assert runtime.get_session(original_id).status == "ENDED"
+    page = client.get(f"/api/v1/replay/sessions/{target['session_id']}/tracks").json()
+    assert page["simulation_time"] == target["simulation_time"]
+    assert all(point["source_timestamp"] <= point["nominal_timestamp"] <= target["simulation_time"]
+               for track in page["items"] for point in track["history"])
+    retry = client.post(
+        f"/api/v1/replay/sessions/{original_id}/control",
+        headers={"Idempotency-Key": "seek-api-1"},
+        json={"action": "SEEK", "expected_version": 0, "target_time": "2024-11-01T00:04:00Z"},
+    )
+    assert retry.status_code == 200 and retry.json() == target
+
+
+@pytest.mark.parametrize(
+    ("minute", "expected_points", "expected_status"),
+    [(0, 1, "INSUFFICIENT_DATA"), (1, 2, "INSUFFICIENT_DATA"),
+     (5, 6, "INSUFFICIENT_DATA"), (8, 9, "INSUFFICIENT_DATA"),
+     (9, 10, "VALID"), (10, 10, "VALID")],
+)
+def test_replay_fixture_partial_history_at_requested_anchors(api_runtime, minute, expected_points, expected_status):
+    _runtime, ticks, client = api_runtime
+    target_time = f"2024-11-01T00:{minute:02d}:00Z"
+    session = create(client, START)
+    if minute > 0:
+        started = client.post(f"/api/v1/replay/sessions/{session['session_id']}/control",
+                              json={"action": "PLAY", "expected_version": 0})
+        assert started.status_code == 200
+        ticks[0] += minute * 60
+        advanced = client.get(f"/api/v1/replay/sessions/{session['session_id']}").json()
+        assert advanced["simulation_time"] == target_time
+        assert advanced["status"] == ("ENDED" if minute == 10 else "PLAYING")
+
+    response = client.get(f"/api/v1/replay/sessions/{session['session_id']}/tracks")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["simulation_time"] == target_time
+    track = payload["items"][0]
+    assert track["anchor_timestamp"] == target_time
+    assert len(track["history"]) == expected_points
+    assert track["data_status"] == expected_status
+    assert (track["current_state"] is None) is (expected_status != "VALID")
+    if expected_status == "VALID":
+        assert track["current_state"] == track["history"][-1]
+    assert track["history"][-1]["nominal_timestamp"] == target_time
+    assert all(point["source_timestamp"] <= point["nominal_timestamp"] <= target_time
+               and 0 <= point["source_age_seconds"] <= 60 for point in track["history"])

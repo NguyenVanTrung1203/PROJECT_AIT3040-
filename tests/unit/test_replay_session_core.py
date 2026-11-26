@@ -39,7 +39,21 @@ def test_canonical_session_uuid_initial_version_and_simulation_clock():
     with pytest.raises(SessionCoreError) as err:
         core.advance_clock(ready.session_id, "2024-11-01T00:11:00Z")
     assert err.value.status_code == 422
-    assert core.advance_clock(ready.session_id, "2024-11-01T00:00:01Z").simulation_time == "2024-11-01T00:00:01Z"
+    ticked = core.advance_clock(ready.session_id, "2024-11-01T00:00:01Z")
+    assert ticked.simulation_time == "2024-11-01T00:00:01Z"
+    assert ticked.version == 1  # ordinary clock progress does not invalidate control versions
+
+
+def test_playback_auto_end_increments_control_version_once():
+    core = make_core()
+    ready = core.create("fixture-source", START, END)
+    playing = core.control(ready.session_id, "PLAY", expected_version=0)
+
+    ticked = core.advance_clock(playing.session_id, "2024-11-01T00:09:59Z")
+    assert ticked.status == "PLAYING" and ticked.version == 1
+
+    ended = core.advance_clock(playing.session_id, END)
+    assert ended.status == "ENDED" and ended.version == 2
 
 
 def test_all_25_state_action_matrix_cases():
