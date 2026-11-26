@@ -121,3 +121,13 @@ def test_caller_set_both_booleans_cannot_enable_runtime(model,batch):
         model.predict(replace(batch,provenance_verified=True,in_scope_verified=True))
     assert exc.value.code == 'INVALID_INPUT'
     assert model._predict_test_only(batch)['data_status'] == 'TEST_ONLY_UNVERIFIED'
+
+
+def test_t11_fallback_failure_never_masquerades_as_forecast(model,batch,monkeypatch):
+    import src.inference.m5a_wrapper as wrapper
+    def fail_model(*a,**k):raise RuntimeError('technical error')
+    def fail_cv(*a,**k):raise ValueError('CV unusable')
+    monkeypatch.setattr(model.model,'forward',fail_model)
+    monkeypatch.setattr(wrapper,'project_forecast',fail_cv)
+    with pytest.raises(InferenceError) as exc:model._predict_test_only(batch)
+    assert exc.value.code=='FORECAST_UNAVAILABLE'

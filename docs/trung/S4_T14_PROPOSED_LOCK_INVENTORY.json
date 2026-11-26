@@ -1,0 +1,817 @@
+{
+  "document_type": "REVIEW_ONLY_PROPOSED_INVENTORY",
+  "status": "PROPOSED_NOT_LOCKED",
+  "activation": false,
+  "final_approval": "NOT_GRANTED",
+  "model_lock": false,
+  "test_benchmark_authorized": false,
+  "production_approved": false,
+  "proposed_package_name": "m5a-cc-dri-offline-candidate-v1.0",
+  "current_git_head": "4457fc2d4f485d2da832b039e8edc1cdf5837551",
+  "future_commit_identity": null,
+  "proposed_package_identity": "UNASSIGNED",
+  "active_lock_manifest_identity": null,
+  "source_closure_scope": "Offline trusted Validation scoring in current verified environment; transitive import/config closure, not a production runtime or a clean-environment reconstruction. No source files copied.",
+  "source_closure_evidence": "Static import/path inspection and successful imports of offline wrapper, validator and adapter on observed environment; package relocation and clean environment not verified.",
+  "source_and_configs": [
+    {
+      "path": "src/__init__.py",
+      "purpose": "Package initialization",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/inference/__init__.py",
+      "purpose": "Inference namespace",
+      "sha256": "b2ae4c93913801bbdb267d0cef639bb209eea8c67807a0f1395571560100082e",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/inference/m5a_wrapper.py",
+      "purpose": "Artifact validation, offline inference, device and fallback policy",
+      "sha256": "694efe1a3ff9c9161cb642c38a1e15a6b6aae5ed93c7b299f3769fc4aab282be",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "torch",
+        "PyYAML"
+      ]
+    },
+    {
+      "path": "src/inference/offline_validation.py",
+      "purpose": "Locked Validation trust boundary and history identity",
+      "sha256": "b4732d93f459a2c906308ef4d96e2f92d4474ef17007b9d08b2740f4710cc30f",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "pandas",
+        "torch",
+        "PyYAML"
+      ]
+    },
+    {
+      "path": "src/models/__init__.py",
+      "purpose": "Model namespace",
+      "sha256": "7042593f8253d9fdf8502fab20f2c0c128baa34910b71c8bb960f344bd15bb8e",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/models/m5a.py",
+      "purpose": "Residual-GRU architecture",
+      "sha256": "b48fac19c003bc68bb0bc6df533de67fb766a4a403de8ac266886618dd8924ac",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "torch"
+      ]
+    },
+    {
+      "path": "src/models/scalers.py",
+      "purpose": "Scaler loading and transforms",
+      "sha256": "309c5c11d8a3262001099999c4323b562912d963c46f223d36f2e1e1764010d6",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "torch",
+        "scikit-learn"
+      ]
+    },
+    {
+      "path": "src/models/pipeline.py",
+      "purpose": "CV plus residual inference",
+      "sha256": "d5cf7f9228a736b5a8e227210e0a5c18e9d8a4d6a4244d641b589fc97219a49c",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "torch"
+      ]
+    },
+    {
+      "path": "src/models/kinematics.py",
+      "purpose": "CV and constrained projection",
+      "sha256": "b27720ae51582a82d301e9f314a54c0563ad5ddd320622c75d5768e9c4740900",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "torch"
+      ]
+    },
+    {
+      "path": "src/risk/__init__.py",
+      "purpose": "Risk namespace",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/risk/adapter.py",
+      "purpose": "Offline risk adapter and verification",
+      "sha256": "0786e41ea77bf923e9a7ca562ebdf8930b5ba9250a8a4d7ab9727ba7c42b240c",
+      "required": true,
+      "scope": "offline",
+      "git_status": "untracked",
+      "external_dependencies": [
+        "numpy",
+        "torch"
+      ]
+    },
+    {
+      "path": "src/risk/reference_v4/__init__.py",
+      "purpose": "V4 namespace",
+      "sha256": "153945f8c50bb28be2e6c37c7e995adf04c9c72dadac2a59ba95d4954fbf6402",
+      "required": true,
+      "scope": "offline",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/risk/reference_v4/risk_pipeline.py",
+      "purpose": "Unmodified V4 CPA/rule/CC-DRI",
+      "sha256": "8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e",
+      "required": true,
+      "scope": "offline",
+      "git_status": "untracked",
+      "external_dependencies": [
+        "numpy",
+        "pandas",
+        "joblib",
+        "torch"
+      ]
+    },
+    {
+      "path": "src/data/__init__.py",
+      "purpose": "Dataset namespace",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/data/dataset_loader.py",
+      "purpose": "Locked split/index loading",
+      "sha256": "2f77e135fd8a09d5649937c99be3e0839654568dca12950ca18d9e6ae5d675bd",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "pandas",
+        "pyarrow",
+        "PyYAML"
+      ]
+    },
+    {
+      "path": "src/data/tensor_verification.py",
+      "purpose": "Dataset checksum and validation utilities",
+      "sha256": "3e31b825286845e88cfa5d7c1cfbc1df7db42cec2c7a01dcc634b5df9d3fd512",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "pandas",
+        "torch"
+      ]
+    },
+    {
+      "path": "src/data/encounter_dataset.py",
+      "purpose": "EncounterDataset import dependency",
+      "sha256": "8aa638dcf699db5766aec7759496769f22cffae1fc499016d4839987532866b8",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "torch"
+      ]
+    },
+    {
+      "path": "src/utils/__init__.py",
+      "purpose": "Utilities namespace",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/utils/paths.py",
+      "purpose": "Dataset and repository path resolution",
+      "sha256": "dd6ab2a9e911aed4acc6bddc71a61ac9f8cb627cc09b867d7945cedc72a2528c",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/training/__init__.py",
+      "purpose": "Training namespace imported by inference",
+      "sha256": "784c3fa3dac63d20585f2abab9b05bc03304a1aaa4e9a7befa22e6b3dbd7e5f0",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "src/training/data.py",
+      "purpose": "Pinned dataset and feature constants imported by trust boundary",
+      "sha256": "6d62eef6f3c9da1ebfceaf23ed911a3819f2320a58708ceadfb580c2bb355dd7",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "torch",
+        "PyYAML"
+      ]
+    },
+    {
+      "path": "src/training/engine.py",
+      "purpose": "Severe QC imported by inference",
+      "sha256": "3019ad34c0f26020b0bab4a26c75bfbc12276f485d9377275d37ae53d4a17db9",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "torch"
+      ]
+    },
+    {
+      "path": "src/training/loss.py",
+      "purpose": "Required transitive import of training.engine",
+      "sha256": "e464ecb0f34dae997a7b1a7ad721a66b2d9695588c254edb380a365c7d30b0ff",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "torch"
+      ]
+    },
+    {
+      "path": "scripts/verify_feature_contract.py",
+      "purpose": "History common EN and velocity verification",
+      "sha256": "012d11a6f6109d424fb6fe82dd7e4cf1c0caad2d83717972b43136f153f5acf2",
+      "required": true,
+      "scope": "offline",
+      "git_status": "tracked",
+      "external_dependencies": [
+        "numpy",
+        "pandas"
+      ]
+    },
+    {
+      "path": "configs/data_config.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "2b26dc99f489f1b62eaabdd87b3bca7509bfa0b31fc9360c8a2354b0254e21be",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/model_config.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "b1e3503b44e92e152cac6db2ce8102d9e8d556b150d1092585046ea7459d12f6",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/projection_config.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "a3cb3a5a767d15dc1adc4669f33b0717b638bd8e11a41aa7f415d223024e35bf",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/risk_reference_manifest.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "225f27091d352c13b024e06b05a3acd19ee932a2e14e0bd6dd9947e9977ea175",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/s4_calibration_protocol.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "e2d33ffbce7920f893779dddd7652fd79760808e85e63e0a4c24b0ccf5f24901",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/s4_t14_observed_dependency_closure.yaml",
+      "purpose": "Pinned configuration or observed-environment/protocol evidence",
+      "sha256": "0e6c5daa5edd9d4c4c3960962684c6ace528d4b90913ac8f60b10e6dc894781f",
+      "required": true,
+      "scope": "offline_or_review",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "configs/risk_config.yaml",
+      "purpose": "Frozen Contract reference; proposed thresholds are separately sourced from Batch 02",
+      "sha256": "7da5db07fd634afe698efc95cb226b37eb7b93d9df27047230b85a0b16f00535",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    }
+  ],
+  "contract_v1_commit": "99bdb2649f5aec39d67a6f64645bce4f7fc49a3d",
+  "contract_references": [
+    {
+      "path": "contracts/integration_contract.md",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "805d1cb2385e44578a33e938b3697aee207f6384689c8ddcbe5a2cb953a66fab",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/coordinate_contract.md",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "1f93770e328acac98cb92891de3cdbf39a1870cc31b5f18212f21cc143d0c56f",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/feature_contract.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "9ec397333e5ace39a191017a38af565b8f94cb233a3cd7a5f435123ca5862dac",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/forecast_contract.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "9c8c84de7705e44f570c687c98b251e08df052b29301e0bd7f6d73757613b106",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/forecast.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "5d0bed03156d3d64d7c378b2c7dc0a7cda0166218a071688e67b46e3cd01d2c8",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/track_snapshot.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "7a94a22bbcdbc226539f190544cecd8ccd300e901ff4d86d54e9f95511d92590",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/common.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "b35878560719f702579773bd87d72b89e44b691f1729fd0b62ce40e36f573d57",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/risk_request_v1.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "9d96d06eb81c516e28f873421872bcedbe16b826a5232f98d6576f1a89d8b3aa",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/risk_response_v1.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "bf071a42dd74d01136b85f19dacd0b7fdf899b9f64901e3baf567cbb309e9dda",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/encounter_v1.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "4ce44c91308c79c2063ac14633893b344259398bc28e83b00c8733a79d43959b",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/alert_v1.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "e39b64b8bd1a14e638b5518413ecf52b0bd7978c7ac55e4fab7ad171d6e72aa7",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/temporal_contract.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "82e18461936e882666ce791b17272340359339cc8344f7287bc825490beb5b99",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/rule_input_contract.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "94e0aef469607f4ee42484ba51a48c60efa27d1dd966d7ba68083ada24bb2306",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/model_status.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "1faa62f621a0fd76148838925b58c53ba7f46fd52d38910eae28123faccacc92",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/error.schema.json",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "d363c00810bf41bb39559a6cbd834f953be0ab3739db667716db1a3f6b3741ea",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "contracts/api_contract.yaml",
+      "purpose": "Contract V1 interface/evidence reference",
+      "sha256": "ae124b69d5fb0f4b94942e02fa621b89255e80c1b3d8ea88c5416e7fb8b6b68d",
+      "required": true,
+      "scope": "reference_only",
+      "git_status": "tracked",
+      "external_dependencies": []
+    }
+  ],
+  "artifact_references": [
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/artifact_verification.json",
+      "sha256": "ea457877093d91fd415228435a610d299ecdfc914ac4263e9984ca1c670ca369",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/best_model.pt",
+      "sha256": "e01a19e913d14a068c6c82a1c2a52a8be2aadd2f44e3ad5d8770d7f69a1fc7bc",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "checkpoint"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/environment.json",
+      "sha256": "36214d6f4cba8819b40f2ac66c7178a9d13dafa8751d8d04c95fb4280bd53fde",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/residual_scaler.json",
+      "sha256": "96b062fab9a5d4e27c9b1cc32a649e44e98d29648c7dcc3b7f482eba3d50358f",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "residual scaler"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/run_config.yaml",
+      "sha256": "b1e3503b44e92e152cac6db2ce8102d9e8d556b150d1092585046ea7459d12f6",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/run_start.json",
+      "sha256": "29af22520ed2739dacce9cb34cc074d9ad557d69467810fdf4d49e67d1610c76",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/training_history.csv",
+      "sha256": "bc299390b003dcf4d54808041c0127437fe6647a4532dd505c9f56b692699966",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/training_history.jsonl",
+      "sha256": "18717e2dc5749753ae80addd9e7835580fe33960cbe2617e6b5e4f6b8fd99ca1",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/training_manifest.json",
+      "sha256": "608eb8dac61e5b564385485f691d9ad49e6a8ae1ba374f47cc16a324dc71b17c",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/validation_metrics.json",
+      "sha256": "e7b2d4a23792b9821b93c78bef9d7b498e166213ec45673b6c8e4d94fa004cd9",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/validation_predictions.npz",
+      "sha256": "0f0a2389ba90721d74c73c62494524864da9eb9794748cb54609793cbd804915",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "training provenance or manifest-verified artifact; reference may stay external"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/x_scaler.json",
+      "sha256": "a538be921104ed1bb2fa495c0c3f527c0385fd6c737aa69afda81ba1962d452a",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "input scaler"
+    },
+    {
+      "path": "artifacts/checkpoints/s3_t10_20261124_seed20261110_run01/checksums.sha256",
+      "sha256": "5f0af2eb5a4e418026b775fa412e2fc8bbc803c7438123038a1c519e5a082eb2",
+      "required_for_current_verifier": true,
+      "scope": "offline_artifact_reference",
+      "git_status": "ignored",
+      "purpose": "T10 manifest pinned by T11 verify_artifacts"
+    }
+  ],
+  "artifact_integrity_constraint": "Current T11 verify_artifacts requires checksums.sha256 and all 12 listed files to be available and valid before model load. They are external references, not copied into this review inventory; any reduced-package verifier requires separate approval, testing and a new identity.",
+  "model": {
+    "name": "M5a Residual-GRU",
+    "selected_epoch": 1,
+    "training_seed": 20261110,
+    "gru_layers": 1,
+    "input_size": 4,
+    "hidden_size": 48,
+    "head": [
+      48,
+      96,
+      30
+    ],
+    "parameter_count": 15390,
+    "history_shape": [
+      "B",
+      10,
+      4
+    ],
+    "residual_shape": [
+      "B",
+      15,
+      2
+    ],
+    "final_forecast": "CV plus predicted residual, projection applied",
+    "model_dtype": "float32",
+    "projection_dtype": "float64"
+  },
+  "operating_points": {
+    "CV": {
+      "threshold": 0.435,
+      "grid_index": 87
+    },
+    "M5a": {
+      "threshold": 0.42,
+      "grid_index": 84
+    },
+    "comparator": ">=",
+    "provenance_run": "s4_t14_batch02_20261125T031911Z_cb53e739",
+    "status": "PROPOSED_OFFLINE_NOT_ACTIVATED"
+  },
+  "risk": {
+    "sha256": "8e33effb06d7f2e1fe855b1cb067fb2d27eb3aba9498e2af30be1b387534be7e",
+    "formula": "0.68 predicted CPA + 0.12 current CPA + 0.20 rule proxy",
+    "probability_calibrated": false,
+    "COLREGs_compliance_certified": false
+  },
+  "dataset": {
+    "version": "final_dataset_1.0",
+    "lock_sha256": "036d9c0e3652e526613238b91151002cbca35615552eba687b588da01b0fe764",
+    "checksum_manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441",
+    "dependency_manifest_sha256": "f0702ca49f289ec2a2ec9169e1b5632dcaf330fc634b027a7b11cf89d60ce2ea",
+    "grouping_acceptance": "CONDITIONAL_OFFLINE",
+    "independent_provenance": "PARTIAL",
+    "mmsi_ownership": "NOT_VERIFIED"
+  },
+  "semantic_protocol_sha256": "23d427ea6416104efbc9e988aaaa6c774118a517aea528b1ecb0c8350de4bf0b",
+  "protocol_raw_sha256": "e2d33ffbce7920f893779dddd7652fd79760808e85e63e0a4c24b0ccf5f24901",
+  "parent_runs": [
+    {
+      "id": "s4_t14_batch01_20261125T025749Z_fbf7f18e",
+      "manifest_sha256": "6f9e11fb45555c36f66ab4752f5c9ffd6972fef2c494c7a9dac5ba97029bb478",
+      "checksums_sha256": "5a5b54de6c83eae566f7336c796f01bc8fbd6ecf419e9539700c4d9d9838405e"
+    },
+    {
+      "id": "s4_t14_batch02_20261125T031911Z_cb53e739",
+      "manifest_sha256": "e1a058101fbf5b9beceda718052803062fc2be3f351ea58575006d9891b2ef4a",
+      "checksums_sha256": "ec21eaa930845989469adeac29667012dd53faa58642957f9d172693c9064f4a"
+    },
+    {
+      "id": "s4_t14_batch03_20261125T033810Z",
+      "manifest_sha256": "2736d6f94b2f53c652b325e309edbee0731f420d98f9b66907ddaaf26d6bbdfe",
+      "checksums_sha256": "440b0f002b3fa6404070df18b89586dfccfacff5a94ab3936239695c61e0de4e"
+    }
+  ],
+  "referenced_device_manifest_sha256": {
+    "cpu_dir": "79519fa59aac5fb9cd11b86b5b96e742a9cdc49a6b4f60fcf5d4bf6ee4cc3778",
+    "cuda_dir": "4517d84fae5833bc217de4c9705ad6c16ea15ec643cd750bf16bd77d39a8777f"
+  },
+  "d1_d5": {
+    "CV_D1": "D1_PASS",
+    "M5a_D1": "D1_PASS",
+    "D2": "D2_PASS",
+    "D3": "GROUPED_CV_INFEASIBLE",
+    "D4": "D4_EVIDENCE_LIMITED",
+    "D5": "D5_PASS"
+  },
+  "approvals": {
+    "D1_D7": "7/7",
+    "P1_P7": "7/7",
+    "Q1_Q4": "4/4",
+    "R1_R5": "5/5",
+    "total": 23,
+    "R2_R3_R4": "OFFLINE_LIMITATIONS_ACCEPTED",
+    "R5": "REVIEW_ONLY",
+    "final_lock_approval": "NOT_GRANTED"
+  },
+  "approval_and_review_references": [
+    {
+      "path": "docs/trung/S4_T14_DECISION_REGISTER.md",
+      "purpose": "Approval, scope, limitations or T15 plan",
+      "sha256": "2f39edf7da253e6879587d32ef1026f2d00e564ab0540d1d95a89cd9f5adaf19",
+      "required": true,
+      "scope": "review_only",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "docs/trung/S4_T14_ACCEPTANCE_MATRIX.md",
+      "purpose": "Approval, scope, limitations or T15 plan",
+      "sha256": "5bc4f879bf8bb959a59870be2813a5fbae3b245e34d9c0002128a00cc2322364",
+      "required": true,
+      "scope": "review_only",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "docs/trung/S4_T14_REQUIREMENTS_TEST_TRACEABILITY.md",
+      "purpose": "Approval, scope, limitations or T15 plan",
+      "sha256": "de809cf71505d3acea68ca93f4e967d3ce3bbbeb2f2b32bed5675a2b87b519e8",
+      "required": true,
+      "scope": "review_only",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "docs/trung/S4_T14_APPROVED_LIMITATIONS.md",
+      "purpose": "Approval, scope, limitations or T15 plan",
+      "sha256": "d4ad30b41e288930c0a97c888a6b30e4aa7e326e12f1ea2d40e14bbfc9290d0f",
+      "required": true,
+      "scope": "review_only",
+      "git_status": "untracked",
+      "external_dependencies": []
+    },
+    {
+      "path": "docs/trung/S4_T15_BENCHMARK_PLAN.md",
+      "purpose": "Approval, scope, limitations or T15 plan",
+      "sha256": "393e525e7509168d6873fc8bbdf50da7592f4f57cd5ae21145b902ac1a49f967",
+      "required": true,
+      "scope": "review_only",
+      "git_status": "untracked",
+      "external_dependencies": []
+    }
+  ],
+  "environment": {
+    "observed": {
+      "python": "3.12.3",
+      "torch": "2.11.0+cu128",
+      "cuda_available": true,
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "distributions": {
+        "attrs": "26.1.0",
+        "filelock": "4.2.4",
+        "fsspec": "2026.9.0",
+        "jinja2": "3.1.6",
+        "joblib": "1.5.3",
+        "jsonschema": "4.26.0",
+        "jsonschema-specifications": "2025.9.1",
+        "markupsafe": "3.0.3",
+        "mpmath": "1.3.0",
+        "networkx": "3.7",
+        "numpy": "2.4.4",
+        "pandas": "3.0.3",
+        "pyarrow": "26.0.1",
+        "python-dateutil": "4.0.0",
+        "pyyaml": "6.0.3",
+        "referencing": "0.37.0",
+        "rpds-py": "2026.9.1",
+        "scikit-learn": "1.8.0",
+        "scipy": "1.18.1",
+        "setuptools": "78.1.0",
+        "sympy": "1.14.0",
+        "threadpoolctl": "3.8.0",
+        "torch": "2.11.0+cu128",
+        "typing_extensions": "4.16.0",
+        "tzdata": "2026.6"
+      }
+    },
+    "observed_dependency_closure_file": "configs/s4_t14_observed_dependency_closure.yaml",
+    "clean_environment": "NOT_VERIFIED",
+    "clean_environment_required_before_integration_handoff": true,
+    "wheel_hashes": "NOT_COLLECTED",
+    "device_policy": "auto prefers working CUDA else CPU; explicit CUDA fails if unavailable; no silent model fallback in comparative evaluation"
+  },
+  "regression": {
+    "result": "511 passed, 0 failed/skipped/deselected",
+    "scope": "Documented Batch03 evidence, not rerun during STEP04",
+    "reference": "docs/trung/S4_T14_STEP03_BATCH03_REPORT.md",
+    "machine_readable_test_log": "NOT_AVAILABLE_IN_RUN_ARTIFACTS"
+  },
+  "limits": [
+    "Validation reuse/in-sample",
+    "D3 infeasible",
+    "D4 evidence limited",
+    "V1 compatibility review required",
+    "dependency provenance partial and grouping conditional",
+    "clean environment unverified",
+    "runtime T18/T19 unverified",
+    "Test benchmark reused and not authorized",
+    "production safety not established"
+  ],
+  "pending_conditions": [
+    "Separate final explicit lock approval",
+    "Revalidate hashes and evidence before any actual lock",
+    "Complete clean-environment verification before integration handoff",
+    "Future authorized T15 protocol and active lock identity required before any Test benchmark"
+  ],
+  "restrictions": [
+    "Offline prototype and controlled integration preparation only",
+    "No active lock or Test authorization",
+    "No production deployment or alert approval",
+    "No V1 superiority claim",
+    "Revalidate source/config/artifact hashes after any change"
+  ],
+  "integrity_not_signature": true,
+  "immutability_established": false
+}

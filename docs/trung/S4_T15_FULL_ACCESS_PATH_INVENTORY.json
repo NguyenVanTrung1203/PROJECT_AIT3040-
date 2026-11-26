@@ -1,0 +1,170 @@
+{
+  "status": "STATIC_COVERAGE_VERIFIED_SYNTHETIC_PASS_REAL_RUN_PENDING",
+  "scope": "Supported T15 full technical rerun; static inventory, not evidence of actual access",
+  "historical_observation": "R2 np.load mmap creation was incorrectly logged as semantic value access; future read had only a pre-read event.",
+  "paths": [
+    {
+      "phase": "pre-gate",
+      "category": "dataset_files",
+      "operation": "raw-byte checksum",
+      "consumer": "authorization gate",
+      "status": "supported_guard",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "X_unscaled.npy",
+      "operation": "map then full owned copy",
+      "consumer": "history validation, CV, M5a, risk",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "anchor_positions_EN_nm.npy",
+      "operation": "map then full owned copy",
+      "consumer": "history validation, forecasts, risk",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "encounter_tensor_index.csv",
+      "operation": "read identity columns only",
+      "consumer": "encounter mapping",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "vessel_tensor_index.csv",
+      "operation": "read identity columns",
+      "consumer": "A/B mapping",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "encounter_metadata.parquet",
+      "operation": "read source and anchor columns only",
+      "consumer": "trusted validation",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "test_1320.parquet history",
+      "operation": "read required history columns only",
+      "consumer": "trusted validation and risk",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "input",
+      "category": "test_1320.parquet footer",
+      "operation": "read schema and record count",
+      "consumer": "structural validation",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "inference",
+      "category": "materialized input and anchors",
+      "operation": "use verified owned arrays",
+      "consumer": "CV and M5a",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "scoring",
+      "category": "verified history and forecasts",
+      "operation": "locked risk engine; no file read",
+      "consumer": "risk scores",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "evaluation",
+      "category": "labels.npy",
+      "operation": "materialize only after scoring",
+      "consumer": "metrics",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "evaluation",
+      "category": "target_EN_nm.npy",
+      "operation": "materialize only after scoring",
+      "consumer": "trajectory metrics",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "evaluation",
+      "category": "test_1320.parquet future",
+      "operation": "read future columns only after scoring",
+      "consumer": "close-positive grouping",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "evaluation",
+      "category": "difficulty and scenario metadata",
+      "operation": "read metadata after scoring",
+      "consumer": "subgroup reports",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "latency/reporting",
+      "category": "owned arrays and generated artifacts",
+      "operation": "timing and reports; no new dataset reads",
+      "consumer": "reporting",
+      "status": "implemented_synthetic_verified_real_run_pending",
+      "authorization_scope": "C1-C5 full rerun gate; pre-gate raw-byte hash only",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    },
+    {
+      "phase": "unused",
+      "category": "target_GRU_displacement_nm.npy",
+      "operation": "no access required by benchmark",
+      "consumer": "none",
+      "status": "must_be_denied",
+      "authorization_scope": "not authorized",
+      "verification": "test_s4_t15_full_access_audit.py; completeness verifier; supported-path guard",
+      "exception_behavior": "fail closed; durable attempted/failure events; no observed event on failed read"
+    }
+  ],
+  "known_blocker": "Legacy loader reads evaluation-only labels before scoring; full rerun uses a separate projected T15 boundary and defers the label/index check to evaluation.",
+  "observation_granularity": "Application-level owned-copy completion and projected dataframe materialization; not individual OS reads or native/subprocess sandbox.",
+  "guard_limit": "Application-level Python path guard and materialization logging; not an OS or native I/O sandbox."
+}
