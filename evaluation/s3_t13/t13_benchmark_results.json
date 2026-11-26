@@ -1,0 +1,175 @@
+{
+  "status": "PASS",
+  "python": "3.13.7",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "integrity_verification": {
+    "dataset_version": "final_dataset_1.0",
+    "lock_status": "READY_AND_LOCKED",
+    "checksum": {
+      "status": "PASS",
+      "files_verified": 93,
+      "manifest_sha256": "21f6bde168631928e98b6273aaab4e168bfb6eb755599a1fbc1cb8c364611441"
+    },
+    "feature_order": [
+      "own_relative_east_nm",
+      "own_relative_north_nm",
+      "east_velocity_kn",
+      "north_velocity_kn"
+    ],
+    "position_unit": "nm",
+    "velocity_unit": "knots",
+    "reconstruction_tolerance_nm": 1e-06,
+    "splits": {
+      "train": {
+        "shape_index_metadata_label": "PASS",
+        "dtype": {
+          "X": "float32",
+          "displacement": "float32",
+          "common": "float32",
+          "anchors": "float64",
+          "labels": "int8"
+        },
+        "encounters": 1440,
+        "vessels": 2880,
+        "finite": "PASS",
+        "anchor": "PASS",
+        "max_reconstruction_error_nm": 2.3760727341226584e-07,
+        "timestamp": {
+          "status": "PASS",
+          "rows": 72000,
+          "vessel_groups": 2880,
+          "utc": true
+        },
+        "mutation": {
+          "future": true,
+          "label": true,
+          "metadata": true
+        }
+      },
+      "validation": {
+        "shape_index_metadata_label": "PASS",
+        "dtype": {
+          "X": "float32",
+          "displacement": "float32",
+          "common": "float32",
+          "anchors": "float64",
+          "labels": "int8"
+        },
+        "encounters": 835,
+        "vessels": 1670,
+        "finite": "PASS",
+        "anchor": "PASS",
+        "max_reconstruction_error_nm": 2.3515755742664624e-07,
+        "timestamp": {
+          "status": "PASS",
+          "rows": 41750,
+          "vessel_groups": 1670,
+          "utc": true
+        },
+        "mutation": {
+          "future": true,
+          "label": true,
+          "metadata": true
+        }
+      },
+      "test": {
+        "shape_index_metadata_label": "PASS",
+        "dtype": {
+          "X": "float32",
+          "displacement": "float32",
+          "common": "float32",
+          "anchors": "float64",
+          "labels": "int8"
+        },
+        "encounters": 1320,
+        "vessels": 2640
+      }
+    },
+    "test_scope": "integrity, shape, dtype and index metadata only",
+    "limitations": [
+      "Loader input isolation does not prove causal integrity of the upstream data pipeline.",
+      "No Test evaluation, model training or scaler fitting."
+    ],
+    "data_readiness": "PASS"
+  },
+  "index_audit": {
+    "lock_status": "READY_AND_LOCKED",
+    "dataset_version": "final_dataset_1.0",
+    "encounters": {
+      "train": {
+        "encounters": 1440,
+        "official_vessel_instances": 2880,
+        "rows": 72000,
+        "source_counts_manifest": {
+          "yang_lei": 1440
+        },
+        "tensor_labels": {
+          "0": 689,
+          "1": 751
+        },
+        "official_A_B_pairing": "PASS",
+        "split_and_label_mapping": "PASS"
+      },
+      "validation": {
+        "encounters": 835,
+        "official_vessel_instances": 1670,
+        "rows": 41750,
+        "source_counts_manifest": {
+          "augmented_real_ais_kattegat_v3": 300,
+          "real_ais_kattegat_v3": 295,
+          "yanglei": 240
+        },
+        "tensor_labels": {
+          "0": 410,
+          "1": 425
+        },
+        "official_A_B_pairing": "PASS",
+        "split_and_label_mapping": "PASS"
+      },
+      "test": {
+        "encounters": 1320,
+        "official_vessel_instances": 2640,
+        "rows": 66000,
+        "source_counts_manifest": {
+          "real_ais_denmark_oct2025": 300,
+          "synthetic_ais_denmark_oct2025": 300,
+          "yang_lei": 720
+        },
+        "tensor_labels": {
+          "0": 645,
+          "1": 675
+        },
+        "official_A_B_pairing": "PASS",
+        "split_and_label_mapping": "PASS"
+      }
+    },
+    "official_ab_pairing": "PASS",
+    "split_manifest_mapping": "PASS",
+    "label_mapping": "PASS",
+    "global_encounter_index": "PASS",
+    "source_aliases": {
+      "validation_augmented_real_ais_kattegat_v3": "normalized by T03 lock/source audit as synthetic_ais",
+      "scope": "No split or source field modified; aliases are reported exactly as present in the official split mapping."
+    }
+  },
+  "runtime_benchmark": {
+    "scope": "in-process FastAPI TestClient; fixture-only; no network; no model inference",
+    "iterations": 30,
+    "warmups": 3,
+    "fixture_event_count": 10,
+    "snapshot_track_count": 1,
+    "track_history_points": 10,
+    "list_tracks_ms": {
+      "median": 12.148,
+      "p95": 13.981
+    },
+    "get_track_ms": {
+      "median": 7.448,
+      "p95": 9.319
+    }
+  },
+  "total_elapsed_seconds": 5.243,
+  "model_metrics": "NOT_RUN",
+  "test_calibration": "NOT_RUN",
+  "dataset_modified": false
+}
