@@ -118,7 +118,7 @@ class RuntimeState:
         with self._lifecycle_lock:
             if self._closed:
                 raise RuntimeUnavailable('SERVICE_CLOSED')
-            self.scheduler.start()
+            # V1 demo is deliberately manual-only; retain scheduler source for later work.
 
     def close(self):
         # Stop/cancel scheduler work before taking the model lifecycle lock.
@@ -222,7 +222,7 @@ def runtime_status(request: Request):
 @router.get('/scheduler')
 def scheduler_status(request: Request, session_id: str | None = None):
     """Read-only view of the single backend-owned automatic scheduler."""
-    return _state(request).scheduler.status(session_id)
+    return {**_state(request).scheduler.status(session_id), 'monitoring_status': 'DISABLED'}
 
 
 @router.get('/active-session')
@@ -239,6 +239,8 @@ def active_s5_session(request: Request):
 def candidates(session_id: str, request: Request):
     s = _state(request)
     try:
+        if s.replay._check_session(session_id).status != 'PAUSED':
+            _error(409, 'MANUAL_EVALUATION_REQUIRES_PAUSED', 'Candidates are available while Replay is PAUSED')
         snapshot, coverage = s.coverage(session_id)
         return {'session_id': snapshot.session_id, 'session_version': snapshot.session_version,
                 'snapshot_id': snapshot.snapshot_id, 'anchor_utc': snapshot.anchor_utc,

@@ -140,13 +140,19 @@ function getRenderableHistory(track, mode) {
   })
 }
 
-function FitTracks({ tracks, mode }) {
+export function FitTracks({ tracks, mode }) {
   const map = useMap()
+  const fitted = useRef({ mode: null, map: null, done: false })
   useEffect(() => {
+    if (fitted.current.mode !== mode || fitted.current.map !== map) {
+      fitted.current = { mode, map, done: false }
+    }
+    if (fitted.current.done) return
     const points = tracks.map((track) => getDisplayPoint(track, mode)).filter(Boolean).map((point) => [point.latitude, point.longitude])
     if (points.length === 1) map.setView(points[0], 11)
     if (points.length > 1) map.fitBounds(points, { padding: [60, 60], maxZoom: 12 })
-  }, [map, tracks])
+    if (points.length) fitted.current.done = true
+  }, [map, tracks, mode])
   return null
 }
 
@@ -217,7 +223,7 @@ export default function App() {
   const [riskEvaluations, setRiskEvaluations] = useState([])
   const [alertPanel, setAlertPanel] = useState({ status: 'idle', items: [], error: '' })
   const [batchState, setBatchState] = useState(null)
-  const [schedulerState, setSchedulerState] = useState(null)
+  const schedulerState = null
   const [s5DiscoveryStatus, setS5DiscoveryStatus] = useState('ready')
   const [s5DiscoveryError, setS5DiscoveryError] = useState('')
   const pairRef = useRef(null)
@@ -389,7 +395,7 @@ export default function App() {
         if (currentSession?.session_id === sessionId && currentSession.version > nextSession.version) return
 
         let nextCoverage = null
-        if (mode === 's5') {
+        if (mode === 's5' && nextSession.status === 'PAUSED') {
           const candidateResponse = await fetch(`${API_BASE}/api/v1/runtime/sessions/${encodeURIComponent(sessionId)}/candidates`, { signal: controller.signal })
           if (!candidateResponse.ok) throw new Error(await errorMessage(candidateResponse, 'Candidate snapshot lỗi'))
           nextCoverage = await candidateResponse.json()
@@ -411,7 +417,7 @@ export default function App() {
           s5SessionRef.current = nextSession
           setCoverage(nextCoverage)
           setSelectedPair((current) => {
-            const updated = nextCoverage.pairs.find((pair) => pair.pair_id === current?.pair_id) || null
+            const updated = nextCoverage?.pairs.find((pair) => pair.pair_id === current?.pair_id) || null
             pairRef.current = updated
             return updated
           })
@@ -795,34 +801,6 @@ export default function App() {
     return () => { cancelled = true }
   }, [mode, realForecast])
 
-  useEffect(() => {
-    if (mode !== 's5' || !session?.session_id) {
-      setSchedulerState(null)
-      return undefined
-    }
-    const sessionId = session.session_id
-    let cancelled = false
-    let timer
-    let controller
-    const pollScheduler = async () => {
-      controller = new AbortController()
-      try {
-        const response = await fetch(`${API_BASE}/api/v1/runtime/scheduler?session_id=${encodeURIComponent(sessionId)}`, { signal: controller.signal })
-        if (!response.ok) throw new Error(await errorMessage(response, 'Không đọc được trạng thái automatic monitoring'))
-        const payload = await response.json()
-        if (!cancelled && sessionRef.current?.session_id === sessionId) setSchedulerState(payload)
-      } catch (cause) {
-        if (!cancelled && cause?.name !== 'AbortError' && sessionRef.current?.session_id === sessionId) {
-          setSchedulerState((current) => ({ ...(current || {}), scheduler_error: cause instanceof Error ? cause.message : 'Scheduler unavailable' }))
-        }
-      } finally {
-        if (!cancelled) timer = window.setTimeout(pollScheduler, REPLAY_POLL_MS)
-      }
-    }
-    pollScheduler()
-    return () => { cancelled = true; window.clearTimeout(timer); controller?.abort() }
-  }, [mode, session?.session_id])
-
   const retryControl = () => { if (pendingControl) dispatchControl(pendingControl) }
   const replayCanControl = session && ['READY', 'PLAYING', 'PAUSED'].includes(session.status) && !controlBusy && !pendingControl
   const seekPreview = seekTimeAt(seekOffset)
@@ -976,26 +954,11 @@ export default function App() {
 
           {mode === 's5' && <section className="s5-pairs" aria-label="Cặp tàu và forecast">
             <div className="s5-section-title"><strong>CẶP TÀU</strong><span>SYNTHETIC · ACADEMIC</span></div>
-            {session?.status === 'PLAYING' && <section className="automatic-monitoring" aria-label="Automatic monitoring">
-              <div className="automatic-heading"><strong>AUTOMATIC MONITORING</strong><span className={automaticBatchCurrent ? 'auto-live' : 'auto-idle'}>{schedulerState?.monitoring_status || 'WAITING'}</span></div>
-              <div className="automatic-facts">
-                <span>Replay clock <b>{formatUtc(session.simulation_time)}</b></span>
-                <span>Evaluation anchor <b>{formatUtc(schedulerState?.active_anchor || automaticBatch?.anchor_utc)}</b></span>
-                <span>Latest completed <b>{formatUtc(schedulerState?.latest_completed_anchor)}</b></span>
-                <span>Pairs <b>{automaticBatch ? `${automaticBatch.evaluated}/${automaticBatch.expected}` : '0/0'}</b></span>
-                <span>Alert / no-alert / unavailable <b>{automaticCounts.ALERT || 0} / {automaticCounts['NO ALERT'] || 0} / {automaticCounts.UNAVAILABLE || 0}</b></span>
-                <span>Latency <b>{automaticBatch ? `${metric(automaticBatch.latency_seconds, ' s', 2)} · P50 ${metric(schedulerState?.latency_p50_seconds, ' s', 2)} · P95 ${metric(schedulerState?.latency_p95_seconds, ' s', 2)} (${schedulerState?.latency_sample_count || 0})` : '—'}</b></span>
-                <span>Pending / skipped / failed / deadline misses <b>{schedulerState?.pending_anchor ? formatUtc(schedulerState.pending_anchor) : '—'} / {schedulerState?.skipped_anchors?.length || 0} / {schedulerState?.failed_anchors?.length || 0} / {schedulerState?.missed_deadlines || 0}</b></span>
-              </div>
-              <strong className="auto-result-state" role="status">{schedulerState?.scheduler_error || (schedulerState?.running ? 'Đang xử lý batch…' : automaticBatchCurrent ? 'Kết quả hiện hành · as-of anchor' : automaticBatch ? `Forecast hết hiệu lực · as-of ${formatUtc(automaticBatch.anchor_utc)}` : schedulerState?.last_outcome || 'Đang chờ anchor phù hợp')}</strong>
-              {automaticBatch?.pairs?.length > 0 && <ul className="automatic-pair-results">{automaticBatch.pairs.map((item) => <li key={item.pair_id}><span>{item.vessel_ids.map((id) => id.split(':').at(-1).toUpperCase()).join(' — ')}</span><b className={`result-${decisionLabel(item.risk).toLowerCase().replace(' ', '-')}`}>{decisionLabel(item.risk)}</b>{item.risk?.risk_score != null && <span>{metric(item.risk.risk_score, '', 6)}</span>}</li>)}</ul>}
-              <span className="forecast-caption">SYNTHETIC FIXTURE · ACADEMIC PROTOTYPE · Tự động đánh giá khi Replay ở PLAYING.</span>
-            </section>}
             {coverage ? <><span className="coverage-caption">Candidate coverage</span><div className="coverage-grid"><span>Expected <b>{coverage.expected}</b></span><span>Evaluated <b>{coverage.evaluated}</b></span><span>Eligible <b>{coverage.eligible}</b></span><span>Unavailable <b>{coverage.unavailable}</b></span></div><span className="coverage-caption">Risk evaluations tại binding này</span><div className="evaluation-coverage"><b>{assessedPairCount}/{coverage.expected}</b><span>cặp đã có kết quả risk</span></div></> : <p className="forecast-caption">Chưa có candidate snapshot.</p>}
             <div className="pair-list" aria-label="Danh sách cặp tàu">{coverage?.pairs.map((pair) => <button key={pair.pair_id} className={`pair-row ${selectedPair?.pair_id === pair.pair_id ? 'active' : ''}`} onClick={() => selectPair(pair)}><span>{pair.vessel_ids.map((id) => id.split(':').at(-1).toUpperCase()).join(' — ')}</span><small>{pair.unavailable_reason ? 'INSUFFICIENT_DATA' : 'ELIGIBLE'}</small></button>)}</div>
             {selectedPair && <><div className="pair-details"><span className="vessel-a">A · {selectedPair.vessel_ids[0]}</span><span className="vessel-b">B · {selectedPair.vessel_ids[1]}</span></div><button className="replay-start-button" aria-label="Dự báo cặp tàu" onClick={evaluatePair} disabled={forecastBusy || batchState?.running || session?.status !== 'PAUSED'}>{forecastBusy ? 'Đang đánh giá cặp tàu…' : selectedPair.unavailable_reason ? 'Đánh giá khả năng dữ liệu' : 'Đánh giá Risk và forecast'}</button></>}
             <button className="batch-button" onClick={evaluateAllPairs} disabled={!coverage?.pairs?.length || batchState?.running || forecastBusy || session?.status !== 'PAUSED'}>{batchState?.running ? `Đang đánh giá ${batchState.processed}/${batchState.total}…` : `Đánh giá tất cả ${coverage?.expected || 10} cặp`}</button>
-            <p className="forecast-caption">Khi PAUSED, giữ đánh giá thủ công từng cặp hoặc toàn bộ cặp. Khi PLAYING, backend tự đánh giá tại anchor phút và giao diện chỉ đọc kết quả đã công bố.</p>
+            <p className="forecast-caption">PAUSE hoặc SEEK đến mốc cần đánh giá, sau đó chọn một cặp hoặc đánh giá tất cả cặp.</p>
             {session?.status !== 'PAUSED' && <p className="forecast-caption">PAUSE hoặc SEEK đến mốc cần đánh giá.</p>}
             {runtimeStatus?.runtime_status === 'UNAVAILABLE' && runtimeStatus.reason !== 'NOT_INITIALIZED' && <p className="control-error">Runtime unavailable · {runtimeStatus.reason}</p>}
             {forecastMessage && <p className="control-error" role="status">{forecastMessage}</p>}

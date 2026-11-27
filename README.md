@@ -6,9 +6,13 @@
 
 - Replay có PLAY, PAUSE, RESUME, SEEK và RESET. Backend giữ session và replay clock trong bộ nhớ của một process.
 - Chế độ `S5 nhiều tàu` dùng fixture `s5-01-synthetic-denmark-v1`, không phải AIS thật đã xác minh.
-- Khi PLAYING, backend chạy automatic evaluation tại anchor UTC theo phút, với playback 1×. Giao diện chỉ đọc batch đã công bố; khi PAUSED, có thể đánh giá thủ công một cặp hoặc toàn bộ cặp.
+- V1 dùng đánh giá thủ công khi PAUSED. PLAY chỉ phát lại chuyển động; automatic scheduler bị vô hiệu hóa.
 - Forecast sử dụng model M5a thật từ Model Package T14 bên ngoài repository. Risk dùng CC-DRI V4 và operating point được khóa cho prototype. Mỗi kết quả có trạng thái model, forecast, QC và quyết định alert/no-alert/unavailable.
 - `official_alerts=false`. Các giá trị operating point không phải ngưỡng cảnh báo hàng hải chính thức. Review tích hợp của Toàn còn pending.
+
+## Kiến trúc tổng thể
+
+React/Leaflet hiển thị tàu và điều khiển Replay qua FastAPI. Backend giữ session và snapshot của fixture, dựng cặp tàu và gọi M5a từ Model Package đã khóa; Risk Engine V4 tính CPA, risk và alert cho yêu cầu thủ công khi PAUSED. Source automatic scheduler được giữ cho phiên bản mở rộng nhưng không được khởi chạy trong V1.
 
 ## Yêu cầu
 
@@ -70,15 +74,15 @@ Mặc định:
 - Runtime status: <http://127.0.0.1:8000/api/v1/runtime/status>
 - Scheduler status: <http://127.0.0.1:8000/api/v1/runtime/scheduler>
 
-Dừng mỗi server bằng `Ctrl+C` trong cửa sổ tương ứng. Có thể đặt `AIT3040_BACKEND_PORT`, `AIT3040_FRONTEND_PORT` và `VITE_API_BASE_URL` trong `.env` nếu port mặc định không dùng được.
+Dừng mỗi server bằng `Ctrl+C` trong cửa sổ tương ứng. Scripts sử dụng port 8000 và 5173; giải phóng các port này trước khi khởi chạy.
 
 ## Kịch bản demo 5–10 phút
 
 1. Chọn **S5 nhiều tàu** và đợi session/track xuất hiện trên bản đồ.
-2. Dùng SEEK tới `2024-11-01 00:09 UTC`, sau đó chọn PLAY. Panel Automatic Monitoring hiển thị anchor, số cặp, kết quả, độ trễ và số anchor bị bỏ lỡ. Batch đầu có thể mất thêm thời gian khởi tạo model.
-3. Tại 00:09, kiểm tra cặp A–B có alert; A–C no-alert; các cặp chưa đủ lịch sử được ghi `INSUFFICIENT_DATA`. Forecast có nhãn M5a và as-of anchor.
+2. Dùng SEEK tới `2024-11-01 00:09 UTC`; session chuyển sang PAUSED. Chọn cặp A–B và bấm **Đánh giá Risk và forecast**.
+3. Tại 00:09, kiểm tra A–B alert, A–C no-alert, A–E insufficient data. Dùng **Đánh giá tất cả 10 cặp** để xem toàn bộ kết quả.
 4. Pause. Có thể đánh giá thủ công một cặp hoặc toàn bộ cặp khi session ở PAUSED.
-5. SEEK tới `2024-11-01 00:15 UTC`, PLAY để xem batch tự động ở anchor mới. Tại anchor này fixture có đủ lịch sử cho 10/10 cặp.
+5. SEEK tới `2024-11-01 00:15 UTC` và đánh giá thủ công tất cả 10 cặp khi PAUSED.
 6. Thử SEEK/RESET. Kết quả thuộc session/generation cũ phải hết hiệu lực; bản đồ không được trình bày forecast cũ như forecast hiện hành.
 
 Anchor 00:09 được kiểm chứng với 1 alert, 5 no-alert và 4 unavailable; A–B risk tham chiếu khoảng `0.8832455466`. Anchor 00:15 được kiểm chứng với 1 alert và 9 no-alert; A–B risk khoảng `0.9638132257`. Đây là kết quả của fixture và model hiện có, không phải giá trị được hardcode cho demo. Hiệu năng đo được trên máy tham chiếu nằm trong báo cáo bàn giao.
@@ -108,10 +112,10 @@ Không bỏ Q1 guard để làm tests pass. Full regression, training, calibrati
 ## Giới hạn đã biết
 
 - V1 chỉ dùng fixture tổng hợp; Real AIS và Real Collision Case Study được hoãn.
-- Automatic evaluation chỉ hỗ trợ playback 1×, một backend process và một active S5 session. Session, scheduler, alert state và cache không bền qua restart; không hỗ trợ nhiều worker.
-- Runtime trust model dành cho prototype học thuật. Package được kiểm tra theo boundary batch và kết quả lỗi bị loại bỏ; process/RAM tampering không được bảo vệ.
+- Automatic evaluation bị vô hiệu hóa trong V1. Một backend process hỗ trợ một active S5 session; session, alert state và cache không bền qua restart.
+- Runtime trust model dành cho prototype học thuật. Đường manual kiểm tra integrity và authority khi đánh giá; process/RAM tampering không được bảo vệ.
 - Model Lock không phê duyệt runtime integration hoặc production use. Không phát cảnh báo hàng hải chính thức.
-- Browser acceptance cho phiên bản automatic monitoring hiện tại chưa được xác minh trong lượt bàn giao này. Historical S5-05 browser evidence chỉ bao phủ manual/paused fixture demo; không được xem là nghiệm thu UI automatic mới.
+- Trung đã xác nhận manual V1 và zoom/pan trên Chrome; Toàn chưa review interface.
 - Basemap có thể cần kết nối internet nếu tile provider không cache tile cục bộ.
 - V1 không chứng minh benchmark superiority, operational safety, generalization sang AIS thật hoặc khả năng triển khai production.
 

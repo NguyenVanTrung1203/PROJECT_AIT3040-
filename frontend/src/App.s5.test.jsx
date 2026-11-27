@@ -93,47 +93,18 @@ beforeEach(() => {
 })
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
-it('reads backend automatic results during PLAYING and shows their as-of anchor', async () => {
+it('keeps PLAYING replay free of candidate and scheduler requests', async () => {
   sessionCreate = () => {
     sessionResponse = { ...session, status: 'PLAYING', version: 1 }
     return Promise.resolve(ok(sessionResponse))
   }
-  candidatesResponse = () => Promise.resolve(ok({ ...coverage, session_version: 1 }))
-  const riskRows = pairs.map((pair) => ({ pair_id: pair.pair_id, vessel_ids: pair.vessel_ids, risk: result({}, pair).risk }))
-  schedulerResponse = () => ({ monitoring_status: 'PLAYING', session_id: sessionId, session_generation: 1,
-    running: false, active_anchor: null, pending_anchor: null, latest_completed_anchor: anchor,
-    latest_batch: { session_id: sessionId, session_generation: 1, snapshot_id: snapshotId, anchor_utc: anchor,
-      expected: 10, evaluated: 10, eligible: 6, unavailable: 4, latency_seconds: 2, pairs: riskRows,
-      alerts: [alertItem()] }, last_outcome: 'COMPLETED', skipped_anchors: [], failed_anchors: [],
-    missed_deadlines: 0, latency_sample_count: 1, latency_p50_seconds: 2, latency_p95_seconds: 2 })
-  await openFixture()
-  fireEvent.click(screen.getByRole('button', { name: /A — B/ }))
-  expect(await screen.findByText(/AUTO · M5a · ACTUAL MODEL/)).toBeInTheDocument()
-  expect(screen.getByText(/As-of 2024-11-01T00:09:00Z/)).toBeInTheDocument()
-  expect(screen.getByRole('region', { name: 'Automatic monitoring' })).toHaveTextContent('10/10')
-  expect(screen.getAllByTestId('forecast-real-path')).toHaveLength(2)
-  expect(screen.getAllByText('ACTIVE').length).toBeGreaterThan(0)
-})
-
-it('hides automatic forecast after its evaluation interval expires', async () => {
-  sessionCreate = () => {
-    sessionResponse = { ...session, status: 'PLAYING', version: 1 }
-    return Promise.resolve(ok(sessionResponse))
-  }
-  candidatesResponse = () => Promise.resolve(ok({ ...coverage, session_version: 1 }))
-  const riskRows = pairs.map((pair) => ({ pair_id: pair.pair_id, vessel_ids: pair.vessel_ids, risk: result({}, pair).risk }))
-  const expiredAnchor = '2024-11-01T00:08:00Z'
-  schedulerResponse = () => ({ monitoring_status: 'PLAYING', session_id: sessionId, session_generation: 1,
-    running: false, active_anchor: null, pending_anchor: null, latest_completed_anchor: expiredAnchor,
-    latest_batch: { session_id: sessionId, session_generation: 1, snapshot_id: snapshotId, anchor_utc: expiredAnchor,
-      expected: 10, evaluated: 10, eligible: 6, unavailable: 4, latency_seconds: 2, pairs: riskRows,
-      alerts: [alertItem()] }, last_outcome: 'COMPLETED', skipped_anchors: [], failed_anchors: [],
-    missed_deadlines: 0, latency_sample_count: 1, latency_p50_seconds: 2, latency_p95_seconds: 2 })
-  await openFixture()
-  fireEvent.click(screen.getByRole('button', { name: /A — B/ }))
-  expect(await screen.findByText(/Forecast hết hiệu lực/)).toBeInTheDocument()
-  expect(screen.queryByTestId('forecast-real-path')).not.toBeInTheDocument()
-  expect(screen.getAllByText('ACTIVE').length).toBeGreaterThan(0)
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: 'S5 nhiều tàu' }))
+  fireEvent.click(await screen.findByRole('button', { name: 'Bắt đầu replay fixture' }))
+  await screen.findAllByTestId('marker')
+  expect(fetch.mock.calls.filter(([url]) => String(url).endsWith('/candidates'))).toHaveLength(0)
+  expect(fetch.mock.calls.filter(([url]) => String(url).includes('/runtime/scheduler'))).toHaveLength(0)
+  expect(screen.queryByRole('region', { name: 'Automatic monitoring' })).not.toBeInTheDocument()
 })
 
 async function openFixture() {

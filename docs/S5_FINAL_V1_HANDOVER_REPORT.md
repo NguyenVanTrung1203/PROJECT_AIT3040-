@@ -6,18 +6,31 @@ Branch: `s5-integration-final`
 
 HEAD trước bàn giao: `8f252c522914aa30ba05bd28368ec60cab71c5a6`
 
+## Cập nhật lựa chọn manual V1 — 2026-11-27
+
+Trung quyết định chọn **manual PAUSED evaluation** cho V1 sau khi Chrome tiếp tục gặp lỗi candidate snapshot trong PLAYING. Backend không khởi chạy automatic scheduler; frontend không poll scheduler hoặc candidates trong PLAYING. PLAY chỉ phát lại tracks; SEEK/PAUSE cho phép đánh giá thủ công. Source automatic được giữ để nghiên cứu sau.
+
+Trạng thái: **V1_ACCEPTED_MANUAL**, theo xác nhận nghiệm thu Chrome do Trung cung cấp. Các số liệu automatic bên dưới là evidence lịch sử, không mô tả chế độ V1 được chọn. Toàn chưa review interface.
+
+### Evidence Chrome do Trung cung cấp
+
+- Bản đồ và nhiều tàu hiển thị; PLAYING cho thấy chuyển động và không có overlay lỗi ở lượt cuối. PAUSED cho phép đánh giá thủ công.
+- Batch 00:15 xử lý 10/10: 1 alert, 9 no-alert, 0 unavailable. AB risk `0.963813`, current DCPA `0.000 NM`, current TCPA khoảng `1.906 phút`, predicted DCPA khoảng `0.030 NM`, predicted CPA sau `2 phút`.
+- AE tại 00:09:02 hiển thị `INSUFFICIENT_DATA`. RESET đưa clock về 00:00:00 và không giữ alert cũ. Trung xác nhận zoom/pan hoạt động ổn.
+- Đây là kết quả do Trung quan sát; không có Computer Use hoặc screenshot mới trong lượt phát hành này. Evidence API và automated tests được ghi riêng bên dưới.
+
+Kiểm tra manual mới: API M5a thật trả forecast 15 bước; 00:09 có AB `0.8832455465682472` ALERT, AC `0.20000000012838232` NO ALERT, AE INSUFFICIENT_DATA và 1/5/4; 00:15 có AB `0.9638132257055823` ALERT và 1/9/0. PLAY tiến clock và trả tracks; candidates trả 409 khi PLAYING; PAUSE, SEEK và RESET được kiểm tra. Backend targeted 3 passed, Q1 counters 0; sau viewport fix frontend 65 passed và build PASS. Scheduler status `DISABLED`. Bản sửa stale chưa nghiệm thu được sao lưu riêng ngoài repository.
+
 ## 1. Phiên bản V1 được chọn
 
-**V1_CONDITIONAL_ACCEPTANCE** — các kiểm tra kỹ thuật cốt lõi của synthetic demo đã đạt, gồm automatic evaluation 1×, manual evaluation khi PAUSED, Model M5a thật, Risk Engine V4 và trạng thái alert. Browser acceptance cho giao diện automatic monitoring hiện tại chưa được xác minh; S5-05 chỉ có browser evidence lịch sử cho fixture/manual demo. Không coi bằng chứng API là browser PASS.
+**V1_ACCEPTED_MANUAL** — Trung đã xác nhận demo manual trên synthetic fixture. Toàn review interface trước khi nhóm quyết định merge.
 
-Chế độ được chọn là automatic evaluation trong PLAYING, tại anchor UTC theo phút và playback 1×. Manual PAUSED evaluation vẫn dùng được làm phương án dự phòng. Chế độ này chỉ dành cho academic prototype, một backend process và một S5 session.
+Chế độ được chọn hiện nay là manual PAUSED evaluation. Automatic evaluation đã được vô hiệu hóa. Chế độ này chỉ dành cho academic prototype, một backend process và một S5 session.
 
 ## 2. Phạm vi và trạng thái runtime
 
 - Runtime context xác minh Model Package, external manifest pin, package inventory, các source/config binding và threshold authority. Checkpoint/scaler/config được nạp từ đúng byte đã verify.
-- Mỗi automatic batch có xác minh đầy đủ ở đầu và cuối, token ràng buộc session/generation/snapshot/anchor/deadline, và stage riêng cho kết quả, cache, idempotency cùng alert state. Chỉ publish sau khi batch kết thúc hợp lệ; lỗi hoặc stale generation thì discard.
-- Session-generation lease cho phép replay clock tiến trong lúc xử lý anchor. SEEK, RESET và generation/session thay đổi làm snapshot cũ hết hiệu lực.
-- Scheduler backend dùng một worker, tối đa một batch đang chạy và một anchor pending mới nhất. Client chỉ đọc trạng thái; UI không tự chạy evaluator khi PLAYING.
+- Source automatic batch và session-generation lease được giữ cho phiên bản mở rộng; scheduler không chạy trong V1. SEEK, RESET và generation/session thay đổi làm snapshot cũ hết hiệu lực.
 - `PAUSED` giữ manual pair/all-pairs evaluation. Runtime trả `official_alerts=false`; không có thẩm quyền cảnh báo hàng hải chính thức.
 - Trust boundary tin process và RAM cục bộ trong thời gian batch; không tuyên bố bảo vệ RAM/process tampering.
 
@@ -27,7 +40,7 @@ Chế độ được chọn là automatic evaluation trong PLAYING, tại anchor
 
 HTTP/API smoke trên server khởi chạy từ script đã xác nhận tạo session, PLAY, PAUSE, SEEK và RESET. Clock tiến đúng 3 giây trong 3,2 giây wall time. RESET trả session mới ở `READY` và clock `00:00:00Z`. SEEK tạo session mới; kết quả scheduler cũ không được trả như kết quả của session mới.
 
-S5-05 trước đó đã có browser evidence cho hiển thị fixture, map, PLAY/PAUSE, forecast và reset. Giao diện automatic mới chưa được thao tác trực tiếp vì Computer Use không thể xác định URL browser đủ chắc chắn. Do đó hiển thị bản đồ và các panel hiện tại ở browser vẫn `NOT_VERIFIED` trong lần bàn giao này.
+S5-05 trước đó đã có browser evidence cho fixture và manual demo. Nghiệm thu manual V1 hiện tại được ghi theo xác nhận của Trung ở đầu báo cáo; automatic mode được hoãn.
 
 ### M5a và Risk Engine
 
@@ -57,7 +70,7 @@ Manual PAUSED evaluation trả quyết định hợp lệ tại 00:09 và 00:15.
 
 Trong lúc kiểm tra startup script, một lỗi cú pháp PowerShell ở chuỗi báo lỗi `.env` cũng được sửa trước khi xác nhận script khởi chạy thành công.
 
-## 5. Hiệu năng automatic evaluation
+## 5. Hiệu năng automatic evaluation — lịch sử
 
 Đo bằng backend/API thực tế, CPU, batch đủ 10 cặp, playback 1×:
 
@@ -93,9 +106,9 @@ Với hai batch mẫu, nearest-rank P50=`2,361 s`, P95=`3,009 s`. Đây là hai 
 ### Kịch bản thuyết trình 5–10 phút
 
 1. Chọn `S5 nhiều tàu`, giới thiệu nhãn synthetic fixture và các tàu trên map.
-2. SEEK đến 00:09 rồi PLAY; xem panel Automatic Monitoring, coverage 10 cặp, AB alert, AC no-alert và các cặp insufficient data.
-3. PAUSE, chọn AB và chạy manual evaluation để trình bày score, CPA, threshold và forecast 15 bước.
-4. SEEK đến 00:15 rồi PLAY để xem đủ 10 cặp eligible và alert AB được tính lại tự động. Có thể dùng SEEK thay vì chờ sáu phút replay thật.
+2. SEEK đến 00:09, chọn AB và chạy manual evaluation; kiểm tra AC no-alert và AE insufficient data.
+3. Đánh giá tất cả cặp ở PAUSED để trình bày coverage, score, CPA, threshold và forecast 15 bước.
+4. SEEK đến 00:15 và đánh giá thủ công tất cả 10 cặp để xem AB alert.
 5. Thử SEEK/RESET và chỉ lại clock/session mới; kết quả forecast cũ không được xem như kết quả hiện hành.
 6. Kết thúc bằng giới hạn: dữ liệu synthetic, academic prototype, 1×, process-local, không có official alert.
 
@@ -113,7 +126,7 @@ Máy nhận phải có đúng Model Package, external pin và Python dependencie
 
 ## 9. Giới hạn và phần hoãn
 
-- Browser acceptance của giao diện automatic mới chưa xác minh. Chỉ lịch sử S5-05 có browser evidence cho synthetic/manual demo.
+- Browser acceptance manual hiện tại do Trung xác nhận; Toàn chưa review interface. Automatic mode được hoãn.
 - Chỉ hỗ trợ một process, một active S5 session, một worker và playback 1×. Session/runtime/cache không bền qua restart.
 - Prototype tin process/RAM trong batch và không chống RAM tampering. Không có production authority, không có official maritime alert.
 - Fixture schematic có thể đặt một số marker gần/trên đất liền; không chỉnh tọa độ để làm đẹp kết quả.
@@ -121,7 +134,7 @@ Máy nhận phải có đúng Model Package, external pin và Python dependencie
 - Benchmark T15 được giữ theo historical result, không chạy lại hoặc đổi kết luận.
 - Interface review của Toàn còn `PENDING`; không tuyên bố Toàn đã nghiệm thu.
 
-## 10. Git handover
+## 10. Git handover — lịch sử commit V1 trước đó
 
 Audit trước commit:
 

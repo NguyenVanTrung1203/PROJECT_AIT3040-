@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from starlette.requests import Request
 
 from backend.app.replay_api import ControlRequest, CreateSessionRequest
-from backend.app.runtime_http import EvaluationRequest, RuntimeState, evaluate, runtime_status, scheduler_status
+from backend.app.runtime_http import EvaluationRequest, RuntimeState, candidates, evaluate, runtime_status, scheduler_status
 from src.runtime.trusted_fixture import SOURCE
 
 
@@ -22,7 +22,7 @@ def test_scheduler_read_surface_and_manual_evaluation_pause_gate():
     try:
         ready = runtime.provider.create('2024-11-01T00:09:00Z')
         scheduler = scheduler_status(request, session_id=ready.session_id)
-        assert scheduler['monitoring_status'] == 'IDLE'
+        assert scheduler['monitoring_status'] == 'DISABLED'
         assert scheduler['latest_batch'] is None
         assert runtime_status(request)['model_load_count'] == 0
 
@@ -36,6 +36,24 @@ def test_scheduler_read_surface_and_manual_evaluation_pause_gate():
 
         runtime.provider.control('PAUSE')
         assert runtime_status(request)['model_load_count'] == 0
+    finally:
+        runtime.close()
+
+
+def test_manual_mode_never_starts_scheduler_and_requires_pause_for_candidates():
+    runtime = RuntimeState()
+    request = _request(runtime)
+    try:
+        ready = runtime.provider.create('2024-11-01T00:09:00Z')
+        runtime.start()
+        runtime.provider.control('PLAY')
+        assert runtime.scheduler._thread is None
+        with pytest.raises(HTTPException) as exc:
+            candidates(ready.session_id, request)
+        assert exc.value.status_code == 409
+        runtime.provider.control('PAUSE')
+        assert candidates(ready.session_id, request)['expected'] == 10
+        assert scheduler_status(request, ready.session_id)['monitoring_status'] == 'DISABLED'
     finally:
         runtime.close()
 
