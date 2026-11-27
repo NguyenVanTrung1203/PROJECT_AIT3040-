@@ -153,6 +153,24 @@ class ReplaySessionCore:
             except ReplayTimeError as exc:
                 raise SessionCoreError(422, str(exc), code="INVALID_ANCHOR") from exc
 
+    def evaluation_snapshot_as_of(self, session_id: str, vessel_id: str,
+                                  anchor: str) -> dict[str, Any] | None:
+        """Build a minute-grid evaluation view whose source age is measured at its anchor."""
+        with self._lock:
+            session = self._require_session(session_id)
+            try:
+                anchor_ns = parse_utc_ns(anchor, field="evaluation_anchor")
+                if anchor_ns > session.simulation_ns:
+                    raise SessionCoreError(422, "evaluation anchor exceeds replay clock", code="FUTURE_ANCHOR")
+                return session.buffer.snapshot(vessel_id, anchor,
+                                               simulation_clock=utc_iso_ns(anchor_ns))
+            except SessionCoreError:
+                raise
+            except TrackBufferError as exc:
+                raise SessionCoreError(422, str(exc), code="INVALID_SNAPSHOT") from exc
+            except ReplayTimeError as exc:
+                raise SessionCoreError(422, str(exc), code="INVALID_ANCHOR") from exc
+
     def control(self, session_id: str, action: str, *, expected_version: int,
                 target_time: str | None = None, idempotency_key: str | None = None) -> SessionView:
         action = action if isinstance(action, str) else ""

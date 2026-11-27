@@ -1,4 +1,5 @@
-"""Small mock-only API for the Sprint 1 track map scaffold."""
+"""Process-local mock, replay, and optional synthetic inference API."""
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,15 +16,28 @@ from backend.app.mock_tracks import (
     list_tracks,
 )
 from backend.app.replay_api import build_default_replay_api, router as replay_router
+from backend.app.runtime_http import RuntimeState, router as runtime_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.s5_runtime.start()
+    try:
+        yield
+    finally:
+        app.state.s5_runtime.close()
 
 
 app = FastAPI(
     title="AIT3040 Track Data API",
     version="0.2.0",
     description="T04 mock tracks and Contract V1 Replay fixture endpoints; replay state is process-local and not production durable.",
+    lifespan=lifespan,
 )
-app.state.replay_api = build_default_replay_api()
+app.state.s5_runtime = RuntimeState()
+app.state.replay_api = app.state.s5_runtime.replay
 app.include_router(replay_router)
+app.include_router(runtime_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],

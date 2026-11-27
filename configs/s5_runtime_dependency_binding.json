@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "purpose": "S5 runtime dependency evidence binding; not a deployment lock",
+  "runtime_source_baseline_commit": "8f252c522914aa30ba05bd28368ec60cab71c5a6",
+  "observed_dependency_evidence_path": "configs/s4_t14_observed_dependency_closure.yaml",
+  "observed_dependency_evidence_sha256": "0e6c5daa5edd9d4c4c3960962684c6ace528d4b90913ac8f60b10e6dc894781f",
+  "package_lock_id": "offline-t14-15980ed4f7255ddbdb943979",
+  "external_manifest_sha256": "257e77a3a5ae2b2175926145cc0d3c483ccacdaf80f3479d9c352d69f8f6dcdc",
+  "status": "OBSERVED_ENVIRONMENT_NOT_DEPLOYMENT_LOCK",
+  "runtime_integration_closure": "NOT_VERIFIED",
+  "missing_from_immutable_snapshot": [
+    "src/data/track_semantics.py",
+    "contracts/replay.schema.json",
+    "requirements.txt"
+  ],
+  "constraint": "Use baseline repository sources separately; never modify the immutable package."
+}
