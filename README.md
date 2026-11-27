@@ -1,94 +1,118 @@
-# AIT3040 — Maritime Collision Risk Prediction and Early Warning
+# AIT3040 — Bản demo V1
 
-Đồ án là academic prototype cho dự báo quỹ đạo và phân tích nguy cơ va chạm từ AIS. Sprint 4 đã ghép source của Trung và Toàn trên nhánh integration. T15 được nghiệm thu kỹ thuật nhưng benchmark là `BENCHMARK_FAIL`, đã được chấp nhận cho prototype nghiên cứu. Hệ thống chưa được phê duyệt cho điều hướng, cảnh báo vận hành hoặc sử dụng production.
+Ứng dụng minh họa phát lại dữ liệu tàu, dự báo quỹ đạo M5a và đánh giá nguy cơ va chạm trên fixture tổng hợp. Đây là prototype học thuật để trình bày đồ án; không dùng cho điều hướng, vận hành tàu hoặc cảnh báo hàng hải thực tế.
 
-## Phạm vi hệ thống
+## Phạm vi V1
 
-- `DATASET_FINAL/` chứa bộ dữ liệu `final_dataset_1.0` đã khóa, gồm Train, Validation và Test. Dataset được lưu ngoài Git. Không đổi split, fit scaler trên Test hoặc ghi dữ liệu mới vào thư mục này.
-- `src/models/`, `src/inference/`, `src/protocol/`, `src/release/` và `src/risk/` chứa M5a, các quy trình offline, kiểm tra lock và CC-DRI V4. Model package đã khóa nằm ngoài repository.
-- `src/data/` chứa dataset loader offline, AIS reader, replay clock/session core và TrackBuffer.
-- `backend/` cung cấp T04 Mock Track API và Replay V1 API cho fixture cục bộ. Session, snapshot và idempotency state hiện chỉ ở memory của một process.
-- `frontend/` là React/Leaflet demo cho Mock Track và Replay fixture. Forecast trên bản đồ có nhãn **FORECAST MOCK**; đây không phải dự báo M5a.
-- `contracts/` mô tả frozen Contract V1 và API. Các metadata companion còn trạng thái draft/pending thì chưa được tự xem là phê duyệt.
+- Replay có PLAY, PAUSE, RESUME, SEEK và RESET. Backend giữ session và replay clock trong bộ nhớ của một process.
+- Chế độ `S5 nhiều tàu` dùng fixture `s5-01-synthetic-denmark-v1`, không phải AIS thật đã xác minh.
+- Khi PLAYING, backend chạy automatic evaluation tại anchor UTC theo phút, với playback 1×. Giao diện chỉ đọc batch đã công bố; khi PAUSED, có thể đánh giá thủ công một cặp hoặc toàn bộ cặp.
+- Forecast sử dụng model M5a thật từ Model Package T14 bên ngoài repository. Risk dùng CC-DRI V4 và operating point được khóa cho prototype. Mỗi kết quả có trạng thái model, forecast, QC và quyết định alert/no-alert/unavailable.
+- `official_alerts=false`. Các giá trị operating point không phải ngưỡng cảnh báo hàng hải chính thức. Review tích hợp của Toàn còn pending.
 
-## Dataset và Model Lock
+## Yêu cầu
 
-Dataset phải được cung cấp riêng trên máy chạy dự án. Đặt `DATASET_ROOT` tới thư mục chứa `train/`, `validation/` và `test/` khi chạy công cụ đọc dataset hoặc Q1 guard:
+- Windows PowerShell 7 hoặc Windows PowerShell 5.1.
+- Python 3.12 với dependencies trong `requirements-dev.txt`, gồm PyTorch CPU hoặc wheel CUDA tương thích.
+- Node.js và npm.
+- Model Package M5a T14 cùng external manifest pin hợp lệ, được chuyển riêng cho máy chạy ứng dụng.
+- Bộ dữ liệu nghiên cứu không cần cho demo Replay; `DATASET_ROOT` chỉ cần khi chạy dataset tools hoặc tests có Q1 access guard.
 
-```powershell
-$env:DATASET_ROOT = '<duong-dan-DATASET_FINAL-tren-may>'
-```
+Không đưa `DATASET_FINAL`, raw AIS, checkpoint, scaler, Model Package hoặc file `.env` vào Git. `.env` đã được ignore. Không sửa package bất biến hoặc external pin để làm cho kiểm tra thành công.
 
-Model M5a là Residual-GRU 15,390 tham số, nhận 10 bước history và tạo forecast 15 bước. Model Lock và checkpoint/scalers nằm trong package ngoài Git `m5a-cc-dri-offline-v1.0-20261125T133930Z`. Package cần được chuyển và kiểm tra riêng; không dùng một đường dẫn máy của thành viên khác. Đặt `AIT3040_MODEL_PACKAGE` tới thư mục package trên máy nhận và làm theo identity/hash/verification command tại [S4_FINAL_HANDOFF.md](docs/trung/S4_FINAL_HANDOFF.md).
+## Chuẩn bị môi trường
 
-Môi trường tham chiếu của package là Python 3.12.3, PyTorch 2.11.0+cu128 và CUDA 12.8. Đây là môi trường tham chiếu cho lần nghiệm thu offline, không phải yêu cầu production runtime. `requirements.txt` và `configs/s4_t14_observed_dependency_closure.yaml` ghi các dependency liên quan.
-
-Risk implementation sử dụng CC-DRI V4. Các giá trị tham chiếu M5a 0.420 và CV 0.435 là operating point offline; `configs/risk_config.yaml` vẫn giữ `not_calibrated`, calibrated thresholds là null và không bật official alert decision. Không đổi ngưỡng hoặc coi benchmark fail là pass.
-
-## Chạy Replay Fixture
-
-### Môi trường phát triển
-
-Tạo Python environment một lần. Chọn torch CPU hoặc CUDA phù hợp trước khi cài phần dependency còn lại:
+Tạo virtual environment và cài dependencies một lần. Chọn bản PyTorch phù hợp máy trước khi cài requirements:
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cpu
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
-.\.venv\Scripts\python.exe scripts/check_environment.py
-.\.venv\Scripts\python.exe -m pip check
-```
-
-Nếu dùng CUDA, thay wheel CPU bằng wheel tương thích với máy. Không cài package vào snapshot model immutable.
-
-### Khởi chạy fixture
-
-Trong một cửa sổ PowerShell tại thư mục gốc, chạy backend:
-
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
-```
-
-Trong cửa sổ PowerShell thứ hai, chạy frontend:
-
-```powershell
 Set-Location frontend
 npm ci
-npm run dev
+Set-Location ..
 ```
 
-Mở URL Vite hiện trên terminal, thường là `http://127.0.0.1:5173`. Backend API docs ở `http://127.0.0.1:8000/docs`.
+Đối với GPU, cài wheel PyTorch tương thích với driver/CUDA của máy. Không cài hoặc ghi file vào Model Package.
 
-- `/api/v1/mock/tracks` phục vụ T04 mock tracks.
-- `/api/v1/replay/sessions` tạo Replay session cho source demo `fixture-denmark-10m-v1`.
-- Replay hỗ trợ PLAY, PAUSE, RESUME, SEEK và RESET. Clock dùng thời gian mô phỏng của source, không dùng wall clock làm timestamp AIS.
-- ReplayAPI nạp AIS events đến replay clock; mỗi session khởi tạo lookback tối đa 10 phút, đủ cho 10 điểm history và giới hạn source age 60 giây trong TrackBuffer retention 900 giây. Snapshot không nhận event tương lai. Nếu `original_source_timestamp` không có, API giữ null; không suy diễn parent timestamp.
-- Partial history có thể hiển thị vị trí quan sát với trạng thái `INSUFFICIENT_DATA`. `current_state` vẫn null cho đến khi có đủ 10 điểm.
-- Forecast chỉ là mock xác định, giới hạn ở synthetic fixture và track `VALID`. Không có Risk/Alert runtime.
-
-## Kiểm thử
-
-Từ thư mục gốc, sau khi đặt `DATASET_ROOT`, chạy Python suites với Q1 Test access guard:
+Tạo cấu hình riêng trên máy:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest -p scripts.q1_test_access_guard tests/unit tests/integration backend/tests -q
+Copy-Item .env.example .env
+notepad .env
 ```
 
-Q1 guard chỉ cho phép đọc Test split để kiểm tra checksum; không cho deserialize Test content. Không bỏ guard để ép tests pass. Frontend checks:
+Điền đường dẫn tuyệt đối của `AIT3040_MODEL_PACKAGE` và `AIT3040_MODEL_MANIFEST_PIN`. External pin phải nằm ngoài thư mục package. Giữ nguyên các trường authority, scope, Model Lock ID, thresholds và `AIT3040_OFFICIAL_ALERTS=false`. `AIT3040_PYTHON` mặc định là `.venv\Scripts\python.exe`; có thể đặt đường dẫn virtual environment khác. Để chạy dataset tools/Q1 tests, điền `DATASET_ROOT`; trường này không bắt buộc cho demo synthetic.
+
+Backend startup script kiểm tra Python/import dependencies, các trường cấu hình, package, external pin, dataset path nếu được điền và port trước khi khởi động. Integrity verifier kiểm tra Model Package khi runtime được khởi tạo để đánh giá lần đầu.
+
+## Khởi chạy
+
+Mở hai cửa sổ PowerShell tại thư mục repository.
+
+Cửa sổ 1 — backend:
+
+```powershell
+.\scripts\start_backend.ps1
+```
+
+Cửa sổ 2 — frontend:
+
+```powershell
+.\scripts\start_frontend.ps1
+```
+
+Mặc định:
+
+- Ứng dụng: <http://127.0.0.1:5173/>
+- Backend health: <http://127.0.0.1:8000/health>
+- API documentation: <http://127.0.0.1:8000/docs>
+- Runtime status: <http://127.0.0.1:8000/api/v1/runtime/status>
+- Scheduler status: <http://127.0.0.1:8000/api/v1/runtime/scheduler>
+
+Dừng mỗi server bằng `Ctrl+C` trong cửa sổ tương ứng. Có thể đặt `AIT3040_BACKEND_PORT`, `AIT3040_FRONTEND_PORT` và `VITE_API_BASE_URL` trong `.env` nếu port mặc định không dùng được.
+
+## Kịch bản demo 5–10 phút
+
+1. Chọn **S5 nhiều tàu** và đợi session/track xuất hiện trên bản đồ.
+2. Dùng SEEK tới `2024-11-01 00:09 UTC`, sau đó chọn PLAY. Panel Automatic Monitoring hiển thị anchor, số cặp, kết quả, độ trễ và số anchor bị bỏ lỡ. Batch đầu có thể mất thêm thời gian khởi tạo model.
+3. Tại 00:09, kiểm tra cặp A–B có alert; A–C no-alert; các cặp chưa đủ lịch sử được ghi `INSUFFICIENT_DATA`. Forecast có nhãn M5a và as-of anchor.
+4. Pause. Có thể đánh giá thủ công một cặp hoặc toàn bộ cặp khi session ở PAUSED.
+5. SEEK tới `2024-11-01 00:15 UTC`, PLAY để xem batch tự động ở anchor mới. Tại anchor này fixture có đủ lịch sử cho 10/10 cặp.
+6. Thử SEEK/RESET. Kết quả thuộc session/generation cũ phải hết hiệu lực; bản đồ không được trình bày forecast cũ như forecast hiện hành.
+
+Anchor 00:09 được kiểm chứng với 1 alert, 5 no-alert và 4 unavailable; A–B risk tham chiếu khoảng `0.8832455466`. Anchor 00:15 được kiểm chứng với 1 alert và 9 no-alert; A–B risk khoảng `0.9638132257`. Đây là kết quả của fixture và model hiện có, không phải giá trị được hardcode cho demo. Hiệu năng đo được trên máy tham chiếu nằm trong báo cáo bàn giao.
+
+Fixture là dữ liệu tổng hợp có dạng minh họa, không đại diện tuyến hàng hải thật. Không gán nhãn va chạm AIS thật.
+
+## Kiểm thử mục tiêu
+
+Sau khi cấu hình `.env`, từ thư mục gốc có thể chạy:
+
+```powershell
+$env:DATASET_ROOT = '<đường-dẫn-DATASET_FINAL>'
+.\.venv\Scripts\python.exe -m pytest -p scripts.q1_test_access_guard tests/unit/test_s5_07b_batch_runtime.py tests/unit/test_s5_07b_http_surface.py -q
+```
+
+Frontend checks:
 
 ```powershell
 Set-Location frontend
-npm test
+npm test -- --reporter=dot
 npm run build
+Set-Location ..
 ```
+
+Không bỏ Q1 guard để làm tests pass. Full regression, training, calibration và T15 benchmark không thuộc quy trình chạy demo.
 
 ## Giới hạn đã biết
 
-- Replay mặc định chỉ đăng ký synthetic 10-minute fixture. AIS source reader và local source reports chưa thay thế được xác nhận timezone, source authority, duplicate policy hoặc vessel identity từ source owner.
-- Session, snapshots, clock và idempotency state chưa durable; không có multi-worker consistency hoặc restart recovery.
-- Candidate-pair provider, Encounter builder và TrackSnapshot-to-feature adapter chưa được nối vào backend.
-- Runtime model inference, Risk V4, threshold authorization và Alert chưa được tích hợp. T18/T19 còn pending; T20/T21 cần xác nhận assignment.
-- Forecast mock không dùng M5a và không được trình bày như output model thật.
-- T15 benchmark fail đã được chấp nhận trong prototype scope. Kết quả không chứng minh model superiority hoặc operational safety.
+- V1 chỉ dùng fixture tổng hợp; Real AIS và Real Collision Case Study được hoãn.
+- Automatic evaluation chỉ hỗ trợ playback 1×, một backend process và một active S5 session. Session, scheduler, alert state và cache không bền qua restart; không hỗ trợ nhiều worker.
+- Runtime trust model dành cho prototype học thuật. Package được kiểm tra theo boundary batch và kết quả lỗi bị loại bỏ; process/RAM tampering không được bảo vệ.
+- Model Lock không phê duyệt runtime integration hoặc production use. Không phát cảnh báo hàng hải chính thức.
+- Browser acceptance cho phiên bản automatic monitoring hiện tại chưa được xác minh trong lượt bàn giao này. Historical S5-05 browser evidence chỉ bao phủ manual/paused fixture demo; không được xem là nghiệm thu UI automatic mới.
+- Basemap có thể cần kết nối internet nếu tile provider không cache tile cục bộ.
+- V1 không chứng minh benchmark superiority, operational safety, generalization sang AIS thật hoặc khả năng triển khai production.
 
-Xem `docs/trung/S4_FINAL_HANDOFF.md` để biết deliverables T14/T15, kết quả historical và hướng dẫn chuyển model package. Sprint 5 integration cần được duyệt và nghiệm thu riêng.
+Xem `docs/trung/S4_FINAL_HANDOFF.md` để biết quy trình chuyển Model Package và external pin. Báo cáo phạm vi V1, kiểm thử, Git handoff và các giới hạn hiện tại nằm tại `docs/S5_FINAL_V1_HANDOVER_REPORT.md`.

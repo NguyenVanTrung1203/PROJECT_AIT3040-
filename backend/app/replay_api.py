@@ -270,6 +270,51 @@ class ReplayAPI:
         _schema_validator("production_track").validate(track)
         return track
 
+    def evaluation_tracks(self, session_id: str, anchor: str) -> tuple[SessionView, tuple[dict[str, Any], ...]]:
+        """Internal S5 minute-grid snapshot with G11 age measured at its own anchor.
+
+        Contract V1 list/get endpoints keep their existing current-clock semantics.
+        This method is only for the process-local academic evaluation scheduler.
+        """
+        view = self.get_session(session_id)
+        if view.status != "PLAYING":
+            raise APIProblem(409, "EVALUATION_NOT_PLAYING", "Automatic evaluation requires PLAYING")
+        anchor_ns = parse_utc_ns(anchor, field="evaluation_anchor")
+        if anchor_ns % (60 * 1_000_000_000) != 0:
+            raise APIProblem(422, "INVALID_EVALUATION_ANCHOR", "Evaluation anchor must be on the UTC minute grid")
+        if anchor_ns > parse_utc_ns(view.simulation_time, field="simulation_time"):
+            raise APIProblem(409, "FUTURE_EVALUATION_ANCHOR", "Evaluation anchor exceeds the replay clock")
+        core = self._core_for_session(session_id)
+        with self._lock:
+            vessel_ids = tuple(sorted(self._session_vessels.get(session_id, set()),
+                                      key=lambda value: value.encode("utf-8")))
+        tracks = []
+        for vessel_id in vessel_ids:
+            try:
+                track = core.evaluation_snapshot_as_of(session_id, vessel_id, anchor)
+            except SessionCoreError as exc:
+                raise APIProblem(exc.status_code, exc.code, str(exc)) from exc
+            if track is not None:
+                tracks.append(track)
+        return view, tuple(tracks)
+
+    def evaluation_deadline(self, session_id: str, anchor: str,
+                            playback_rate: float = 1.0) -> float:
+        """Return the wall deadline anchored to when playback crossed this minute."""
+        if playback_rate != 1.0:
+            raise APIProblem(422, "UNSUPPORTED_PLAYBACK_RATE", "S5 acceptance currently supports 1x playback only")
+        view = self.get_session(session_id)
+        if view.status != "PLAYING":
+            raise APIProblem(409, "EVALUATION_NOT_PLAYING", "Automatic evaluation requires PLAYING")
+        anchor_ns = parse_utc_ns(anchor, field="evaluation_anchor")
+        with self._lock:
+            baseline = self._playback_clocks.get(session_id)
+        if baseline is None:
+            raise APIProblem(503, "PLAYBACK_BASELINE_UNAVAILABLE", "Replay clock baseline is unavailable")
+        started_at, start_ns = baseline
+        crossed_at = started_at + (anchor_ns - start_ns) / 1_000_000_000
+        return crossed_at + 60.0 / playback_rate
+
     def _core_for(self, source: ReplaySource) -> ReplaySessionCore:
         with self._lock:
             core = self._cores.get(source.source_id)
