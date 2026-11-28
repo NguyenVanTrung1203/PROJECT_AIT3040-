@@ -5,7 +5,7 @@ import { buildMockForecastV1 } from './forecastMock.js'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
 const DEMO_SOURCE_ID = 'fixture-denmark-10m-v1'
-const S5_SOURCE_ID = 's5-01-synthetic-denmark-v1'
+const S5_SOURCE_ID = 's5-01-synthetic-denmark-water-v2'
 const DEMO_SOURCE_START = '2024-11-01T00:00:00Z'
 const DEMO_SOURCE_END = '2024-11-01T00:10:00Z'
 const SEEK_MAX_SECONDS = 599
@@ -882,14 +882,14 @@ export default function App() {
       <section className={mode === 's5' ? 'workspace s5-dashboard' : 'workspace'}>
         <div className="map-panel">
           <div className="map-toolbar">
-            <div className="map-title"><span className="map-pulse" /> KATTEGAT · DENMARK <small>55.6°N — 12.7°E</small></div>
+            <div className="map-title"><span className="map-pulse" /> {mode === 's5' ? 'BALTIC SEA · SYNTHETIC' : 'KATTEGAT · DENMARK'} <small>{mode === 's5' ? '55.70°N — 15.30°E' : '55.6°N — 12.7°E'}</small></div>
             <div className="map-actions">
               {mode !== 'mock' && session && <button className="refresh-button" onClick={() => requestControl('RESET')} disabled={!replayCanControl} aria-label="Reset replay">RESET</button>}
               <button className="refresh-button" onClick={() => { if (mode === 's5') clearRealForecast(); generationRef.current += 1; setRefreshKey((key) => key + 1) }} disabled={loading} aria-label="Refresh replay data">↻ <span>Refresh</span></button>
             </div>
           </div>
           <div className="map-canvas">
-            <MapContainer center={[55.69, 12.61]} zoom={9} scrollWheelZoom className="leaflet-map">
+            <MapContainer center={mode === 's5' ? [55.70, 15.30] : [55.69, 12.61]} zoom={9} scrollWheelZoom className="leaflet-map">
               <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <FitTracks tracks={tracks} mode={mode} />
               {historyLines.map((line) => <Polyline key={`history-${line.id}`} positions={line.positions} pathOptions={{ className: 'history-path', color: mode === 's5' && activeAlertPairIds.size && alertVesselIds.has(line.id) ? '#ff657c' : mode === 's5' && selectedPair?.vessel_ids?.includes(line.id) ? (selectedPair.vessel_ids[0] === line.id ? '#ffc165' : '#67b9ff') : line.status === 'STALE' ? '#f0aa53' : '#48d7c0', weight: selected?.vessel_id === line.id || selectedPair?.vessel_ids?.includes(line.id) || alertVesselIds.has(line.id) ? 4 : 2.5, opacity: 0.88, dashArray: line.status === 'STALE' ? '7 7' : undefined }} />)}

@@ -5,7 +5,7 @@
 ## Phạm vi V1
 
 - Replay có PLAY, PAUSE, RESUME, SEEK và RESET. Backend giữ session và replay clock trong bộ nhớ của một process.
-- Chế độ `S5 nhiều tàu` dùng fixture `s5-01-synthetic-denmark-v1`, không phải AIS thật đã xác minh.
+- Chế độ `S5 nhiều tàu` dùng fixture `s5-01-synthetic-denmark-water-v2` tại Baltic (tâm 55,70°N, 15,30°E), không phải AIS thật. Fixture gốc `s5-01-synthetic-denmark-v1` được giữ trong `_events_legacy()` để đối chiếu.
 - V1 dùng đánh giá thủ công khi PAUSED. PLAY chỉ phát lại chuyển động; automatic scheduler bị vô hiệu hóa.
 - Forecast sử dụng model M5a thật từ Model Package T14 bên ngoài repository. Risk dùng CC-DRI V4 và operating point được khóa cho prototype. Mỗi kết quả có trạng thái model, forecast, QC và quyết định alert/no-alert/unavailable.
 - `official_alerts=false`. Các giá trị operating point không phải ngưỡng cảnh báo hàng hải chính thức. Review tích hợp của Toàn còn pending.
