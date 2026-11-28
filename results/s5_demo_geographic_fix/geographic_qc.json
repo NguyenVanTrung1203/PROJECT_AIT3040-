@@ -1,0 +1,192 @@
+{
+  "natural_earth_land_sha256": "e547d749445eaa0964aba76738090ec88f5e63c4585122170f98c67a7ea922dc",
+  "natural_earth_scale": "1:10,000,000 (cartographic scale, not a meter accuracy)",
+  "natural_earth_version": "5.1.1",
+  "land_source": "https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-land/",
+  "distance_crs": "EPSG:32633 WGS84 / UTM 33N",
+  "osm_map_api": "https://api.openstreetmap.org/api/0.6/map?bbox=15.10,55.50,15.50,55.90",
+  "osm_sha256": "c897f202d789021864853da577f341c6c306abe72a4db8829b75aff8b727e851",
+  "osm_coastline_tagged_elements": 0,
+  "osm_island_or_land_tagged_elements": 0,
+  "osm_bbox_query_limit": "OSM map API returns ways with a node in the bbox; it can miss a long crossing way with no node inside. OSM is supplementary and incomplete, not a nautical chart.",
+  "old": {
+    "raw_points": 100,
+    "raw_points_on_land": 93,
+    "history_segments": 95,
+    "history_segments_intersecting_land": 89,
+    "m5a_points": 3000,
+    "m5a_points_on_land": 2388,
+    "m5a_segments": 3000,
+    "m5a_segments_intersecting_land": 2403,
+    "cv_points": 3000,
+    "cv_points_on_land": 2385,
+    "cv_segments": 3000,
+    "cv_segments_intersecting_land": 2400,
+    "cpa_markers": 200,
+    "cpa_markers_on_land": 169,
+    "eligible_pair_anchors": 100,
+    "anchors": {
+      "9": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "10": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "11": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "12": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "13": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "14": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "15": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "16": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "17": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "18": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "19": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "20": {
+        "eligible": 10,
+        "unavailable": 0
+      }
+    },
+    "fallbacks": [],
+    "min_distance_to_mapped_land_km": 0.0,
+    "geographic_bbox": {
+      "lat_min": 55.59166666666667,
+      "lat_max": 55.80833333333333,
+      "lon_min": 12.4464851164497,
+      "lon_max": 12.5535148835503
+    },
+    "all_points_inside_osm_bbox": false
+  },
+  "new": {
+    "raw_points": 100,
+    "raw_points_on_land": 0,
+    "history_segments": 95,
+    "history_segments_intersecting_land": 0,
+    "m5a_points": 3000,
+    "m5a_points_on_land": 0,
+    "m5a_segments": 3000,
+    "m5a_segments_intersecting_land": 0,
+    "cv_points": 3000,
+    "cv_points_on_land": 0,
+    "cv_segments": 3000,
+    "cv_segments_intersecting_land": 0,
+    "cpa_markers": 200,
+    "cpa_markers_on_land": 0,
+    "eligible_pair_anchors": 100,
+    "anchors": {
+      "9": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "10": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "11": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "12": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "13": {
+        "eligible": 6,
+        "unavailable": 4
+      },
+      "14": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "15": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "16": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "17": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "18": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "19": {
+        "eligible": 10,
+        "unavailable": 0
+      },
+      "20": {
+        "eligible": 10,
+        "unavailable": 0
+      }
+    },
+    "fallbacks": [],
+    "min_distance_to_mapped_land_km": 30.698197927553892,
+    "geographic_bbox": {
+      "lat_min": 55.59166666666667,
+      "lat_max": 55.80833333333333,
+      "lon_min": 15.246485116449701,
+      "lon_max": 15.3535148835503
+    },
+    "all_points_inside_osm_bbox": true
+  },
+  "parity": {
+    "max_abs_differences": {
+      "risk_score": 0.0,
+      "current_dcpa_nm": 0.0,
+      "current_tcpa_minutes": 0.0,
+      "predicted_min_distance_nm": 0.0,
+      "predicted_closest_time_minutes": 0.0,
+      "pair_distance_nm": 0.0,
+      "history_en": 0.0,
+      "anchors_en": 0.0,
+      "m5a_en": 0.0,
+      "cv_en": 0.0
+    },
+    "max_event_en_difference_nm": 0.0,
+    "decision_differences": [],
+    "summaries": {
+      "9": {
+        "alert": 1,
+        "no_alert": 5,
+        "unavailable": 4
+      },
+      "15": {
+        "alert": 1,
+        "no_alert": 9,
+        "unavailable": 0
+      }
+    }
+  }
+}

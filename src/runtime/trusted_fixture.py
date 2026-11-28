@@ -15,13 +15,16 @@ from backend.app.replay_api import ReplayAPI, ReplaySource, CreateSessionRequest
 from scripts.contract_identity_reference import canonical_vessel_id, pair_and_online_roles, encounter_id
 from src.data.track_buffer import validate_track_snapshot_runtime
 
-SOURCE = 's5-01-synthetic-denmark-v1'
+LEGACY_SOURCE = 's5-01-synthetic-denmark-v1'
+SOURCE = 's5-01-synthetic-denmark-water-v2'
+LEGACY_ORIGIN = (55.70, 12.50)
+WATER_ORIGIN = (55.70, 15.30)
 START = '2024-11-01T00:00:00Z'
 END = '2024-11-01T00:21:00Z'
 FEATURES = ('own_relative_east_nm', 'own_relative_north_nm', 'east_velocity_kn', 'north_velocity_kn')
 
 
-def _events():
+def _events_legacy():
     """Deterministic synthetic observations, explicitly not real AIS."""
     result = []
     # A/B approach; C/D diverge. E starts late to exercise unavailable coverage.
@@ -40,9 +43,19 @@ def _events():
                 'latitude': lat + delta * math.cos(angle) / 60,
                 'longitude': lon + delta * math.sin(angle) / (60 * math.cos(math.radians(lat))),
                 'sog_kn': 6.0, 'cog_deg': float(cog),
-                'provenance': {'source_file': SOURCE, 'source_row': len(result) + 1}})
+                'provenance': {'source_file': LEGACY_SOURCE, 'source_row': len(result) + 1}})
     return result
 
+
+def _events():
+    """Relocate the legacy synthetic geometry rigidly to the Baltic Sea."""
+    result = _events_legacy()
+    # Same latitude preserves the existing local-degrees/cos(latitude) EN frame.
+    longitude_shift = WATER_ORIGIN[1] - LEGACY_ORIGIN[1]
+    for event in result:
+        event['longitude'] += longitude_shift
+        event['provenance']['source_file'] = SOURCE
+    return result
 
 def _freeze(value):
     if isinstance(value, dict):

@@ -23,7 +23,7 @@ const pairs = [[0,1],[0,2],[0,3],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]].map(
 const pairId = pairs[0].pair_id
 const secondPair = pairs[1].pair_id
 const unavailablePair = pairs[3].pair_id
-const session = { session_id: sessionId, source_id: 's5-01-synthetic-denmark-v1', simulation_time: anchor, status: 'PAUSED', version: 0 }
+const session = { session_id: sessionId, source_id: 's5-01-synthetic-denmark-water-v2', simulation_time: anchor, status: 'PAUSED', version: 0 }
 const coverage = { session_id: sessionId, session_version: 0, snapshot_id: snapshotId, anchor_utc: anchor, expected: 10, evaluated: 10, eligible: 6, unavailable: 4, pairs }
 const tracks = ids.map((id, index) => {
   const point = { nominal_timestamp: anchor, source_timestamp: anchor, original_source_timestamp: null, source_age_seconds: 0, latitude: 55.7 + index * 0.01, longitude: 12.5 + index * 0.01, sog_kn: 6, cog_deg: 90 }
